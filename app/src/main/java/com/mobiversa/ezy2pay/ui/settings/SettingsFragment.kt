@@ -18,6 +18,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
@@ -67,8 +68,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         rootView = inflater.inflate(R.layout.settings_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
-        motoViewModel = ViewModelProviders.of(this).get(EzyMotoViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+        motoViewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
 
         setTitle("Profile", true)
         prefs = PreferenceHelper.defaultPrefs(context!!)
@@ -110,9 +111,9 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         productParams[username] = getSharedString(Constants.UserName)
         jsonProductList(productParams)
 
-        if (getLoginResponse().type.equals(Constants.LITE)) {
+        if (getLoginResponse().type == Constants.LITE) {
             rootView.lite_linear.visibility = View.VISIBLE
-            rootView.upgrade_btn.setText(getLoginResponse().liteUpdate)
+            rootView.upgrade_btn.text = getLoginResponse().liteUpdate
             val balance = prefs.getString(Constants.Balance, "0.0")?.toFloat()
             getBalance()
         } else {
@@ -232,7 +233,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         motoViewModel.upgradeEzymoto(paymentParams)
         motoViewModel.upgradeData.observe(viewLifecycleOwner, Observer {
             cancelDialog()
-            if (it.responseCode.equals("0000")) {
+            if (it.responseCode == "0000") {
 
                 getLoginResponse().liteUpdate = Constants.processing
                 rootView.upgrade_btn.isEnabled = false
@@ -326,7 +327,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
     }
 
     override fun onClick(v: View?) {

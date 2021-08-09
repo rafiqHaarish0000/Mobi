@@ -354,7 +354,10 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
                 startActivity(Intent(getActivity(), TutorialActivity::class.java))
             }
             R.id.prof_refer_linear -> {
-                showReferralPrompt()
+                // TODO: 09-08-2021
+                /*  Vignesh Selvam
+                *   Referral disabled*/
+//                showReferralPrompt()
             }
             R.id.keyboard_linear -> {
                 val fragment = KeyboardFragment()
@@ -370,6 +373,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
+    @Deprecated("Referral disabled and will be removed in update")
     private fun showReferralPrompt() {
         lateinit var mAlertDialog: AlertDialog
 

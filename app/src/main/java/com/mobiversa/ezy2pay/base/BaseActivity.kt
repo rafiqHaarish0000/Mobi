@@ -130,6 +130,14 @@ open class BaseActivity : AppCompatActivity() {
         return prefs[value]!!
     }
 
+    // TODO: 09-08-2021
+    /*Vignesh Selvam
+    * get Sessions for all the shared preference */
+    fun appSession(): AppSession {
+        return AppSession.getInstance(context = this@BaseActivity)
+    }
+
+
     fun putSharedString(value: String, data: String) {
         val prefs: SharedPreferences = PreferenceHelper.defaultPrefs(applicationContext)
         prefs[value] = data

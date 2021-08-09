@@ -9,43 +9,53 @@ import android.content.pm.ActivityInfo
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mobiversa.ezy2pay.base.BaseActivity
+import com.mobiversa.ezy2pay.databinding.ActivityMainBinding
 import com.mobiversa.ezy2pay.utils.*
 import com.mobiversa.ezy2pay.utils.PreferenceHelper.set
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.min
 
+internal val TAG = MainActivity::class.java.canonicalName
 
 class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverListener {
 
     private var snackBar: Snackbar? = null
 
+    // TODO: 09-08-2021
+    /*  Vignesh Selvam
+    * binding enabled */
+    private lateinit var _binding: ActivityMainBinding
+    private val binding: ActivityMainBinding get() = _binding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-//            WindowManager.LayoutParams.FLAG_SECURE)
-        setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        _binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
+        setContentView(binding.root)
 
-        if(resources.getBoolean(R.bool.portrait_only)){
+        // replaced with data binding
+//        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        if (resources.getBoolean(R.bool.portrait_only)) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
@@ -55,7 +65,13 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_home, R.id.navigation_history, R.id.navigation_notifications, R.id.navigation_settings ))
+            setOf(
+                R.id.navigation_home,
+                R.id.navigation_history,
+                R.id.navigation_notifications,
+                R.id.navigation_settings
+            )
+        )
         /*val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_history, R.id.navigation_notifications,
@@ -63,7 +79,8 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
             )
         )*/
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        binding.navView.setupWithNavController(navController)
+
         //Network Connection Check
         registerReceiver(
             ConnectivityReceiver(),
@@ -87,34 +104,120 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
 //        val currentLogin = "2020-06-17"
         val prefs: SharedPreferences = PreferenceHelper.defaultPrefs(applicationContext)
 
-        val lastLogin = prefs.getString(Constants.LastLogin,"")
-        if (lastLogin.equals("")){
+
+        // TODO: 09-08-2021
+        /* Vignesh Selvam
+        * Disabled old prompt
+        * */
+        val lastLogin = prefs.getString(Constants.LastLogin, "")
+        if (lastLogin.equals("")) {
             prefs[Constants.LastLogin] = currentLogin
-            if (getLoginResponse(applicationContext).hostType.equals("U",true) && Constants.EzyMoto.equals("EZYLINK",true) && getProductList()[0].isEnable)
-            showReferralPrompt()
-        }else{
-            val date = DateFormatter.DateComparison(currentLogin, lastLogin)
-            when(date){
-                "before"->{
-                    if (getLoginResponse(applicationContext).hostType.equals("U",true) && Constants.EzyMoto.equals("EZYLINK",true) && getProductList()[0].isEnable)
+            if (getLoginResponse(applicationContext).hostType.equals(
+                    "U",
+                    true
+                ) && Constants.EzyMoto.equals("EZYLINK", true) && getProductList()[0].isEnable
+            )
+
+            /*   Vignesh Selvam 06 / 08 / 2021
+            * old referral disabled
+            *  */
+                showReferralPrompt()
+        } else {
+            when (DateFormatter.DateComparison(currentLogin, lastLogin)) {
+                "before" -> {
+                    if (getLoginResponse(applicationContext).hostType.equals(
+                            "U",
+                            true
+                        ) && Constants.EzyMoto.equals(
+                            "EZYLINK",
+                            true
+                        ) && getProductList()[0].isEnable
+                    )
+                    /*   Vignesh Selvam 06 / 08 / 2021
+                    * old referral disabled *
+                    *  */
                         showReferralPrompt()
                 }
                 else -> {
-                    if (compareVersions(versionName,serverVersion) >= 0) {
+                    if (compareVersions(versionName, serverVersion) >= 0) {
                     } else {
                         //Update Available
                         showUpdatePrompt()
                     }
                 }
             }
-
         }
         prefs[Constants.LastLogin] = currentLogin
 
         Log.e("ProductName", Constants.EzyMoto)
 
-        navView.itemIconTintList = null
+        binding.navView.itemIconTintList = null
 
+    // TODO: 09-08-2021
+    /*  Vignesh Selvam
+    * New referral prompt added */
+        checkReferralPrompt()
+    }
+
+    private fun checkReferralPrompt() {
+
+        val lastTimeStamp =
+            appSession().getSession(Constants.Preferences.KEY_LAST_TIME_STAMP, 0L, this@MainActivity)
+
+        // default show the prompt for the first time
+        if (lastTimeStamp == 0L) {
+            appSession().saveSession(
+                Constants.Preferences.KEY_LAST_TIME_STAMP,
+                System.currentTimeMillis(), this@MainActivity
+            )
+            showPromotionAlert()
+        }
+        // else check the last time stamp and current time stamp is the difference is equal or greater than 12 hours then display the prompt
+        else {
+            val currentTimeStamp = System.currentTimeMillis()
+
+            // if the lastTimeStamp is more or equal to 12 Hrs
+            if (TimeUnit.MILLISECONDS.toHours(lastTimeStamp - currentTimeStamp) >= 12) {
+
+                // save current time stamp and display the prompt
+                appSession().saveSession(
+                    Constants.Preferences.KEY_LAST_TIME_STAMP,
+                    currentTimeStamp, this@MainActivity
+                )
+                showPromotionAlert()
+            }
+        }
+
+
+    }
+
+    private fun showPromotionAlert() {
+        Log.i(TAG, "showPromotionAlert: show")
+
+        val inflater = this.layoutInflater
+        val layout: View = inflater.inflate(R.layout.alert_referel_new, null)
+
+        val builder = AlertDialog.Builder(this@MainActivity)
+        builder.apply {
+            setView(layout)
+            setCancelable(true)
+        }
+
+        val alertDialog = builder.create()
+
+        val imageView = layout.findViewById<ImageView>(R.id.image_view)
+        val closeButton = layout.findViewById<ImageButton>(R.id.image_button_close)
+
+        imageView.setOnClickListener {
+            val builder = CustomTabsIntent.Builder()
+            val customTabsIntent = builder.build()
+            customTabsIntent.launchUrl(this@MainActivity, Uri.parse(Constants.Links.ASPIRASIA_URL))
+        }
+        closeButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
@@ -131,7 +234,10 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
             snackBar?.duration = BaseTransientBottomBar.LENGTH_INDEFINITE
             snackBar?.show()
 
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
         } else {
             snackBar?.dismiss()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -144,7 +250,7 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
     }
 
     override fun onBackPressed() {
-        showExitAlert("Exit Alert","Are you sure you want to exit from Mobiversa?")
+        showExitAlert("Exit Alert", "Are you sure you want to exit from Mobiversa?")
     }
 
     private fun showUpdatePrompt() {
@@ -159,13 +265,15 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         alert.setCancelable(false)
 
         positiveBtn.setOnClickListener {
-            val appPackageName = "com.mobiversa.ezy2pay"// getPackageName() from Context or Activity object
+            val appPackageName =
+                "com.mobiversa.ezy2pay"// getPackageName() from Context or Activity object
 
             try {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=$appPackageName"))
+                        Uri.parse("market://details?id=$appPackageName")
+                    )
                 )
             } catch (anfe: ActivityNotFoundException) {
                 startActivity(
@@ -186,21 +294,24 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         //startActivity(new Intent(GoogleMaps.this, VoidAuthActivity.class).putExtra("trensID", transId));
     }
 
+    @Deprecated("not in use now")
     private fun showReferralPrompt() {
         lateinit var mAlertDialog: AlertDialog
 
         val inflater = this.layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_referal_main, null)
-        val positiveBtn = alertLayout.findViewById<View>(R.id.referal_txt) as TextView
-        val negativeBtn = alertLayout.findViewById<View>(R.id.alert_close_button) as ImageView
         val mBuilder = this.let {
             AlertDialog.Builder(it)
                 .setView(alertLayout)
         }
 
+        val positiveBtn = alertLayout.findViewById<View>(R.id.referal_txt) as TextView
+        val negativeBtn = alertLayout.findViewById<View>(R.id.alert_close_button) as ImageView
+
         positiveBtn.setOnClickListener {
             val openURL = Intent(Intent.ACTION_VIEW)
-            openURL.data = Uri.parse("https://gomobi.io/referral/?mid=${getLoginResponse(applicationContext).motoMid}")
+            openURL.data =
+                Uri.parse("https://gomobi.io/referral/?mid=${getLoginResponse(applicationContext).motoMid}")
             startActivity(openURL)
             mAlertDialog.dismiss()
         }
@@ -209,12 +320,14 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
             mAlertDialog.dismiss()
         }
 
-        mAlertDialog = mBuilder.show()
+
         mAlertDialog.setCancelable(false)
         mAlertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(this.resources.getColor(android.R.color.transparent)))
         val dialogWindow = mAlertDialog.window
         dialogWindow?.setGravity(Gravity.CENTER)
+
+//        mAlertDialog = mBuilder.show()
     }
 
     private fun compareVersions(v1: String, v2: String): Int {

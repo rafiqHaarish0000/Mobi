@@ -6,29 +6,40 @@ import java.util.*
 
 class Constants {
 
-    companion object {
-        const val CHAT_URL : String = "https://gomobi.io/support/livechat?cm="
-        const val LOGGED_CHAT_URL : String = "https://gomobi.io/support/livechat?nm="
-        const val tcHtmlString : String = "https://gomobi.io/terms-condition/"
-        const val mobiApi : String = "b07ad9f31df158edb188a41f725899bc"
 
-        const val Normal : String = "NORMAL"
-        const val LITE : String = "LITE"
-        const val Balance : String = "Balance"
-        const val FIRE_BASE_TOKEN : String = "token"
-        const val RememberMe : String = "RememberMe"
-        const val IsLoggedIn : String = "IsLoggedIn"
-        const val LastLogin : String = "LastLogin"
-        const val UserName : String = "UserName"
-        const val LoginResponse : String = "LoginResponse"
-        const val ProductResponse : String = "ProductResponse"
-        const val CountryResponse : String = "CountryResponse"
-        const val RegisterResponseData : String = "RegisterResponseData"
-        const val BusinessDetailData : String = "BusinessDetailData"
-        const val MerchantDetailData : String = "MerchantDetailData"
-        const val UpgradeStatus : String = "UpgradeStatus"
-        const val UPGRADE : String = "UPGRADE"
-        const val otp : String = "otp"
+    object Preferences {
+        const val APP_SESSIONS ="app_sessions"
+        const val KEY_LAST_TIME_STAMP = "LastKnownTime"
+    }
+
+    object Links {
+        const val ASPIRASIA_URL = "https://aspirasi.co/pasar/capital-plus-mobi-asia"
+    }
+
+
+    companion object {
+        const val CHAT_URL: String = "https://gomobi.io/support/livechat?cm="
+        const val LOGGED_CHAT_URL: String = "https://gomobi.io/support/livechat?nm="
+        const val tcHtmlString: String = "https://gomobi.io/terms-condition/"
+        const val mobiApi: String = "b07ad9f31df158edb188a41f725899bc"
+
+        const val Normal: String = "NORMAL"
+        const val LITE: String = "LITE"
+        const val Balance: String = "Balance"
+        const val FIRE_BASE_TOKEN: String = "token"
+        const val RememberMe: String = "RememberMe"
+        const val IsLoggedIn: String = "IsLoggedIn"
+        const val LastLogin: String = "LastLogin"
+        const val UserName: String = "UserName"
+        const val LoginResponse: String = "LoginResponse"
+        const val ProductResponse: String = "ProductResponse"
+        const val CountryResponse: String = "CountryResponse"
+        const val RegisterResponseData: String = "RegisterResponseData"
+        const val BusinessDetailData: String = "BusinessDetailData"
+        const val MerchantDetailData: String = "MerchantDetailData"
+        const val UpgradeStatus: String = "UpgradeStatus"
+        const val UPGRADE: String = "UPGRADE"
+        const val otp: String = "otp"
 
         //Signup
         const val enteredMobilenumber: String = "entered_mobilenumber"
@@ -44,24 +55,24 @@ class Constants {
         const val categoryName = "categoryName"
         const val categoryCode = "categoryCode"
 
-        const val Ezywire : String = "EZYWIRE"
-        var EzyMoto : String = "EZYMOTO"
-        const val EzyRec : String = "EZYREC"
-        const val EzySplit : String = "EZYSPLIT"
-        const val EzyAuth : String = "EZYAUTH"
-        const val PREMOTO : String = "PREMOTO"
-        const val PREWIRE : String = "PREWIRE"
-        const val Boost : String = "BOOST"
-        const val GrabPay : String = "GRABPAY"
-        const val MobiPass : String = "MOBIPASS"
-        const val MobiCash : String = "CASH"
-        const val Product : String = "Product"
-        const val DeviceStatus : String = "deviceStatus"
+        const val Ezywire: String = "EZYWIRE"
+        var EzyMoto: String = "EZYMOTO"
+        const val EzyRec: String = "EZYREC"
+        const val EzySplit: String = "EZYSPLIT"
+        const val EzyAuth: String = "EZYAUTH"
+        const val PREMOTO: String = "PREMOTO"
+        const val PREWIRE: String = "PREWIRE"
+        const val Boost: String = "BOOST"
+        const val GrabPay: String = "GRABPAY"
+        const val MobiPass: String = "MOBIPASS"
+        const val MobiCash: String = "CASH"
+        const val Product: String = "Product"
+        const val DeviceStatus: String = "deviceStatus"
 
-        const val ProductDisable : String = "You are not Subscribed to this Product"
-        const val ENTER_PASSWORD : String = "Please enter the password to proceed void"
-        const val PLEASE_ENTER_NAME : String = "Please enter the name"
-        const val PLEASE_ENTER_MOBILE : String = "Please Enter the valid mobile number!"
+        const val ProductDisable: String = "You are not Subscribed to this Product"
+        const val ENTER_PASSWORD: String = "Please enter the password to proceed void"
+        const val PLEASE_ENTER_NAME: String = "Please enter the name"
+        const val PLEASE_ENTER_MOBILE: String = "Please Enter the valid mobile number!"
         const val PLEASE_ENTER_VALID_MOBILE = "Please Enter valid mobile number"
         const val ENTERED_WRONG_OTP = "You entered wrong OTP number! Please check and try again!"
         const val PLEASE_ENTER_VALIDMOBILE = "Please Enter valid mobile number"
@@ -101,7 +112,7 @@ class Constants {
         var PIN_DATA = ""
         var TRANS_ID = ""
         var Signature = ""
-        var isDeviceConnected =  false
+        var isDeviceConnected = false
         var isPrinterConnected: Boolean = false
         var isPinVerified: Boolean = false
         var connectedDevice: BluetoothDevice? = null
@@ -152,12 +163,12 @@ class Constants {
         const val APDU = "APDU"
 
         //Ezywire
-        const val BTScreen : String = "BlueTooth"
-        const val InsertCard : String = "InsertCart"
-        const val EnterPin : String = "EnterPin"
-        const val FailureTransaction : String = "FailureTransaction"
-        const val SuccessTransaction : String = "SuccessTransaction"
-        const val SignaturePage : String = "Signature"
+        const val BTScreen: String = "BlueTooth"
+        const val InsertCard: String = "InsertCart"
+        const val EnterPin: String = "EnterPin"
+        const val FailureTransaction: String = "FailureTransaction"
+        const val SuccessTransaction: String = "SuccessTransaction"
+        const val SignaturePage: String = "Signature"
 
         const val ActivityName = "Activity"
         const val Redirect = "Redirect"
@@ -171,8 +182,8 @@ class Constants {
         const val Date: String = "Date"
 
         //Profile Update
-        const val NONEZYWIRE : String = "NONEZYWIRE"
-        const val EZYWIRE : String = "EZYWIRE"
+        const val NONEZYWIRE: String = "NONEZYWIRE"
+        const val EZYWIRE: String = "EZYWIRE"
 
         const val Index = "index"
         const val EncSK = "encSK"
@@ -184,7 +195,49 @@ class Constants {
         const val upgrade = "UPGRADE"
 
 
-        val DEVICE_NAMES = arrayOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "WisePad", "WP", "MPOS", "M36", "M188")
+        val DEVICE_NAMES = arrayOf(
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "WisePad",
+            "WP",
+            "MPOS",
+            "M36",
+            "M188"
+        )
         val PRINTER_DEVICE_NAMES = arrayOf("BTPTR", "SIMPLYP")
 
 

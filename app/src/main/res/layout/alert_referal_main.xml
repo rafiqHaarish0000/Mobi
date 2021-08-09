@@ -21,14 +21,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="350dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:scaleType="fitXY"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="-10dp"
-                    android:src="@drawable/referal_girl" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/referrel_image_2021" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/alert_close_button"

@@ -2,10 +2,13 @@ package com.mobiversa.ezy2pay.network
 
 import com.google.gson.GsonBuilder
 import com.mobiversa.ezy2pay.BuildConfig
+import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
+import com.mobiversa.ezy2pay.dataModel.NGrabPayResponseData
 import com.mobiversa.ezy2pay.network.response.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -90,6 +93,12 @@ interface ApiService {
         @Body postParam: HashMap<String, String>
     ): Call<VoidHistoryModel>
 
+    @POST("payment/{linkValue}/mobi_jsonservice")
+    suspend fun voidOnlineGrabPayTransaction(
+        @Path("linkValue", encoded = true) linkValue: String,
+        @Body requestData: NGrabPayRequestData
+    ): Response<NGrabPayResponseData>
+
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun setMobiCash(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
@@ -133,13 +142,13 @@ interface ApiService {
         private const val BANK_URL = "https://fpxservice.gomobi.io/"
         private const val CITY_URL = "https://ocsservices.gomobi.io/"
 
-        private const val BASE_URL = "https://paydee.gomobi.io/"
-        private const val REGISTER_URL = "https://paydee.gomobi.io/"
-        private const val NOTIFICATION_URL = "https://paydee.gomobi.io/notificationservices/"
+//        private const val BASE_URL = "https://paydee.gomobi.io/"
+//        private const val REGISTER_URL = "https://paydee.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://paydee.gomobi.io/notificationservices/"
 
-//        private const val BASE_URL = "https://ecom.gomobi.io/"
-//        private const val REGISTER_URL = "https://ecom.gomobi.io/"
-//        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
+        private const val BASE_URL = "https://ecom.gomobi.io/"
+        private const val REGISTER_URL = "https://ecom.gomobi.io/"
+        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
 
 //        private const val BASE_URL = "https://pay.gomobi.io/"
 //        private const val REGISTER_URL = "https://pay.gomobi.io/"

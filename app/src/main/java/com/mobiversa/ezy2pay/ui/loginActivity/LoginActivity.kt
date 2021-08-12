@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.facebook.*
 import com.facebook.login.LoginResult
@@ -142,7 +143,7 @@ class LoginActivity :
             }
 
         finger = Finger(applicationContext)
-        loginViewModel = ViewModelProviders.of(this@LoginActivity)[LoginViewModel::class.java]
+        loginViewModel = ViewModelProvider(this@LoginActivity)[LoginViewModel::class.java]
 
         auth = FirebaseAuth.getInstance()
 
@@ -524,7 +525,6 @@ class LoginActivity :
                     loginResponse(loginMap, response.body()!!)
                 } else {
                     showLog("LoginModel Fail", "" + response.message())
-
                     shortToast(response.message())
                     cancelDialog()
                 }
@@ -621,7 +621,7 @@ class LoginActivity :
                 val arr = it.responseDescription.split(" ".toRegex()).toTypedArray()
 
                 var data = arr[5]
-                if (!data.equals("reset")) {
+                if (data != "reset") {
 
                     warning_title_txt.text = "Attempts remaining: $data"
                     val one = "<font color='#000'><b>Warning:</b> After </font>"

@@ -121,8 +121,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
 
         if (getLoginResponse().type.equals("LITE", true)) {
             getBalance()
-        } else {
-
         }
 
         return root

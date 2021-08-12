@@ -13,7 +13,7 @@ import retrofit2.Response
 
 class HistoryModel {
 
-    val apiResponse = ApiService.serviceRequest()
+    private val apiResponse = ApiService.serviceRequest()
     val data = MediatorLiveData<TransactionHistoryModel>()
     val successData = MutableLiveData<SuccessModel>()
     val voidData = MutableLiveData<VoidHistoryModel>()

@@ -35,7 +35,11 @@ data class ForSettlement(
     val pan: String?,
     val txnType: String?,
     val mobiRef: String?
-) : Serializable
+) : Serializable {
+    fun getInvoiceIdText(): String {
+        return "Ref: ${invoiceId ?: '-'}"
+    }
+}
 
 data class PreAuthorization(
     val additionAmount: String,

@@ -1,15 +1,19 @@
 package com.mobiversa.ezy2pay.ui.history
 
 import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,21 +21,21 @@ import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.TransactionHistoryAdapter
 import com.mobiversa.ezy2pay.base.BaseFragment
+import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
+import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.network.response.TransactionHistoryModel
 import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
 import com.mobiversa.ezy2pay.ui.history.historyDetail.HistoryDetailFragment
-import com.mobiversa.ezy2pay.utils.Constants
+import com.mobiversa.ezy2pay.utils.*
 import com.mobiversa.ezy2pay.utils.Constants.Companion.UserName
-import com.mobiversa.ezy2pay.utils.Fields
 import com.mobiversa.ezy2pay.utils.Fields.Companion.PREAUTH
-import com.mobiversa.ezy2pay.utils.MarginItemDecoration
-import com.mobiversa.ezy2pay.utils.PreferenceHelper
 import com.mobiversa.ezy2pay.utils.PreferenceHelper.get
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
 import kotlinx.android.synthetic.main.fragment_history.view.*
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,7 +89,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         savedInstanceState: Bundle?
     ): View? {
         historyViewModel =
-            ViewModelProviders.of(this.getActivity()!!).get(HistoryViewModel::class.java)
+            ViewModelProvider(
+                this@HistoryFragment,
+                AppViewModelFactory(AppRepository.getInstance())
+            ).get(HistoryViewModel::class.java)
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
 
         initialize(rootView)
@@ -102,12 +109,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     fun initialize(rootView: View) {
         setTitle("Transactions", true)
         (activity as MainActivity).supportActionBar?.show()
-        // To set the Traansaction type
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-        customPrefs = PreferenceHelper.customPrefs(context!!, "REMEMBER")
+
+        customPrefs = PreferenceHelper.customPrefs(requireContext(), "REMEMBER")
 
         checkAndRequestPermissions()
 
@@ -119,29 +122,25 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         btnSettlementHistory.visibility = View.GONE
 
-        finger = Finger(this.context!!)
+        finger = Finger(this.requireContext())
+
         searchView()
 
         historyRecyclerView.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
         historyRecyclerView.addItemDecoration(
             MarginItemDecoration(
                 resources.getDimension(R.dimen.xxhdpi_10).toInt()
             )
         )
-        /*historyRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                LinearLayoutManager.VERTICAL
-            )
-        )*/
-        historyAdapter = TransactionHistoryAdapter(historyList, context!!, this)
+
+        historyAdapter = TransactionHistoryAdapter(historyList, requireContext(), this)
         historyRecyclerView.adapter = historyAdapter
         enableVoidOption()
 
-        trxTypeAdapter = ArrayAdapter(context!!, R.layout.spinner_item, getTrxList())
+        trxTypeAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, getTrxList())
         trxTypeSpinner.adapter = trxTypeAdapter
-        trxTypeSpinner.dropDownWidth = width
 
         trxTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
@@ -166,13 +165,13 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     else -> getTrxList()[position]
                 }
 
-                if (getTrxList()[position].equals(PREAUTH)) {
+                if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
                     if (getProductList()[1].isEnable)
                         preAuthTransHistory(Fields.CARD)
                     else
                         preAuthTransHistory(Fields.EZYMOTO)
                 } else {
-                    transactionHistory()
+                    transactionHistory("1")
                 }
             }
 
@@ -182,7 +181,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
     }
 
-    fun transactionHistory() {
+    fun transactionHistory(s: String) {
+        Log.i(TAG, "transactionHistory: $s")
 
         val historyParam = HashMap<String, String>()
 
@@ -249,21 +249,21 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         transactionType = historyParam[Fields.Service]!!
         val apiResponse = ApiService.serviceRequest()
         apiResponse.getTransactionHistory(historyParam).enqueue(object :
-                Callback<TransactionHistoryModel> {
-                override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
-                    cancelDialog()
-                }
+            Callback<TransactionHistoryModel> {
+            override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
+                cancelDialog()
+            }
 
-                override fun onResponse(
-                    call: Call<TransactionHistoryModel>,
-                    response: Response<TransactionHistoryModel>
-                ) {
-                    cancelDialog()
-                    if (response.isSuccessful) {
-                        historyObserveData(response.body()!!)
-                    }
+            override fun onResponse(
+                call: Call<TransactionHistoryModel>,
+                response: Response<TransactionHistoryModel>
+            ) {
+                cancelDialog()
+                if (response.isSuccessful) {
+                    historyObserveData(response.body()!!)
                 }
-            })
+            }
+        })
     }
 
     // Have to study about Observer and work
@@ -288,7 +288,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private fun historyObserveData(it: TransactionHistoryModel) {
         var count = 0
         var completedCount = 0
-        if (it.responseCode.equals("0000", true)) {
+        if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
             showLog("Auth", trxType)
             if (trxType.equals(PREAUTH, true)) {
                 val authSize = it.responseData.preAuthorization?.size ?: 0
@@ -351,12 +351,11 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         showLog("Service", trxType)
 
         if (pendingCount > 0) {
-            getActivity()?.let {
-                showDialog(
-                    "", "You have $pendingCount pending transaction(s), kindly complete.",
-                    it
-                )
-            }
+            showDialog(
+                title = "",
+                description = "You have $pendingCount pending transaction(s), kindly complete.",
+                activity = requireActivity()
+            )
         }
 
         if (historyList.size <= 0) {
@@ -397,13 +396,13 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         for (data in getProductList()) {
             if (data.isEnable) {
-                if (data.historyName.equals(Constants.MobiCash)) {
-//                    if (getProductList()[0].isEnable && getLoginResponse().type.equals("Normal",true))
+                if (data.historyName == Constants.MobiCash) {
                     histList.add(Fields.FPX)
                 }
                 histList.add(data.historyName)
             }
         }
+
         return histList
     }
 
@@ -466,7 +465,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         etPassword.isEnabled = true
         etPassword.isFocusable = true
         etPassword.requestFocus()
-        val alert: AlertDialog.Builder = AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
+        val alert: AlertDialog.Builder =
+            AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
         alert.setView(alertLayout)
         alert.setCancelable(false)
 
@@ -480,7 +480,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 requestData[Fields.password] = textPassword
 //                jsonUserValidation(requestVal, item)
                 jsonVoidTransaction("Void", item, requestData)
-            } else { //                    Toast.makeText(getActivity(), Constants.ENTER_PASSWORD, Toast.LENGTH_SHORT).show();
+            } else {
                 shortToast(Constants.ENTER_PASSWORD)
             }
         }
@@ -553,14 +553,14 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     ) {
         var pathStr = "mobiapr19"
         val requestVal = requestData
-        when {
-            historyData.txnType.equals(Fields.CASH) -> {
+        when (historyData.txnType) {
+            (Fields.CASH) -> {
                 requestVal[Fields.Service] = Fields.CASH_CANCEL
                 requestVal[Fields.sessionId] = getLoginResponse().sessionId
                 requestVal[Fields.tid] = getLoginResponse().tid
                 requestVal[Fields.trxId] = historyData.txnId
             }
-            historyData.txnType.equals(Fields.BOOST) -> {
+            (Fields.BOOST) -> {
                 when {
                     status.equals("Cancel", false) -> {
                         requestVal[Fields.Service] = Fields.BOOST_STATUS
@@ -584,7 +584,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 requestVal[Fields.trxId] = historyData.txnId
                 requestVal[Fields.InvoiceId] = historyData.invoiceId ?: ""
             }
-            historyData.txnType.equals(Fields.GRABPAY) -> {
+            (Fields.GRABPAY) -> {
                 pathStr = "grabpay"
                 when {
                     status.equals("Yes", false) -> {
@@ -602,7 +602,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 requestVal[Fields.trxId] = historyData.txnId
                 requestVal[Fields.InvoiceId] = historyData.invoiceId ?: ""
             }
-            historyData.txnType.equals(Fields.PRE_AUTH) -> {
+            (Fields.PRE_AUTH) -> {
 
                 when {
                     status.equals("Complete", true) -> {
@@ -662,7 +662,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     cancelDialog()
                     if (response.isSuccessful) {
                         shortToast(response.body()!!.responseDescription)
-                        transactionHistory()
+                        transactionHistory("2")
                     }
                 }
             })
@@ -709,7 +709,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             Observer {
                 cancelDialog()
                 if (it.responseCode.equals("0000", true)) {
-                    transactionHistory()
+                    transactionHistory("")
                 }
                 shortToast(it.responseDescription)
             }
@@ -747,54 +747,116 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         var neutralStr = "Cancel"
         var titleStr = ""
 
-        when {
+        titleStr = when {
             forSettlement.txnType.equals(Fields.PRE_AUTH, false) -> {
-                titleStr = PREAUTH
+                PREAUTH
             }
             else -> {
-                titleStr = forSettlement.txnType.toString()
+                forSettlement.txnType.toString()
             }
         }
 
         when {
             forSettlement.txnType.equals(Fields.BOOST, false) -> {
                 descriptionStr = "Do you want to COMPLETE this transaction?"
-                positiveStr = "Cancel"
-                negativeStr = "Dismiss"
+
                 neutralStr = "Yes"
+
+                positiveStr = "Cancel"
+                negativeStr = "No, Close"
             }
             forSettlement.txnType.equals(Fields.GRABPAY, false) -> {
                 descriptionStr = "Do you want to CANCEL this transaction?"
-                positiveStr = "Yes"
-                negativeStr = "Dismiss"
+
+                positiveStr = "Yes, Cancel"
+                negativeStr = "No, Close"
             }
             else -> {
                 descriptionStr = "Do you want to COMPLETE this transaction?"
-                positiveStr = "Complete"
-                negativeStr = "Dismiss"
+
                 neutralStr = "Cancel"
+
+                positiveStr = "Yes, Complete"
+                negativeStr = "No, Close"
             }
         }
         // Initialize a new instance of
         val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
         builder.setTitle(titleStr)
         builder.setMessage(descriptionStr)
+
         builder.setPositiveButton(positiveStr) { dialog, which ->
-            requestData.clear()
-            jsonVoidTransaction(positiveStr, forSettlement, requestData)
-            dialog.dismiss()
-        }
-        builder.setNegativeButton(negativeStr) { dialog, which ->
-            dialog.dismiss()
-        }
-        builder.setNeutralButton(neutralStr) { dialog, which ->
-            requestData.clear()
-            jsonVoidTransaction(neutralStr, forSettlement, requestData)
+
+            // TODO: 11-08-2021
+            /*  Vignesh Selvam
+            * Enabled Coroutine for new api call */
+
+//          Online Grab pay
+            if (forSettlement.tid == getLoginResponse().gpayOnlineTid) {
+                cancelOnlineGrabPay(forSettlement)
+            }
+
+//            OR code grab pay
+            if (forSettlement.tid == getLoginResponse().gpayTid) {
+                requestData.clear()
+                jsonVoidTransaction(positiveStr, forSettlement, requestData)
+
+            }
+
             dialog.dismiss()
         }
 
+        builder.setNegativeButton(negativeStr) { dialog, which ->
+            dialog.dismiss()
+        }
+
+//         Disabled the neutral button which is same as the positive button
+
+//        builder.setNeutralButton(neutralStr) { dialog, which ->
+//            requestData.clear()
+//            jsonVoidTransaction(neutralStr, forSettlement, requestData)
+//            dialog.dismiss()
+//        }
+
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+
+    private fun cancelOnlineGrabPay(forSettlement: ForSettlement) {
+        showDialog("Processing...")
+        val requestData = NGrabPayRequestData(
+            sessionId = getLoginResponse().sessionId,
+            service = Constants.ApiService.N_GRAB_PAY_ONE_TIME_REFUND,
+            partnerTxID = forSettlement.rrn!!,
+            description = Constants.Common.GRAB_PAY_REFUND_DESCRIPTION
+        )
+
+        lifecycleScope.launch {
+            val pathStr = "grabpay"
+            historyViewModel.cancelPendingTransaction(pathStr, requestData).let {
+                when (it) {
+                    is NGrabPayResponse.Success -> {
+                        // show success message
+                        showAlertMessage(
+                            title = requireContext().getString(R.string.message),
+                            message = it.data.responseDescription,
+                            isCancellable = false,
+                            positiveButtonText = requireContext().getString(R.string.OK),
+                            onPositiveButton = DialogInterface.OnClickListener { dialogInterface, i ->
+                                dialogInterface.dismiss()
+                            }
+                        )
+                    }
+                    is NGrabPayResponse.Error -> {
+                        shortToast(text = it.errorMessage)
+                    }
+                    is NGrabPayResponse.Exception -> {
+                        shortToast(text = it.exceptionMessage)
+                    }
+                }
+                cancelDialog()
+            }
+        }
     }
 
     private fun showAuthPrompt() {
@@ -804,7 +866,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         val alertLayout: View = inflater.inflate(R.layout.alert_ezyauth, null)
         val digitalImg = alertLayout.findViewById<View>(R.id.ezydigital_img) as ImageView
         val ezywireImg = alertLayout.findViewById<View>(R.id.ezywire_img) as ImageView
-        val alert: AlertDialog.Builder = AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
+        val alert: AlertDialog.Builder =
+            AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
         alert.setView(alertLayout)
         alert.setCancelable(true)
 
@@ -847,11 +910,12 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val activity = activity as? MainActivity
         return when (item.itemId) {
             android.R.id.home -> {
-                (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                fragmentManager?.popBackStack()
+                (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
+                    false
+                )
+                requireActivity().supportFragmentManager.popBackStack()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -859,11 +923,9 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
     override fun onClick(v: View) {
-
         when (v.id) {
             R.id.btn_settlement_history -> {
                 jsonSettlement()
-//                shortToast("Clicked")
             }
         }
     }

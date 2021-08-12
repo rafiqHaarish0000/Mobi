@@ -42,18 +42,18 @@
                     android:id="@+id/list_history_relative"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/xxhdpi_5"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/xxhdpi_5">
 
                     <RelativeLayout
                         android:id="@+id/logo_relative"
                         android:layout_width="@dimen/xxhdpi_75"
                         android:layout_height="@dimen/xxhdpi_75"
-                        android:gravity="center"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
                         android:background="@drawable/circle_shadow"
                         android:backgroundTint="@color/round_bg"
+                        android:gravity="center"
                         android:padding="@dimen/xxhdpi_10">
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -73,7 +73,8 @@
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/ubuntu_normal"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="8sp" />
+                            android:textSize="8sp"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 
@@ -81,8 +82,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/logo_relative"
                         android:layout_marginLeft="@dimen/xxhdpi_10"
+                        android:layout_toRightOf="@+id/logo_relative"
                         android:orientation="vertical">
 
                         <RelativeLayout
@@ -93,42 +94,39 @@
                                 android:id="@+id/txt_amount_history"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/colorPrimary"
-                                android:fontFamily="@font/ubuntu_bold"
-                                android:textSize="@dimen/t_xxh_18"
                                 android:layout_centerVertical="true"
+                                android:fontFamily="@font/ubuntu_bold"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="@dimen/t_xxh_18"
                                 android:textStyle="bold" />
 
                             <RelativeLayout
                                 android:id="@+id/status_bg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/rect_pending"
-                                android:minWidth="@dimen/xxhdpi_75"
+                                android:layout_alignParentEnd="true"
                                 android:layout_marginTop="3dp"
-                                android:gravity="center"
                                 android:layout_marginEnd="@dimen/xxhdpi_5"
-                                android:layout_alignParentEnd="true">
+                                android:background="@drawable/rect_pending"
+                                android:gravity="center"
+                                android:minWidth="@dimen/xxhdpi_75">
 
                                 <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/txt_status_history"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="@dimen/xxhdpi_10"
-                                    android:paddingRight="@dimen/xxhdpi_10"
-                                    android:paddingTop="@dimen/xxhdpi_5"
-                                    android:paddingBottom="@dimen/xxhdpi_5"
-                                    android:fontFamily="@font/ubuntu_normal"
                                     android:layout_centerInParent="true"
-                                    android:maxLines="1"
+                                    android:fontFamily="@font/ubuntu_normal"
                                     android:gravity="center"
+                                    android:maxLines="1"
+                                    android:paddingLeft="@dimen/xxhdpi_10"
+                                    android:paddingTop="@dimen/xxhdpi_5"
+                                    android:paddingRight="@dimen/xxhdpi_10"
+                                    android:paddingBottom="@dimen/xxhdpi_5"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/t_xxh_14" />
 
                             </RelativeLayout>
-
-
-
 
 
                         </RelativeLayout>
@@ -145,12 +143,12 @@
                                 android:id="@+id/txt_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu_normal"
                                 android:layout_marginRight="@dimen/xxhdpi_5"
+                                android:fontFamily="@font/ubuntu_normal"
                                 android:maxLines="1"
-                                android:textStyle="italic"
                                 android:textColor="@color/colorPrimary"
-                                android:textSize="@dimen/t_xxh_12" />
+                                android:textSize="@dimen/t_xxh_12"
+                                android:textStyle="italic" />
 
 
                             <androidx.appcompat.widget.AppCompatTextView
@@ -159,9 +157,9 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu_normal"
                                 android:maxLines="1"
-                                android:textStyle="italic"
                                 android:textColor="@color/colorPrimary"
-                                android:textSize="@dimen/t_xxh_12" />
+                                android:textSize="@dimen/t_xxh_12"
+                                android:textStyle="italic" />
 
                         </LinearLayout>
 
@@ -178,9 +176,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/xxhdpi_5"
+                                android:fontFamily="@font/ubuntu_normal"
                                 android:maxLines="1"
                                 android:text="@string/days_remaining"
-                                android:fontFamily="@font/ubuntu_normal"
                                 android:textColor="@color/txt_light"
                                 android:textSize="@dimen/t_xxh_12" />
 
@@ -189,13 +187,12 @@
                                 android:id="@+id/txt_days"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:maxLines="1"
                                 android:fontFamily="@font/ubuntu_normal"
+                                android:maxLines="1"
                                 android:textColor="@color/txt_light"
                                 android:textSize="@dimen/t_xxh_12" />
 
                         </LinearLayout>
-
 
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -203,8 +200,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:textColor="@color/txt_light"
                             android:text='@{"RRN : "+historyItem.rrn ?? " "}'
+                            android:textColor="@color/txt_light"
                             android:textSize="@dimen/t_xxh_12" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -212,9 +209,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_5"
-                            android:textColor="@color/txt_light"
                             android:fontFamily="@font/ubuntu_normal"
                             android:text="@{`STAN : `+historyItem.stan}"
+                            android:textColor="@color/txt_light"
                             android:textSize="@dimen/t_xxh_12" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -222,9 +219,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_5"
-                            android:textColor="@color/txt_light"
                             android:fontFamily="@font/ubuntu_normal"
                             android:text="@{historyItem.txnType.equalsIgnoreCase(`FPX`) ? `Order ID :`+historyItem.aidResponse : `Authcode : `+historyItem.aidResponse}"
+                            android:textColor="@color/txt_light"
                             android:textSize="@dimen/t_xxh_12" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -232,9 +229,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_5"
-                            android:textColor="@color/txt_light"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="@{`Ref : `+historyItem.invoiceId}"
+                            android:text="@{historyItem.getInvoiceIdText()}"
+                            android:textColor="@color/txt_light"
                             android:textSize="@dimen/t_xxh_12" />
 
                     </LinearLayout>

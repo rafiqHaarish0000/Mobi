@@ -15,7 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
@@ -60,7 +60,7 @@ class QRFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.qr_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(QRViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(QRViewModel::class.java)
 
         boostTimerTxt = rootView.qr_timer_txt
         boostQRImage = rootView.qr_scanner_img
@@ -158,11 +158,11 @@ class QRFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(QRViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(QRViewModel::class.java)
     }
 
     private fun jsonBoostQR(qrParams: HashMap<String, String>) {
-        showLog("Boost", ""+qrParams)
+        showLog("Boost", "" + qrParams)
         showDialog("Generating Please wait...")
         viewModel.boostQR(urlStr, qrParams)
         viewModel.qrModel.observe(viewLifecycleOwner, Observer {
@@ -175,7 +175,7 @@ class QRFragment : BaseFragment() {
                     }
                     Fields.MobiPassQR -> {
                         try {
-                            val mBitmap = TextToImageEncode(it.responseData.base64ImageQRCode)
+                            val mBitmap = textToImageEncode(it.responseData.base64ImageQRCode)
                             boostQRImage.setImageBitmap(mBitmap)
                         } catch (e: WriterException) {
                             e.printStackTrace()
@@ -183,7 +183,7 @@ class QRFragment : BaseFragment() {
                     }
                     Fields.GPayQR -> {
                         try {
-                           val mBitmap = TextToImageEncode(it.responseData.qrcode)
+                            val mBitmap = textToImageEncode(it.responseData.qrcode)
                             boostQRImage.setImageBitmap(mBitmap)
                         } catch (e: WriterException) {
                             e.printStackTrace()
@@ -194,7 +194,7 @@ class QRFragment : BaseFragment() {
             } else {
                 setTitle("Home", true)
                 (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                fragmentManager?.popBackStack()
+                requireActivity().supportFragmentManager.popBackStack()
             }
 
         })
@@ -202,10 +202,9 @@ class QRFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val activity = activity as? MainActivity
         return when (item.itemId) {
             android.R.id.home -> {
-                context!!.startActivity(Intent(getActivity(), MainActivity::class.java))
+                requireContext().startActivity(Intent(getActivity(), MainActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -262,9 +261,15 @@ class QRFragment : BaseFragment() {
             for (x in 0 until bitMatrixWidth) {
 
                 if (service.equals(Fields.GPayQR, true)) {
-                    pixels[offset + x] = if (bitMatrix[x, y]) resources.getColor(R.color.green) else resources.getColor(R.color.white)
+                    pixels[offset + x] =
+                        if (bitMatrix[x, y]) resources.getColor(R.color.green) else resources.getColor(
+                            R.color.white
+                        )
                 } else {
-                    pixels[offset + x] = if (bitMatrix[x, y]) resources.getColor(R.color.txt_black) else resources.getColor(R.color.white)
+                    pixels[offset + x] =
+                        if (bitMatrix[x, y]) resources.getColor(R.color.txt_black) else resources.getColor(
+                            R.color.white
+                        )
                 }
             }
         }
@@ -285,7 +290,7 @@ class QRFragment : BaseFragment() {
     }
 
     @Throws(WriterException::class)
-    fun TextToImageEncode(Value: String?): Bitmap? {
+    fun textToImageEncode(Value: String?): Bitmap? {
         val bitMatrix: BitMatrix = try {
             MultiFormatWriter().encode(
                 Value,
@@ -302,10 +307,10 @@ class QRFragment : BaseFragment() {
         for (y in 0 until bitMatrixHeight) {
             val offset = y * bitMatrixWidth
             for (x in 0 until bitMatrixWidth) {
-                if (service.equals(Fields.GPayQR)) {
+                if (service == Fields.GPayQR) {
                     pixels[offset + x] = if (bitMatrix[x, y]
                     ) resources.getColor(R.color.green) else resources.getColor(R.color.white)
-                }else{
+                } else {
                     pixels[offset + x] = if (bitMatrix[x, y]
                     ) resources.getColor(R.color.black) else resources.getColor(R.color.white)
                 }
@@ -313,7 +318,8 @@ class QRFragment : BaseFragment() {
         }
         val bitmap =
             Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444)
-        bitmap.setPixels(pixels,
+        bitmap.setPixels(
+            pixels,
             0,
             200,
             0,

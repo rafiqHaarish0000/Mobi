@@ -6,9 +6,21 @@ import java.util.*
 
 class Constants {
 
+    object Common {
+        const val GRAB_PAY_REFUND_DESCRIPTION = "Refund Raised from Android"
+    }
+
+    object Network {
+        const val RESPONSE_SUCCESS = "0000"
+        const val RESPONSE_FAILURE = "0001"
+    }
+
+    object ApiService {
+        const val N_GRAB_PAY_ONE_TIME_REFUND = "GPAY_ONE_TIME_REFUND"
+    }
 
     object Preferences {
-        const val APP_SESSIONS ="app_sessions"
+        const val APP_SESSIONS = "app_sessions"
         const val KEY_LAST_TIME_STAMP = "LastKnownTime"
     }
 
@@ -64,6 +76,7 @@ class Constants {
         const val PREWIRE: String = "PREWIRE"
         const val Boost: String = "BOOST"
         const val GrabPay: String = "GRABPAY"
+        const val GrabPayOnline: String = "GRABPAY ONLINE"
         const val MobiPass: String = "MOBIPASS"
         const val MobiCash: String = "CASH"
         const val Product: String = "Product"

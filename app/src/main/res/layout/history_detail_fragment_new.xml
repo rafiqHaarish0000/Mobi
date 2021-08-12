@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,14 +11,20 @@
 
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/linear_send_receipt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/white"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/history_detail_linear"
@@ -311,9 +317,10 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_above="@+id/linear_send_receipt"
-                android:layout_below="@id/history_detail_linear"
-                android:layout_margin="@dimen/xxhdpi_10"
+                android:layout_marginStart="@dimen/xxhdpi_10"
+                android:layout_marginTop="@dimen/xxhdpi_10"
+                android:layout_marginEnd="@dimen/xxhdpi_10"
+                android:layout_marginBottom="@dimen/xxhdpi_10"
                 android:padding="@dimen/xxhdpi_10"
                 app:cardCornerRadius="@dimen/xxhdpi_10"
                 app:cardElevation="2dp">
@@ -327,53 +334,54 @@
 
             </androidx.cardview.widget.CardView>
 
-            <RelativeLayout
-                android:id="@+id/linear_send_receipt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:padding="@dimen/xxhdpi_10">
-
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_history_detail_receipt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginLeft="@dimen/xxhdpi_20"
-                    android:background="@drawable/rect_bor"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:drawableLeft="@drawable/ic_invoice"
-                    android:drawablePadding="@dimen/xxhdpi_10"
-                    android:paddingLeft="@dimen/xxhdpi_20"
-                    android:paddingRight="@dimen/xxhdpi_20"
-                    android:text="Receipt"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/t_xxh_16"
-                    android:textStyle="bold" />
-
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_history_detail_void"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/btn_history_detail_receipt"
-                    android:background="@drawable/rect_bor_primary"
-                    android:minWidth="@dimen/xxhdpi_100"
-                    android:paddingLeft="@dimen/xxhdpi_20"
-                    android:paddingRight="@dimen/xxhdpi_20"
-                    android:text="Void"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/t_xxh_16"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 
+    <RelativeLayout
+        android:id="@+id/linear_send_receipt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/xxhdpi_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-</FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_history_detail_receipt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="@dimen/xxhdpi_20"
+            android:background="@drawable/rect_bor"
+            android:backgroundTint="@color/colorPrimary"
+            android:drawableLeft="@drawable/ic_invoice"
+            android:drawablePadding="@dimen/xxhdpi_10"
+            android:paddingLeft="@dimen/xxhdpi_20"
+            android:paddingRight="@dimen/xxhdpi_20"
+            android:text="Receipt"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t_xxh_16"
+            android:textStyle="bold" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_history_detail_void"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_history_detail_receipt"
+            android:background="@drawable/rect_bor_primary"
+            android:minWidth="@dimen/xxhdpi_100"
+            android:paddingLeft="@dimen/xxhdpi_20"
+            android:paddingRight="@dimen/xxhdpi_20"
+            android:text="Void"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/t_xxh_16"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

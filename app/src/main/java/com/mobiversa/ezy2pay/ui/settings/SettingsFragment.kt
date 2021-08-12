@@ -49,17 +49,13 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
 
     var bundle = Bundle()
 
-    companion object {
-        fun newInstance() = SettingsFragment()
-    }
-
     lateinit var mAlertDialog: AlertDialog
 
     private lateinit var viewModel: SettingsViewModel
     private lateinit var motoViewModel: EzyMotoViewModel
     private lateinit var prefs: SharedPreferences
     private var balance = 0.00
-    private var percent : Double = 0.0
+    private var percent: Double = 0.0
     private val deliveryApiService = ApiService.serviceRequest()
     lateinit var rootView: View
 
@@ -95,8 +91,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
             rootView.prof_refer_linear.visibility = View.VISIBLE//Visible
             rootView.mobi_keyboard_linear.visibility = View.GONE//Gone
             rootView.keyboard_linear.visibility = View.VISIBLE//Visible
-        }
-        else {
+        } else {
             rootView.prof_refer_linear.visibility = View.GONE
             rootView.mobi_keyboard_linear.visibility = View.VISIBLE//Gone
             rootView.keyboard_linear.visibility = View.GONE//Visible
@@ -120,7 +115,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
             rootView.lite_linear.visibility = View.GONE
         }
 
-        val liteUpdate = prefs.getString(Constants.UpgradeStatus, "UPGRADE")?.toString()
+        val liteUpdate = prefs.getString(Constants.UpgradeStatus, "UPGRADE")
 
         if (liteUpdate.equals(Constants.processing)) {
             rootView.upgrade_btn.isEnabled = false
@@ -145,30 +140,30 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
             if (it.responseCode.equals("0000", true)) {
                 prefs[Constants.Balance] = it.responseData.dtlLimit
                 balance = it.responseData.dtlLimit.toDouble()
-                percent = (((500 - balance )/ 500) * 100)
-                var data = (((500 - balance )/ 500) * 100).toInt().toString()
+                percent = (((500 - balance) / 500) * 100)
+                var data = (((500 - balance) / 500) * 100).toInt().toString()
                 data = (100 - data.toInt()).toString()
                 rootView.balance_percent_txt.text = "$data\t%"
                 rootView.balance_amt_txt.text = it.responseData.dtlLimit
 
-                showLog("Percent", ""+percent)
-                    when(data.toInt()){
-                        in 0..20 -> {
-                           rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_0_graph))
-                        }
-                        in 20..41 -> {
-                            rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_25_graph))
-                        }
-                        in 40..65 -> {
-                            rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_50_graph))
-                        }
-                        in 65..85 -> {
-                            rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_75_graph))
-                        }
-                        in 85..100 -> {
-                            rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_100_graph))
-                        }
+                showLog("Percent", " $percent")
+                when (data.toInt()) {
+                    in 0..20 -> {
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_0_graph))
                     }
+                    in 20..41 -> {
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_25_graph))
+                    }
+                    in 40..65 -> {
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_50_graph))
+                    }
+                    in 65..85 -> {
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_75_graph))
+                    }
+                    in 85..100 -> {
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_100_graph))
+                    }
+                }
 
             } else {
                 shortToast(it.responseDescription)
@@ -189,7 +184,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         val cancel_txt = alertLayout.findViewById<View>(R.id.cancel_txt) as AppCompatTextView
         val upgrade_txt = alertLayout.findViewById<View>(R.id.upgrade_txt) as AppCompatTextView
         val desc_txt = alertLayout.findViewById<View>(R.id.desc_txt) as AppCompatTextView
-        val alert: AlertDialog.Builder = AlertDialog.Builder(getActivity(),R.style.AlertDialogTheme)
+        val alert: AlertDialog.Builder =
+            AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
         alert.setView(alertLayout)
         alert.setCancelable(true)
 
@@ -205,7 +201,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
 
         upgrade_txt.text = "Yes, I'm Sure"
         updateImg.setImageDrawable(resources.getDrawable(R.drawable.ic_upgrade))
-        desc_txt.text = "You will need to submit documents like Business Registration, Bank statement and a couple more to upgrade and increase the daily limit.\n Are you sure you want to Upgrade?"
+        desc_txt.text =
+            "You will need to submit documents like Business Registration, Bank statement and a couple more to upgrade and increase the daily limit.\n Are you sure you want to Upgrade?"
 
         upgrade_txt.setOnClickListener {
             upgradeUser()
@@ -305,7 +302,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         val alertLayout: View = inflater.inflate(R.layout.alert_logout, null)
         val positiveBtn = alertLayout.findViewById<View>(R.id.positive_btn) as Button
         val negativeBtn = alertLayout.findViewById<View>(R.id.negative_btn) as Button
-        val alert: AlertDialog.Builder = AlertDialog.Builder(getActivity(),R.style.AlertDialogTheme)
+        val alert: AlertDialog.Builder =
+            AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
         alert.setView(alertLayout)
         alert.setCancelable(false)
 

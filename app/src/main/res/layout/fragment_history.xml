@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:clickable="true"
     android:focusable="true"
@@ -9,15 +10,21 @@
     android:background="@color/lightWhite">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/xxhdpi_50"
-            android:padding="@dimen/xxhdpi_5"
-            android:layout_margin="@dimen/xxhdpi_5">
+            android:layout_margin="@dimen/xxhdpi_5"
+            android:padding="@dimen/xxhdpi_5">
 
             <RelativeLayout
                 android:id="@+id/relative_test"
@@ -29,25 +36,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/xxhdpi_10"
-                    android:background="@drawable/rect_bor"
-                    android:layout_toLeftOf="@id/trx_type_spnr">
+                    android:layout_toLeftOf="@id/trx_type_spnr"
+                    android:background="@drawable/rect_bor">
 
                     <SearchView
                         android:id="@+id/history_search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:queryHint="Search"/>
+                        android:queryHint="Search" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="@dimen/xxhdpi_40"
                     android:layout_height="@dimen/xxhdpi_40"
-                    android:padding="@dimen/xxhdpi_5"
-                    android:src="@drawable/ic_filter"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:contentDescription="TODO" />
+                    android:contentDescription="TODO"
+                    android:padding="@dimen/xxhdpi_5"
+                    android:src="@drawable/ic_filter" />
 
                 <com.mobiversa.ezy2pay.ui.history.NDSpinner
                     android:id="@+id/trx_type_spnr"
@@ -66,37 +73,52 @@
             </RelativeLayout>
 
         </RelativeLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcy_history_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@android:color/transparent"/>
-
-
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcy_history_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <RelativeLayout
         android:id="@+id/btn_settlement_history"
         android:layout_width="@dimen/xxhdpi_60"
         android:layout_height="@dimen/xxhdpi_60"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/circle_white"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_margin="@dimen/xxhdpi_50">
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/xxhdpi_10"
-            android:src="@drawable/ic_coin"/>
+            android:src="@drawable/ic_coin" />
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/textview_state_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="No Transactions available"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

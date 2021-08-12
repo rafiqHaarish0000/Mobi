@@ -153,16 +153,20 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
 
         binding.navView.itemIconTintList = null
 
-    // TODO: 09-08-2021
-    /*  Vignesh Selvam
-    * New referral prompt added */
+        // TODO: 09-08-2021
+        /*  Vignesh Selvam
+        * New referral prompt added */
         checkReferralPrompt()
     }
 
     private fun checkReferralPrompt() {
 
         val lastTimeStamp =
-            appSession().getSession(Constants.Preferences.KEY_LAST_TIME_STAMP, 0L, this@MainActivity)
+            appSession().getSession(
+                Constants.Preferences.KEY_LAST_TIME_STAMP,
+                0L,
+                this@MainActivity
+            )
 
         // default show the prompt for the first time
         if (lastTimeStamp == 0L) {
@@ -294,19 +298,23 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         //startActivity(new Intent(GoogleMaps.this, VoidAuthActivity.class).putExtra("trensID", transId));
     }
 
-    @Deprecated("not in use now")
+    @Deprecated("not in use now, will be removed in the future updates")
     private fun showReferralPrompt() {
-        lateinit var mAlertDialog: AlertDialog
+
 
         val inflater = this.layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_referal_main, null)
         val mBuilder = this.let {
             AlertDialog.Builder(it)
                 .setView(alertLayout)
+                .setCancelable(false)
         }
+
 
         val positiveBtn = alertLayout.findViewById<View>(R.id.referal_txt) as TextView
         val negativeBtn = alertLayout.findViewById<View>(R.id.alert_close_button) as ImageView
+
+        val mAlertDialog = mBuilder.create()
 
         positiveBtn.setOnClickListener {
             val openURL = Intent(Intent.ACTION_VIEW)
@@ -320,12 +328,14 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
             mAlertDialog.dismiss()
         }
 
-
-        mAlertDialog.setCancelable(false)
         mAlertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(this.resources.getColor(android.R.color.transparent)))
         val dialogWindow = mAlertDialog.window
         dialogWindow?.setGravity(Gravity.CENTER)
+
+        // TODO: 11-08-2021
+        /*   Vignesh Selvam
+        *   disabled to create will removed in future update   */
 
 //        mAlertDialog = mBuilder.show()
     }

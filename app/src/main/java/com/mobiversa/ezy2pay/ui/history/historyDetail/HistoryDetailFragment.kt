@@ -2,6 +2,7 @@ package com.mobiversa.ezy2pay.ui.history.historyDetail
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -16,7 +17,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,9 +30,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.base.BaseFragment
+import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
+import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
 import com.mobiversa.ezy2pay.network.response.ForSettlement
-import com.mobiversa.ezy2pay.ui.history.HistoryViewModel
+import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
 import com.mobiversa.ezy2pay.ui.receipt.PrintReceiptFragment
+import com.mobiversa.ezy2pay.utils.AppRepository
+import com.mobiversa.ezy2pay.utils.AppViewModelFactory
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MainAct
 import com.mobiversa.ezy2pay.utils.Fields
@@ -42,6 +48,7 @@ import com.mobiversa.ezy2pay.utils.Fields.Companion.VOID
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
 import kotlinx.android.synthetic.main.history_detail_fragment.view.*
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @Suppress("DEPRECATION")
@@ -67,7 +74,7 @@ class HistoryDetailFragment :
     lateinit var mAlertDialog: AlertDialog
     private var printReceiptFragment = PrintReceiptFragment()
     private lateinit var btn_history_detail_receipt: Button
-    val requestVal = HashMap<String, String>()
+    private val requestVal = HashMap<String, String>()
 
     companion object {
         fun newInstance() = HistoryDetailFragment()
@@ -75,15 +82,19 @@ class HistoryDetailFragment :
         private var mapFragment: SupportMapFragment? = null
     }
 
-    private lateinit var viewModel: HistoryViewModel
+    private lateinit var viewModel: HistoryDetailViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.history_detail_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(HistoryViewModel::class.java)
+        val rootView = inflater.inflate(R.layout.history_detail_fragment_new, container, false)
+        viewModel = ViewModelProvider(
+            this@HistoryDetailFragment, AppViewModelFactory(
+                AppRepository.getInstance()
+            )
+        ).get(HistoryDetailViewModel::class.java)
 
         initialize(rootView)
         setHasOptionsMenu(true)
@@ -123,7 +134,7 @@ class HistoryDetailFragment :
         rootView.txt_status_history.text = "Completed"
         rootView.txt_stan_history.text = "${historyData?.stan}"
         rootView.txt_authcode_history.text = "${historyData?.aidResponse}"
-        rootView.txt_invoice_history.text = " ${historyData?.invoiceId}"
+        rootView.txt_invoice_history.text = historyData?.invoiceId ?: "-"
 
         mapTitle = " $amount, $date"
 
@@ -191,23 +202,24 @@ class HistoryDetailFragment :
             }
         }
         rootView.btn_history_detail_receipt.visibility = View.VISIBLE
-        if (histTrxType.equals(Fields.PREAUTH, true)) {
-            rootView.btn_history_detail_receipt.text = "Convert to Sale"
-        } else if (historyData?.txnType.equals("FPX", true)) {
-            rootView.btn_history_detail_receipt.visibility = View.GONE
-            rootView.btn_history_detail_void.visibility = View.GONE
 
-            rootView.txt_authcode_history.text = "Order ID : ${historyData?.aidResponse}"
-            rootView.txt_rrn_history.text = "Transaction ID : ${historyData?.rrn}"
-        } else {
-            rootView.btn_history_detail_receipt.text = "Receipt"
+        when {
+            histTrxType.equals(Fields.PREAUTH, true) -> {
+                rootView.btn_history_detail_receipt.text = "Convert to Sale"
+            }
+            historyData?.txnType.equals("FPX", true) -> {
+                rootView.btn_history_detail_receipt.visibility = View.GONE
+                rootView.btn_history_detail_void.visibility = View.GONE
+
+                rootView.txt_authcode_history.text = "Order ID : ${historyData?.aidResponse}"
+                rootView.txt_rrn_history.text = "Transaction ID : ${historyData?.rrn}"
+            }
+            else -> {
+                rootView.btn_history_detail_receipt.text = "Receipt"
+            }
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(HistoryViewModel::class.java)
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -506,6 +518,8 @@ class HistoryDetailFragment :
                 requestVal[Fields.sessionId] = getLoginResponse().sessionId
                 requestVal[Fields.tid] = getLoginResponse().tid
                 requestVal[Fields.trxId] = historyData?.txnId!!
+
+                transactionVoid(pathStr, requestVal)
             }
             historyData?.txnType.equals(Fields.BOOST) -> {
                 requestVal[Fields.Service] = BOOST_VOID
@@ -515,18 +529,71 @@ class HistoryDetailFragment :
                 requestVal[Fields.AID] = historyData!!.aidResponse
                 requestVal[Fields.trxId] = historyData?.txnId!!
                 requestVal[Fields.InvoiceId] = historyData?.invoiceId ?: ""
+
+                transactionVoid(pathStr, requestVal)
             }
             historyData?.txnType.equals(Fields.GRABPAY) -> {
                 pathStr = "grabpay"
-                requestVal[Fields.Service] = GPAY_REFUND
-                requestVal[Fields.sessionId] = getLoginResponse().sessionId
-                requestVal[Fields.tid] = getLoginResponse().gpayTid
-                requestVal[Fields.mid] = getLoginResponse().gpayMid
-                requestVal[Fields.Amount] = historyData?.amount ?: "0"
-                requestVal[Fields.Rrn] = historyData!!.rrn!!
-                requestVal[Fields.AID] = historyData!!.aidResponse
-                requestVal[Fields.txnId] = historyData?.txnId!!
-                requestVal[Fields.InvoiceId] = historyData?.invoiceId ?: ""
+
+                if (historyData?.tid == getLoginResponse().gpayOnlineTid) {
+
+                    /*  Vignesh Selvam
+                    * Using Coroutine for api call
+                    *  */
+
+                    //      new request data model
+                    val requestData = NGrabPayRequestData(
+                        sessionId = getLoginResponse().sessionId,
+                        service = Constants.ApiService.N_GRAB_PAY_ONE_TIME_REFUND,
+                        partnerTxID = historyData!!.rrn!!,
+                        description = Constants.Common.GRAB_PAY_REFUND_DESCRIPTION
+                    )
+
+                    lifecycleScope.launch {
+                        showDialog("Processing...")
+
+                        viewModel.voidNGPayTransaction(pathStr, requestData).let {
+                            when (it) {
+                                is NGrabPayResponse.Success -> {
+                                    // show success message
+                                    showAlertMessage(
+                                        title = requireContext().getString(R.string.message),
+                                        message = it.data.responseDescription,
+                                        isCancellable = false,
+                                        positiveButtonText = requireContext().getString(R.string.OK),
+                                        onPositiveButton = DialogInterface.OnClickListener { dialogInterface, i ->
+                                            dialogInterface.dismiss()
+                                            startActivity(Intent(context, MainActivity::class.java))
+                                        }
+                                    )
+                                }
+                                is NGrabPayResponse.Error -> {
+                                    shortToast(text = it.errorMessage)
+                                }
+                                is NGrabPayResponse.Exception -> {
+                                    shortToast(text = it.exceptionMessage)
+                                }
+                            }
+                        }
+
+                        cancelDialog()
+                    }
+
+                } else if (historyData?.tid == getLoginResponse().gpayTid) {
+
+                    requestVal[Fields.Service] = GPAY_REFUND
+                    requestVal[Fields.sessionId] = getLoginResponse().sessionId
+                    requestVal[Fields.tid] = getLoginResponse().gpayTid
+                    requestVal[Fields.mid] = getLoginResponse().gpayMid
+                    requestVal[Fields.Amount] = historyData?.amount ?: "0"
+                    requestVal[Fields.Rrn] = historyData!!.rrn!!
+                    requestVal[Fields.AID] = historyData!!.aidResponse
+                    requestVal[Fields.txnId] = historyData?.txnId!!
+                    requestVal[Fields.InvoiceId] = historyData?.invoiceId ?: ""
+                    transactionVoid(pathStr, requestVal)
+                }
+
+
             }
             histTrxType.equals(Fields.PREAUTH, false) -> {
                 requestVal[Fields.Service] = Fields.PRE_AUTH_VOID
@@ -535,6 +602,7 @@ class HistoryDetailFragment :
                 requestVal[Fields.HostType] = getLoginResponse().hostType
                 requestVal[Fields.MerchantId] = getLoginResponse().merchantId
                 requestVal[Fields.tid] = getLoginResponse().tid
+                transactionVoid(pathStr, requestVal)
             }
             else -> {
                 requestVal[Fields.Service] = VOID
@@ -543,40 +611,53 @@ class HistoryDetailFragment :
                 requestVal[Fields.HostType] = getLoginResponse().hostType
                 requestVal[Fields.MerchantId] = getLoginResponse().merchantId
                 requestVal[Fields.tid] = getLoginResponse().tid
+
+                transactionVoid(pathStr, requestVal)
             }
         }
+    }
+
+    private fun transactionVoid(pathStr: String, requestVal: HashMap<String, String>) {
 
         showDialog("Processing...")
         viewModel.setVoidHistory(pathStr, requestVal)
         viewModel.setVoidHistory.observe(
             this,
             Observer {
-                if (it.responseCode.equals("0000", true)) {
-                    shortToast(it.responseDescription)
-                    val bundle = Bundle()
-                    if (histTrxType.equals(Fields.PREAUTH, false)) {
-                        bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
-                        bundle.putString(Fields.trxId, it.responseData.trxId)
-                        bundle.putString(Fields.Amount, amount)
-                        bundle.putString(Constants.ActivityName, MainAct)
-                        addFragment(printReceiptFragment, bundle, "HistoryDetail")
-                    } else if (historyData?.txnType.equals(Fields.GRABPAY)) {
-                        startActivity(Intent(context, MainActivity::class.java))
-                    } else if (historyData?.txnType.equals(Fields.BOOST)) {
-                        startActivity(Intent(context, MainActivity::class.java))
-                    } else {
-                        bundle.putString(Fields.Service, Fields.RECEIPT)
-                        bundle.putString(Fields.trxId, it.responseData.trxId)
-                        bundle.putString(Fields.Amount, amount)
-                        bundle.putString(Constants.ActivityName, MainAct)
-                        addFragment(printReceiptFragment, bundle, "HistoryDetail")
-                    }
-                } else
-                    shortToast(it.responseDescription)
-
+                validateVoidTransactionResponseData(it)
                 cancelDialog()
             }
         )
+    }
+
+    private fun validateVoidTransactionResponseData(it: VoidHistoryModel) {
+        if (it.responseCode.equals("0000", true)) {
+            shortToast(it.responseDescription)
+            val bundle = Bundle()
+            when {
+                histTrxType.equals(Fields.PREAUTH, false) -> {
+                    bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
+                    bundle.putString(Fields.trxId, it.responseData.trxId)
+                    bundle.putString(Fields.Amount, amount)
+                    bundle.putString(Constants.ActivityName, MainAct)
+                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                }
+                historyData?.txnType.equals(Fields.GRABPAY) -> {
+                    startActivity(Intent(context, MainActivity::class.java))
+                }
+                historyData?.txnType.equals(Fields.BOOST) -> {
+                    startActivity(Intent(context, MainActivity::class.java))
+                }
+                else -> {
+                    bundle.putString(Fields.Service, Fields.RECEIPT)
+                    bundle.putString(Fields.trxId, it.responseData.trxId)
+                    bundle.putString(Fields.Amount, amount)
+                    bundle.putString(Constants.ActivityName, MainAct)
+                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                }
+            }
+        } else
+            shortToast(it.responseDescription)
     }
 
     @SuppressLint("RestrictedApi")

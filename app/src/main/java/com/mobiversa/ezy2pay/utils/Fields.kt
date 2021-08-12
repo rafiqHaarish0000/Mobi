@@ -147,6 +147,7 @@ class Fields {
         const val EZYMOTO: String = "EZYMOTO"
         const val PREAUTH: String = "EZYAUTH"
         const val GRABPAY: String = "GRABPAY"
+        const val GRABPAY_ONLINE: String = "GRABPAY ONLINE"
         const val EZYPASS: String = "EZYPASS"
         const val PERAUTHHIST: String = "PRE_AUTH_HIST"
         const val EZYREC: String = "EZYREC"

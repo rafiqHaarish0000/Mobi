@@ -3,8 +3,10 @@ package com.mobiversa.ezy2pay.base
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -47,6 +49,7 @@ import com.mobiversa.ezy2pay.utils.Constants.Companion.EzyRec
 import com.mobiversa.ezy2pay.utils.Constants.Companion.EzySplit
 import com.mobiversa.ezy2pay.utils.Constants.Companion.Ezywire
 import com.mobiversa.ezy2pay.utils.Constants.Companion.GrabPay
+import com.mobiversa.ezy2pay.utils.Constants.Companion.GrabPayOnline
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MobiCash
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MobiPass
 import com.mobiversa.ezy2pay.utils.Fields
@@ -216,16 +219,37 @@ open class BaseFragment : Fragment() {
         }
     }
 
+    fun showAlertMessage(
+        title: String,
+        message: String,
+        positiveButtonText: String,
+        negativeButtonText:String? = null,
+        onPositiveButton: DialogInterface.OnClickListener,
+        onNegativeButton: DialogInterface.OnClickListener? = null,
+        isCancellable: Boolean
+    ) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.apply {
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton(positiveButtonText, onPositiveButton)
+            setNegativeButton(negativeButtonText, onNegativeButton)
+           setCancelable(isCancellable)
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()
+    }
+
     fun addFragment(fragment: Fragment, bundle: Bundle, backStack: String) {
         // Get the support fragment manager instance
-        val manager = fragmentManager
+        val manager = requireActivity().supportFragmentManager
         fragment.arguments = bundle
-        val transaction = manager?.beginTransaction()
+        val transaction = manager.beginTransaction()
         // Replace the fragment on container
-        transaction?.replace(R.id.coordinatorLayout, fragment)
-        transaction?.addToBackStack(backStack)
+        transaction.replace(R.id.coordinatorLayout, fragment)
+        transaction.addToBackStack(backStack)
         // Finishing the transition
-        transaction?.commitAllowingStateLoss()
+        transaction.commitAllowingStateLoss()
     }
 
     fun getProductList(): ArrayList<ProductList> {
@@ -560,6 +584,7 @@ open class BaseFragment : Fragment() {
         val dialog: AlertDialog = builder.create()
         dialog.show()
     }
+
     fun getLocalIpAddress(): String {
         try {
             val en =

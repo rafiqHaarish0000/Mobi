@@ -19,10 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
-import com.mobiversa.ezy2pay.adapter.TransactionHistoryAdapter
+import com.mobiversa.ezy2pay.adapter.TransactionHistoryAdapterNew
 import com.mobiversa.ezy2pay.base.BaseFragment
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
 import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
+import com.mobiversa.ezy2pay.databinding.FragmentHistoryNewBinding
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.network.response.TransactionHistoryModel
@@ -44,141 +45,179 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
+internal val TAG = HistoryFragmentNew::class.java.canonicalName
+
+class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener {
 
     private var position: Int? = null
 
     private lateinit var historyViewModel: HistoryViewModel
     var trxType = Fields.ALL
-    private lateinit var trxTypeSpinner: NDSpinner
+    val spinnerFlag = false
+
+//    private lateinit var trxTypeSpinner: NDSpinner
+//    private lateinit var historyRecyclerView: RecyclerView
+//    private lateinit var btnSettlementHistory: RelativeLayout
+//    private lateinit var historySearch: SearchView
+
     private lateinit var trxTypeAdapter: ArrayAdapter<String>
     private var historyList = ArrayList<ForSettlement>()
 
-    private lateinit var historyAdapter: TransactionHistoryAdapter
-    private lateinit var historyRecyclerView: RecyclerView
-    private lateinit var historySearch: SearchView
-    private lateinit var btnSettlementHistory: RelativeLayout
+    private lateinit var historyAdapter: TransactionHistoryAdapterNew
+
 
     private lateinit var historyData: ForSettlement
     private var historyType: String = ""
-    var firstTimeJson = true
 
-    var transactionType: String = ""
+    private var transactionType: String = ""
     val requestData = HashMap<String, String>()
     private lateinit var customPrefs: SharedPreferences
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        historyViewModel.transactionHistoryList.observeForever(dataObserver)
+
+    private lateinit var _binding: FragmentHistoryNewBinding
+    private val binding: FragmentHistoryNewBinding get() = _binding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentHistoryNewBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
+        Log.i(TAG, "onCreateView: ")
+        initialize(binding.root)
+        return _binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).supportActionBar?.show()
-        setTitle("Transactions", true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG, "onViewCreated: ")
+
+        setupViewBinding()
+        showLog("TId ", getLoginResponse().tid)
     }
+
+    private fun setupViewBinding() {
+        historyViewModel =
+            ViewModelProvider(
+                this@HistoryFragmentNew,
+                AppViewModelFactory(AppRepository.getInstance())
+            ).get(HistoryViewModel::class.java)
+
+        binding.apply {
+            viewModel = this@HistoryFragmentNew.historyViewModel
+            lifecycleOwner = this@HistoryFragmentNew.viewLifecycleOwner
+            executePendingBindings()
+        }
+        historyViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
+    }
+
 
     // Fragment Navigation
     private val historyDetailFragment = HistoryDetailFragment()
     val bundle = Bundle()
     private lateinit var finger: Finger
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        historyViewModel =
-            ViewModelProvider(
-                this@HistoryFragment,
-                AppViewModelFactory(AppRepository.getInstance())
-            ).get(HistoryViewModel::class.java)
-        val rootView = inflater.inflate(R.layout.fragment_history, container, false)
+//    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//
+//        val rootView = inflater.inflate(R.layout.fragment_history_new, container, false)
+//
+//        initialize(rootView)
+////        val textView: TextView = root.findViewById(R.id.text_dashboard)
+////        historyViewModel.text.observe(this, Observer {
+////            textView.text = it
+////        })
+//
+//        showLog("TId ", getLoginResponse().tid)
+//        return rootView
+//    }
 
-        initialize(rootView)
-//        val textView: TextView = root.findViewById(R.id.text_dashboard)
-//        historyViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
-
-        showLog("TId ", getLoginResponse().tid)
-        return rootView
-    }
-
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     fun initialize(rootView: View) {
         setTitle("Transactions", true)
         (activity as MainActivity).supportActionBar?.show()
-
         customPrefs = PreferenceHelper.customPrefs(requireContext(), "REMEMBER")
-
         checkAndRequestPermissions()
-
-        trxTypeSpinner = rootView.spinner_transaction_type
-        historyRecyclerView = rootView.recycler_view_history_list
-        historySearch = rootView.history_search
-        btnSettlementHistory = rootView.button_settlement_history
-        btnSettlementHistory.setOnClickListener(this)
-
-        btnSettlementHistory.visibility = View.GONE
-
         finger = Finger(this.requireContext())
+
+
+//        trxTypeSpinner = rootView.trx_type_spnr
+//        historyRecyclerView = rootView.rcy_history_list
+//        historySearch = rootView.history_search
+//        btnSettlementHistory = rootView.`@+id/button_settlement_history`
+
+
+//        btnSettlementHistory.setOnClickListener(this)
+        binding.buttonSettlementHistory.setOnClickListener(this)
+        binding.buttonSettlementHistory.visibility = View.GONE
+
 
         searchView()
 
-        historyRecyclerView.layoutManager =
-            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-
-        historyRecyclerView.addItemDecoration(
-            MarginItemDecoration(
-                resources.getDimension(R.dimen.xxhdpi_10).toInt()
+        historyAdapter =
+            TransactionHistoryAdapterNew(historyList, requireContext(), this@HistoryFragmentNew)
+        binding.recyclerViewHistoryList.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(
+                MarginItemDecoration(
+                    resources.getDimension(R.dimen.xxhdpi_10).toInt()
+                )
             )
-        )
+            adapter = historyAdapter
+        }
 
-        historyAdapter = TransactionHistoryAdapter(historyList, requireContext(), this)
-        historyRecyclerView.adapter = historyAdapter
         enableVoidOption()
 
         trxTypeAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, getTrxList())
-        trxTypeSpinner.adapter = trxTypeAdapter
 
-        trxTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.spinnerTransactionType.apply {
+            adapter = trxTypeAdapter
+            onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parentView: AdapterView<*>?,
+                    selectedItemView: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-            override fun onItemSelected(
-                parentView: AdapterView<*>?,
-                selectedItemView: View?,
-                position: Int,
-                id: Long
-            ) {
+                    showLog("Selected", getTrxList()[position])
 
-                showLog("Selected", getTrxList()[position])
+                    // To make text clear
+                    (parentView?.getChildAt(0) as TextView?)?.setTextColor(0xFFFFFF)
 
-                // To make text clear
-                (parentView?.getChildAt(0) as TextView?)?.setTextColor(0xFFFFFF)
-
-                trxType = when (getTrxList()[position]) {
-                    "All Transaction" -> {
-                        Fields.ALL
+                    trxType = when (getTrxList()[position]) {
+                        "All Transaction" -> {
+                            Fields.ALL
+                        }
+                        Constants.EzyMoto, Constants.EzySplit -> "MOTO"
+                        Fields.EZYWIRE -> Fields.CARD
+                        else -> getTrxList()[position]
                     }
-                    Constants.EzyMoto, Constants.EzySplit -> "MOTO"
-                    Fields.EZYWIRE -> Fields.CARD
-                    else -> getTrxList()[position]
+
+                    if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
+                        if (getProductList()[1].isEnable)
+                            preAuthTransHistory(Fields.CARD)
+                        else
+                            preAuthTransHistory(Fields.EZYMOTO)
+                    } else {
+                        transactionHistory("1")
+                    }
                 }
 
-                if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
-                    if (getProductList()[1].isEnable)
-                        preAuthTransHistory(Fields.CARD)
-                    else
-                        preAuthTransHistory(Fields.EZYMOTO)
-                } else {
-                    transactionHistory("1")
+                override fun onNothingSelected(parentView: AdapterView<*>?) {
+
                 }
             }
 
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-                // your code here
-            }
         }
     }
 
@@ -186,7 +225,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         Log.i(TAG, "transactionHistory: $s")
 
         val historyParam = HashMap<String, String>()
-
         historyParam[Fields.username] = customPrefs[UserName]!!
         historyParam[Fields.sessionId] = getLoginResponse().sessionId
         historyParam[Fields.MerchantId] = getLoginResponse().merchantId
@@ -223,21 +261,30 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         historyParam[Fields.Type] = getLoginResponse().type.toUpperCase(Locale.ROOT)
         jsonHistoryListEnque(historyParam)
     }
+
     private fun jsonHistoryListEnque(historyParam: HashMap<String, String>) {
-        showDialog("Loading History...")
+        //        showDialog("Loading History...")
+
+        // TODO: 17-08-2021
+        /*  Vignesh Selvam
+        *   Changed to alert dialog builder instead for old deprecated method*/
+        showLoadingDialog("Loading transactions, please wait this may take a while.")
+
         transactionType = historyParam[Fields.Service]!!
         val apiResponse = ApiService.serviceRequest()
         apiResponse.getTransactionHistory(historyParam).enqueue(object :
             Callback<TransactionHistoryModel> {
             override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
-                cancelDialog()
+//                cancelDialog()
+                closeLoadingDialog()
             }
 
             override fun onResponse(
                 call: Call<TransactionHistoryModel>,
                 response: Response<TransactionHistoryModel>
             ) {
-                cancelDialog()
+//                cancelDialog()
+                closeLoadingDialog()
                 if (response.isSuccessful) {
                     historyObserveData(response.body()!!)
                 }
@@ -267,7 +314,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
 
-
     // Have to study about Observer and work
     private fun jsonTransactionHistory(historyParam: HashMap<String, String>) {
         showDialog("Loading History...")
@@ -290,6 +336,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private fun historyObserveData(it: TransactionHistoryModel) {
         var count = 0
         var completedCount = 0
+        Log.i(TAG, "historyObserveData: item Count ${it.responseData.forSettlement?.size}")
+        Log.i(TAG, "historyObserveData: item Count ${it.responseData.preAuthorization?.size}")
         if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
             showLog("Auth", trxType)
             if (trxType.equals(PREAUTH, true)) {
@@ -364,35 +412,36 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
 
         if (historyList.size <= 0) {
-            btnSettlementHistory.visibility = View.GONE
+            binding.buttonSettlementHistory.visibility = View.GONE
             return
         }
 
         when (trxType) {
             Fields.ALL -> {
-                btnSettlementHistory.visibility = View.GONE
+                binding.buttonSettlementHistory.visibility = View.GONE
             }
             Fields.CARD -> {
                 if (completedCount > 0) {
-                    btnSettlementHistory.visibility = View.VISIBLE
+                    binding.buttonSettlementHistory.visibility = View.VISIBLE
                 }
             }
             Fields.Moto, Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
                 if (completedCount > 0 && getLoginResponse().hostType.equals("P", true)) {
-                    btnSettlementHistory.visibility = View.VISIBLE
+                    binding.buttonSettlementHistory.visibility = View.VISIBLE
                 } else {
-                    btnSettlementHistory.visibility = View.GONE
+                    binding.buttonSettlementHistory.visibility = View.GONE
                 }
             }
             Fields.BOOST, Fields.GRABPAY, Fields.CASH, PREAUTH -> {
-                btnSettlementHistory.visibility = View.GONE
+                binding.buttonSettlementHistory.visibility = View.GONE
             }
         }
     }
 
     override fun onStop() {
         super.onStop()
-        historyViewModel.transactionHistoryList.removeObservers(this)
+        binding.spinnerTransactionType.adapter = null
+        historyViewModel.transactionHistoryList.removeObservers(viewLifecycleOwner)
     }
 
     private fun getTrxList(): ArrayList<String> {
@@ -451,7 +500,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
-        itemTouchHelper.attachToRecyclerView(historyRecyclerView)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewHistoryList)
     }
 
     private fun showPasswordPrompt(item: ForSettlement) {
@@ -691,7 +740,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         reqParam[Fields.sessionId] = getLoginResponse().sessionId
         reqParam[Fields.HostType] = getLoginResponse().hostType
         reqParam[Fields.MerchantId] = getLoginResponse().merchantId
-        when (trxTypeSpinner.selectedItem.toString()) {
+        when (binding.spinnerTransactionType.selectedItem.toString()) {
             Constants.EzyMoto -> {
                 reqParam[Fields.tid] = getLoginResponse().motoTid
             }
@@ -714,7 +763,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             Observer {
                 cancelDialog()
                 if (it.responseCode.equals("0000", true)) {
-                    transactionHistory("")
+                    transactionHistory("3")
                 }
                 shortToast(it.responseDescription)
             }
@@ -723,7 +772,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     // Search Option
     private fun searchView() {
-        historySearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.historySearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 showLog("Query", "" + query)
                 historyAdapter.filter.filter(query)
@@ -741,13 +790,11 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         bundle.putSerializable("History", data)
         bundle.putString(Fields.TRX_TYPE, trxType)
 
-//        findNavController().navigate(
-//            R.id.action_navigation_history_to_historyDetailFragment2,
-//            bundle
-//        )
-
-
-        addFragment(historyDetailFragment, bundle, "History")
+        findNavController().navigate(
+            R.id.action_navigation_history_to_historyDetailFragment2,
+            bundle
+        )
+//        addFragment(historyDetailFragment, bundle, "History")
     }
 
     fun showAlert(forSettlement: ForSettlement) {
@@ -771,8 +818,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         when {
             forSettlement.txnType.equals(Fields.BOOST, false) -> {
                 descriptionStr = "Do you want to COMPLETE this transaction?"
+
                 neutralStr = "Yes"
-                positiveStr = "Yes, Complete"
+
+                positiveStr = "Cancel"
                 negativeStr = "No, Close"
             }
             forSettlement.txnType.equals(Fields.GRABPAY, false) -> {
@@ -932,9 +981,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //        }
 //    }
 
-    override fun onClick(v: View) {
-
-        when (v.id) {
+    override fun onClick(view: View) {
+        when (view.id) {
             R.id.button_settlement_history -> {
                 jsonSettlement()
             }

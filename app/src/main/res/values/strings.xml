@@ -131,6 +131,7 @@
     <string name="nric_passport">* NRIC / Passport</string>
     <string name="forget_dec">No worries, Just Enter your Username</string>
     <string name="days_remaining">AUTO VOIDS IN: </string>
+    <string name="please_wait_processing_data">Please wait, processing data</string>
 
 
 </resources>

@@ -29,6 +29,13 @@ class Constants {
     }
 
 
+    object TransactionHistory {
+        const val PENDING = "PENDING"
+        const val REFUND = "REFUND"
+        const val SUCCESS = "SUCCESS"
+        const val COMPLETED="COMPLETED"
+    }
+
     companion object {
         const val CHAT_URL: String = "https://gomobi.io/support/livechat?cm="
         const val LOGGED_CHAT_URL: String = "https://gomobi.io/support/livechat?nm="

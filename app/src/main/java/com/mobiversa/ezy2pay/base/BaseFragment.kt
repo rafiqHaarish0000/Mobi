@@ -25,9 +25,12 @@ import android.text.format.Formatter
 import android.util.Base64
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -71,6 +74,8 @@ open class BaseFragment : Fragment() {
     lateinit var activity: Activity
     val MULTIPLE_PERMISSIONS = 10
 
+    var loadingDialog: AlertDialog? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as Activity
@@ -78,6 +83,7 @@ open class BaseFragment : Fragment() {
 
     fun showDialog(message: String) {
         mProgressDialog = activity.indeterminateProgressDialog(message)
+
         if (!mProgressDialog.isShowing)
             mProgressDialog.show()
     }
@@ -223,7 +229,7 @@ open class BaseFragment : Fragment() {
         title: String,
         message: String,
         positiveButtonText: String,
-        negativeButtonText:String? = null,
+        negativeButtonText: String? = null,
         onPositiveButton: DialogInterface.OnClickListener,
         onNegativeButton: DialogInterface.OnClickListener? = null,
         isCancellable: Boolean
@@ -234,7 +240,7 @@ open class BaseFragment : Fragment() {
             setMessage(message)
             setPositiveButton(positiveButtonText, onPositiveButton)
             setNegativeButton(negativeButtonText, onNegativeButton)
-           setCancelable(isCancellable)
+            setCancelable(isCancellable)
         }
         val alertDialog = builder.create()
         alertDialog.show()
@@ -632,5 +638,42 @@ open class BaseFragment : Fragment() {
         }
 
         return "02:00:00:00:00:00"
+    }
+
+
+    // TODO: 17-08-2021
+    /**  Vignesh Selvam
+     * Loading dialog changed to alert dialog
+     * [BaseFragment.showDialog] is deprecated and will be removed in the future updates
+     * [closeLoadingDialog] called to close the loading dialog
+     */
+
+    fun showLoadingDialog(message: String) {
+        if (loadingDialog != null) {
+            loadingDialog = null
+        }
+
+        val inflater: LayoutInflater = this.layoutInflater
+        val view = inflater.inflate(R.layout.base_loading_layout, null)
+
+        val builder = AlertDialog.Builder(requireContext())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val textViewMessage = view.findViewById<TextView>(R.id.text_view_message)
+            textViewMessage.text = message
+            builder.setView(view)
+        } else {
+            builder.setMessage(message)
+        }
+        builder.setCancelable(false)
+
+        loadingDialog = builder.create()
+        loadingDialog!!.show()
+    }
+
+    fun closeLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog!!.dismiss()
+        }
+        loadingDialog = null
     }
 }

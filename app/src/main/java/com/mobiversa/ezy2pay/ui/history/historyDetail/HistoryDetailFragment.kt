@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
+import android.util.Log
 import android.view.* // ktlint-disable no-wildcard-imports
 import android.widget.* // ktlint-disable no-wildcard-imports
 import androidx.annotation.RequiresApi
@@ -19,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -49,7 +51,11 @@ import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
 import kotlinx.android.synthetic.main.history_detail_fragment.view.*
 import kotlinx.coroutines.launch
+import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.HashMap
+
+internal val TAG = HistoryDetailFragment::class.java.canonicalName
 
 @Suppress("DEPRECATION")
 class HistoryDetailFragment :
@@ -90,6 +96,8 @@ class HistoryDetailFragment :
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.history_detail_fragment_new, container, false)
+
+
         viewModel = ViewModelProvider(
             this@HistoryDetailFragment, AppViewModelFactory(
                 AppRepository.getInstance()
@@ -108,6 +116,15 @@ class HistoryDetailFragment :
         setHasOptionsMenu(true)
         (activity as MainActivity).supportActionBar?.title = "Transactions"
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        arguments?.let {
+            Log.i(TAG, "initialize: ${it.getString(Constants.Amount)}")
+            Log.i(
+                TAG,
+                "initialize: ForSettlement -> ${it.getSerializable("History") as ForSettlement}"
+            )
+        }
+
         historyData = arguments!!.getSerializable("History") as ForSettlement?
         amount = arguments!!.getString(Constants.Amount).toString()
         val date = arguments!!.getString(Constants.Date)
@@ -142,6 +159,7 @@ class HistoryDetailFragment :
             rootView.txt_stan_history.visibility = View.GONE
             Glide.with(this.context!!)
                 .load(historyData?.latitude) // image url
+                .fitCenter()
                 .into(rootView.history_logo_img) // imageview object
         } else {
             if (historyData?.latitude?.length ?: 0 > 0) {
@@ -161,15 +179,16 @@ class HistoryDetailFragment :
             rootView.txt_authcode_history.visibility = View.GONE
         }
 
-        if (historyData?.cardType != null) {
+
+        historyData?.cardType?.let {
             when {
-                historyData!!.cardType?.toLowerCase().equals("master", true) -> {
+                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("master", true) -> {
                     rootView.history_logo_img.setBackgroundResource(R.drawable.master)
                 }
-                historyData!!.cardType?.toLowerCase().equals("visa", true) -> {
+                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("visa", true) -> {
                     rootView.history_logo_img.setBackgroundResource(R.drawable.visaa)
                 }
-                historyData!!.cardType?.toLowerCase().equals("unionpay", true) -> {
+                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("unionpay", true) -> {
                     rootView.history_logo_img.setBackgroundResource(R.drawable.union_pay_logo)
                 }
             }
@@ -334,7 +353,8 @@ class HistoryDetailFragment :
                 jsonVoidTransaction(requestVal)
 //                jsonTransactionHistory(requestVal)
                 mAlertDialog.dismiss()
-            } else { //                    Toast.makeText(getActivity(), Constants.ENTER_PASSWORD, Toast.LENGTH_SHORT).show();
+            } else {
+                // Toast.makeText(getActivity(), Constants.ENTER_PASSWORD, Toast.LENGTH_SHORT).show();
                 shortToast(Constants.ENTER_PASSWORD)
             }
         }
@@ -678,9 +698,11 @@ class HistoryDetailFragment :
         val activity = activity as? MainActivity
         return when (item.itemId) {
             android.R.id.home -> {
-                (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                setTitle("Transactions", true)
-                fragmentManager?.popBackStack()
+//                (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+//                setTitle("Transactions", true)
+//                fragmentManager?.popBackStack()
+
+                findNavController().navigateUp()
                 true
             }
             R.id.action_receipt -> {
@@ -691,7 +713,7 @@ class HistoryDetailFragment :
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Constants.ActivityName, MainAct)
                 addFragment(printReceiptFragment, bundle, "HistoryDetail")
-                return true
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }

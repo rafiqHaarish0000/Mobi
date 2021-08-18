@@ -33,6 +33,7 @@ import com.mobiversa.ezy2pay.utils.PreferenceHelper.set
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 import kotlin.math.min
 
 internal val TAG = MainActivity::class.java.canonicalName
@@ -42,8 +43,8 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
     private var snackBar: Snackbar? = null
 
     // TODO: 09-08-2021
-    /*  Vignesh Selvam
-    * binding enabled */
+    /**  Vignesh Selvam
+     * binding enabled */
     private lateinit var _binding: ActivityMainBinding
     private val binding: ActivityMainBinding get() = _binding
 
@@ -79,7 +80,7 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
             )
         )*/
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navView.setupWithNavController(navController)
+        binding.navigationView.setupWithNavController(navController)
 
         //Network Connection Check
         registerReceiver(
@@ -151,7 +152,7 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
 
         Log.e("ProductName", Constants.EzyMoto)
 
-        binding.navView.itemIconTintList = null
+        binding.navigationView.itemIconTintList = null
 
         // TODO: 09-08-2021
         /*  Vignesh Selvam
@@ -161,12 +162,15 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
 
     private fun checkReferralPrompt() {
 
+
         val lastTimeStamp =
             appSession().getSession(
                 Constants.Preferences.KEY_LAST_TIME_STAMP,
                 0L,
                 this@MainActivity
             )
+
+        val currentTimeStamp = System.currentTimeMillis()
 
         // default show the prompt for the first time
         if (lastTimeStamp == 0L) {
@@ -178,10 +182,9 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         }
         // else check the last time stamp and current time stamp is the difference is equal or greater than 12 hours then display the prompt
         else {
-            val currentTimeStamp = System.currentTimeMillis()
 
             // if the lastTimeStamp is more or equal to 12 Hrs
-            if (TimeUnit.MILLISECONDS.toHours(lastTimeStamp - currentTimeStamp) >= 12) {
+            if (abs(TimeUnit.MILLISECONDS.toHours(currentTimeStamp - lastTimeStamp)) >= 12) {
 
                 // save current time stamp and display the prompt
                 appSession().saveSession(
@@ -191,8 +194,6 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
                 showPromotionAlert()
             }
         }
-
-
     }
 
     private fun showPromotionAlert() {
@@ -208,13 +209,17 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         }
 
         val alertDialog = builder.create()
+        alertDialog.let {
+            it.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+        }
 
         val imageView = layout.findViewById<ImageView>(R.id.image_view)
         val closeButton = layout.findViewById<ImageButton>(R.id.image_button_close)
 
         imageView.setOnClickListener {
-            val builder = CustomTabsIntent.Builder()
-            val customTabsIntent = builder.build()
+            // internal web view
+            val chromeTabBuilder = CustomTabsIntent.Builder()
+            val customTabsIntent = chromeTabBuilder.build()
             customTabsIntent.launchUrl(this@MainActivity, Uri.parse(Constants.Links.ASPIRASIA_URL))
         }
         closeButton.setOnClickListener {

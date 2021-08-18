@@ -28,7 +28,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="-10dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/referrel_image_2021" />
+                    android:src="@drawable/referral_image_2021" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/alert_close_button"

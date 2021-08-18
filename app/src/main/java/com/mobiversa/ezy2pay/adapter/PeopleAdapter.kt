@@ -9,6 +9,8 @@ import android.widget.Filter
 import android.widget.TextView
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.network.response.ContactPojo
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PeopleAdapter(
@@ -54,7 +56,8 @@ class PeopleAdapter(
                 for (ContactPojo in tempItems) {
                    if (ContactPojo.phone!= null){
                        if (ContactPojo.phone!!.contains(constraint.toString()) ||
-                           ContactPojo.name!!.toLowerCase().contains(constraint.toString().toLowerCase())
+                           ContactPojo.name!!.lowercase(Locale.getDefault())
+                               .contains(constraint.toString().lowercase(Locale.getDefault()))
                        ) {
                            suggestions.add(ContactPojo)
                        }

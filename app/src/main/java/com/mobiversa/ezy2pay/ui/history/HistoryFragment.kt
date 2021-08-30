@@ -223,6 +223,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         historyParam[Fields.Type] = getLoginResponse().type.toUpperCase(Locale.ROOT)
         jsonHistoryListEnque(historyParam)
     }
+
     private fun jsonHistoryListEnque(historyParam: HashMap<String, String>) {
         showDialog("Loading History...")
         transactionType = historyParam[Fields.Service]!!
@@ -265,7 +266,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         jsonHistoryListEnque(historyParam)
     }
-
 
 
     // Have to study about Observer and work
@@ -567,12 +567,12 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             }
             (Fields.BOOST) -> {
                 when {
-                    status.equals("Cancel", false) -> {
+                    status.equals("Yes, Cancel", false) -> {
                         requestVal[Fields.Service] = Fields.BOOST_STATUS
                         requestData[Fields.username] = getSharedString(UserName)
                         requestVal[Fields.transactionStatus] = Fields.VOID
                     }
-                    status.equals("Yes", false) -> {
+                    status.equals("Yes, Complete", false) -> {
                         requestVal[Fields.Service] = Fields.BOOST_STATUS
                         requestData[Fields.username] = getSharedString(UserName)
                         requestVal[Fields.transactionStatus] = Fields.COMPLETED
@@ -801,17 +801,26 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             /*  Vignesh Selvam
             * Enabled Coroutine for new api call */
 
-//          Online Grab pay
-            if (forSettlement.tid == getLoginResponse().gpayOnlineTid) {
-                cancelOnlineGrabPay(forSettlement)
+            when (forSettlement.tid) {
+                //  Online Grab pay
+                getLoginResponse().gpayOnlineTid -> {
+                    cancelOnlineGrabPay(forSettlement)
+                }
+                //  OR code grab pay
+                else -> {
+                    requestData.clear()
+                    jsonVoidTransaction(positiveStr, forSettlement, requestData)
+                }
             }
 
-//            OR code grab pay
+
+/*            if (forSettlement.tid == getLoginResponse().gpayOnlineTid) {
+                cancelOnlineGrabPay(forSettlement)
+            }
             if (forSettlement.tid == getLoginResponse().gpayTid) {
                 requestData.clear()
                 jsonVoidTransaction(positiveStr, forSettlement, requestData)
-
-            }
+            }*/
 
             dialog.dismiss()
         }

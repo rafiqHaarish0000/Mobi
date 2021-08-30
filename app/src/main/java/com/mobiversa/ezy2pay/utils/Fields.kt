@@ -4,6 +4,8 @@ class Fields {
 
     companion object {
 
+        const val splitMid: String = "splitMid"
+        const val splitTid: String = "splitTid"
         var VERSION = "version"
 
         // Service
@@ -28,6 +30,7 @@ class Fields {
         const val LITE_MERCHANT_UPGRADE: String = "LITE_MERCHANT_UPGRADE"
         const val INT_VERIFY_REG: String = "INT_VERIFY_REG"
         const val VALIDATE_TERMINAL: String = "VALIDATE_TERMINAL"
+
         // Transaction
         const val BoostQR: String = "BOOST_QRCODE"
         const val GPayQR: String = "GPAY_QRCODE_REQ"
@@ -127,6 +130,7 @@ class Fields {
         const val PanSequenceNum: String = "panSequenceNum"
         const val PinData: String = "pinData"
         const val Signature: String = "signature"
+
         // Acknowledgement
         const val PREAUTH_ACK: String = "PREAUTH_ACK"
         const val SALE_ACK: String = "SALE_ACK"
@@ -156,11 +160,16 @@ class Fields {
         const val FPX: String = "FPX"
 
         const val EZYWIRE: String = "EZYWIRE"
+
         // Void
         const val CASH_CANCEL: String = "CASH_CANCEL"
         const val BOOST_VOID: String = "BOOST_VOID"
         const val VOID: String = "VOID"
         const val VALIDATE_VOID: String = "VALIDATE_VOID"
+
+        const val EZYSPLIT_VOID: String = "EZYSPLIT_VOID"
+        const val AUTHSALE: String = "AUTHSALE"
+
         const val PRE_AUTH_VOID: String = "PRE_AUTH_VOID"
         const val PRE_AUTH_SALE: String = "PRE_AUTH_SALE"
         const val AID: String = "aid"
@@ -168,13 +177,16 @@ class Fields {
         const val GPAY_REFUND: String = "GPAY_REFUND"
         const val GPAY_CANCEL: String = "GPAY_CANCEL"
         const val GPAY_INQUIRY: String = "GPAY_INQUIRY"
+
         // Boost
         const val BOOST_STATUS: String = "BOOST_STATUS"
         const val transactionStatus: String = "transactionStatus"
+
         // Cash
         const val CASH_TXN: String = "CASH_TXN"
         const val CASH_RECEIPT: String = "CASH_RECEIPT"
         const val WhatsApp: String = "whatsApp"
+
         // Settlement
         const val SETTLEMENT = "SETTLEMENT"
         const val LOGOUT_MOB = "LOGOUT_MOB"

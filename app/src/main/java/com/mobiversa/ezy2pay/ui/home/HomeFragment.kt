@@ -1,5 +1,6 @@
 package com.mobiversa.ezy2pay.ui.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
@@ -109,10 +110,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
 
         val productList = getProductList()
 
-        root.rcy_home_product.layoutManager =
-            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         productListAdapter = ProductListAdapter(productList, context!!, this)
-        root.rcy_home_product.adapter = productListAdapter
+
+        root.rcy_home_product.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = productListAdapter
+        }
 
         checkAndRequestPermissions()
         if (checkAndRequestPermissions())
@@ -179,7 +183,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         val amount = amtEdt.text.toString()
         val totalPrice = amount.toDouble()
 
-        when(productName){
+        when (productName) {
             GrabPay, MobiCash, MobiPass, Boost -> {
                 if (totalPrice < 0.10) {
                     shortToast("Enter Amount more than 10 cents")
@@ -229,7 +233,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                 }
             }
             EzyMoto -> {
-
                 if (getLoginResponse().type.equals("LITE", true)) {
 
                     val balance = prefs.getString(Constants.Balance, "0")?.toFloat()
@@ -340,7 +343,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     }
 
 
-    fun navigateMoto(amount: String) {
+    private fun navigateMoto(amount: String) {
         val fragment = EzyMotoFragment()
         bundle.clear()
         if (getLoginResponse().type.equals("LITE", true)) {
@@ -427,45 +430,45 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         val balance = prefs.getString(Constants.Balance, "0")?.toFloat()
         val currentBalance = balance?.minus(amount.toFloat())
 
-        val liteUpdate = prefs.getString(Constants.UpgradeStatus, "UPGRADE")?.toString()
+        val liteUpdate =
+            prefs.getString(Constants.UpgradeStatus, getString(R.string.upgrade).uppercase())
 
         if (liteUpdate.equals(Constants.processing)) {
             upgrade_txt.isEnabled = false
-            upgrade_txt.text = "Processing"
+            upgrade_txt.text = getString(R.string.processing)
         } else {
             upgrade_txt.isEnabled = true
-            upgrade_txt.text = "Upgrade"
+            upgrade_txt.text = getString(R.string.upgrade)
         }
 
 //        val percent = (currentBalance?.div(500.00))?.times(100)
-
         if (currentBalance != null) {
             when {
                 currentBalance < 0 -> {
                     updateImg.setImageResource(R.drawable.ic_100_completed)
-                    desc_txt.text = "You have reached the Maximum Limit!\n" +
-                            "Upgrade to increase your Limit!"
+                    desc_txt.text = String.format(
+                        "%s\n%s",
+                        "You have reached the Maximum Limit!",
+                        "Upgrade to increase your Limit!"
+                    )
+
                 }
                 currentBalance < 100 && currentBalance > 0 -> {
                     updateImg.setImageResource(R.drawable.ic_80_complete)
-                    desc_txt.text = "You have reached 80% of your limit!"
+                    desc_txt.text = String.format("%s", "You have reached 80% of your limit!")
                 }
                 else -> {
                     updateImg.setImageResource(R.drawable.ic_upgrade)
-                    desc_txt.text = "Hurry..! Upgrade your membership"
+                    desc_txt.text = String.format("%s", "Hurry..! Upgrade your membership")
                 }
             }
         }
 
-
-//
-
         upgrade_txt.setOnClickListener {
-            if (upgrade_txt.text.toString().equals("Upgrade")) {
-                upgrade_txt.text = "Yes, I'm Sure"
+            if (upgrade_txt.text.toString().equals(getString(R.string.upgrade), ignoreCase = true)) {
+                upgrade_txt.text = getString(R.string.yes_i_am_sure)
                 updateImg.setImageDrawable(resources.getDrawable(R.drawable.ic_upgrade))
-                desc_txt.text =
-                    "You will need to submit documents like Business Registration, Bank statement and a couple more to upgrade and increase the daily limit.\n Are you sure you want to Upgrade?"
+                desc_txt.text = getString(R.string.app_update_note)
             } else {
 
                 upgradeUser(currentBalance, amount)
@@ -531,7 +534,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         paymentParams[Fields.InvoiceId] = invoiceEdt.text.toString()
 
         homeViewModel.requestCallAck(paymentParams)
-        homeViewModel.callAckData.observe(this, androidx.lifecycle.Observer {
+        homeViewModel.callAckData.observe(this, {
             if (it.responseCode.equals("0000", true)) {
                 cancelDialog()
                 val trxId = it.responseData.trxId
@@ -615,9 +618,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         paymentParams[Fields.Service] = Fields.LITE_MERCHANT_UPGRADE
         paymentParams[Fields.email] = getSharedString(Constants.UserName)
         viewModel.upgradeEzymoto(paymentParams)
-        viewModel.upgradeData.observe(viewLifecycleOwner, Observer {
+        viewModel.upgradeData.observe(viewLifecycleOwner, {
             cancelDialog()
-            if (it.responseCode.equals("0000")) {
+            if (it.responseCode.equals("0000", ignoreCase = true)) {
                 prefs[Constants.UpgradeStatus] = "PROCESSING"
                 if (currentBalance != null) {
                     when {

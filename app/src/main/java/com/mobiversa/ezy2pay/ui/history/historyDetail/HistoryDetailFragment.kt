@@ -42,10 +42,12 @@ import com.mobiversa.ezy2pay.utils.AppViewModelFactory
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MainAct
 import com.mobiversa.ezy2pay.utils.Fields
+import com.mobiversa.ezy2pay.utils.Fields.Companion.BOOST
 import com.mobiversa.ezy2pay.utils.Fields.Companion.BOOST_VOID
 import com.mobiversa.ezy2pay.utils.Fields.Companion.CASH
 import com.mobiversa.ezy2pay.utils.Fields.Companion.CASH_CANCEL
 import com.mobiversa.ezy2pay.utils.Fields.Companion.GPAY_REFUND
+import com.mobiversa.ezy2pay.utils.Fields.Companion.GRABPAY
 import com.mobiversa.ezy2pay.utils.Fields.Companion.VOID
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
@@ -97,7 +99,6 @@ class HistoryDetailFragment :
     ): View? {
         val rootView = inflater.inflate(R.layout.history_detail_fragment_new, container, false)
 
-
         viewModel = ViewModelProvider(
             this@HistoryDetailFragment, AppViewModelFactory(
                 AppRepository.getInstance()
@@ -117,15 +118,11 @@ class HistoryDetailFragment :
         (activity as MainActivity).supportActionBar?.title = "Transactions"
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        arguments?.let {
-            Log.i(TAG, "initialize: ${it.getString(Constants.Amount)}")
-            Log.i(
-                TAG,
-                "initialize: ForSettlement -> ${it.getSerializable("History") as ForSettlement}"
-            )
-        }
+
 
         historyData = arguments!!.getSerializable("History") as ForSettlement?
+
+        Log.e(TAG, "initialize: historyData -> $historyData")
         amount = arguments!!.getString(Constants.Amount).toString()
         val date = arguments!!.getString(Constants.Date)
         histTrxType = arguments!!.getString(Fields.TRX_TYPE).toString()
@@ -159,7 +156,7 @@ class HistoryDetailFragment :
             rootView.txt_stan_history.visibility = View.GONE
             Glide.with(this.context!!)
                 .load(historyData?.latitude) // image url
-                .fitCenter()
+                .centerInside()
                 .into(rootView.history_logo_img) // imageview object
         } else {
             if (historyData?.latitude?.length ?: 0 > 0) {
@@ -182,44 +179,87 @@ class HistoryDetailFragment :
 
         historyData?.cardType?.let {
             when {
-                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("master", true) -> {
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.master)
+                it.lowercase(Locale.getDefault()).equals("master", true) -> {
+                    Glide
+                        .with(requireContext())
+                        .load(R.drawable.master)
+                        .centerInside()
+                        .into(rootView.history_logo_img)
                 }
-                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("visa", true) -> {
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.visaa)
+                it.lowercase(Locale.getDefault()).equals("visa", true) -> {
+                    Glide
+                        .with(requireContext())
+                        .load(R.drawable.visaa)
+                        .centerInside()
+                        .into(rootView.history_logo_img)
                 }
-                historyData!!.cardType?.lowercase(Locale.getDefault()).equals("unionpay", true) -> {
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.union_pay_logo)
+                it.lowercase(Locale.getDefault()).equals("unionpay", true) -> {
+                    Glide
+                        .with(requireContext())
+                        .load(R.drawable.union_pay_logo)
+                        .centerInside()
+                        .into(rootView.history_logo_img)
+                }
+                else -> {
+
                 }
             }
         }
 
-        if (historyData?.txnType != null) {
-            when {
-                historyData!!.txnType.equals(CASH, true) -> {
-                    rootView.txt_rrn_history.visibility = View.GONE
+
+        when (historyData!!.txnType) {
+            Fields.CASH -> {
+                rootView.txt_rrn_history.visibility = View.GONE
+                rootView.btn_history_detail_void.visibility = View.VISIBLE
+                rootView.txt_authcode_history.visibility = View.GONE
+
+//                rootView.history_logo_img.setBackgroundResource(R.drawable.cash_list_icon)
+
+                Glide
+                    .with(requireContext())
+                    .load(R.drawable.cash_list_icon)
+                    .centerInside()
+                    .into(rootView.history_logo_img)
+
+                rootView.btn_history_detail_void.text = "Cancel"
+            }
+            Fields.GRABPAY -> {
+//                rootView.history_logo_img.setBackgroundResource(R.drawable.grab_pay_list)
+
+                Glide
+                    .with(requireContext())
+                    .load(R.drawable.grab_pay_list)
+                    .centerInside()
+                    .into(rootView.history_logo_img)
+            }
+            Fields.BOOST -> {
+//                rootView.history_logo_img.setBackgroundResource(R.drawable.boost_red_list_icon)
+                Glide
+                    .with(requireContext())
+                    .load(R.drawable.boost_red_list_icon)
+                    .centerInside()
+                    .into(rootView.history_logo_img)
+            }
+            Fields.EZYSPLIT -> {
+                if (historyData?.mobiRef?.equals("VOIDNOW", ignoreCase = true) == true ||
+                    historyData?.mobiRef?.equals("VOIDLATER", ignoreCase = true) == true
+                ) {
                     rootView.btn_history_detail_void.visibility = View.VISIBLE
-                    rootView.txt_authcode_history.visibility = View.GONE
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.cash_list_icon)
-                    rootView.btn_history_detail_void.text = "Cancel"
+                } else {
+                    rootView.btn_history_detail_void.visibility = View.GONE
                 }
-                historyData!!.txnType.equals(Fields.GRABPAY, true) -> {
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.grab_pay_list)
-                }
-                historyData!!.txnType.equals(Fields.BOOST, true) -> {
-                    rootView.history_logo_img.setBackgroundResource(R.drawable.boost_red_list_icon)
-                }
-                historyData!!.txnType.equals(Fields.EZYSPLIT, true) -> {
-                    if (historyData?.mobiRef?.equals("VOIDNOW", ignoreCase = true) == true ||
-                        historyData?.mobiRef?.equals("VOIDLATER", ignoreCase = true) == true
-                    ) {
-                        rootView.btn_history_detail_void.visibility = View.VISIBLE
-                    } else {
-                        rootView.btn_history_detail_void.visibility = View.GONE
-                    }
+            }
+            else -> {
+                // TODO: 24-08-2021
+                /*  Vignesh Selvam
+                * if the txnType is null or empty or none of the above and mobiRef is later then hide the void button.
+                * */
+                if (historyData!!.mobiRef.equals("LATER", ignoreCase = true)) {
+                    rootView.btn_history_detail_void.visibility = View.GONE
                 }
             }
         }
+
         rootView.btn_history_detail_receipt.visibility = View.VISIBLE
 
         when {
@@ -237,8 +277,8 @@ class HistoryDetailFragment :
                 rootView.btn_history_detail_receipt.text = "Receipt"
             }
         }
-    }
 
+    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -404,6 +444,7 @@ class HistoryDetailFragment :
                 }
             }
         }
+
 //        newAmtEdt.setRawInputType(Configuration.KEYBOARD_12KEY)
         newAmtEdt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
@@ -413,7 +454,6 @@ class HistoryDetailFragment :
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
 
                 showLog("Changed", s.toString())
-
                 val sPattern = Pattern.compile("^(\\d{1,3}(\\,\\d{3})*|(\\d+))(\\.\\d{2})")
 
                 if (!sPattern.matcher(s).matches()) {
@@ -515,9 +555,9 @@ class HistoryDetailFragment :
         viewModel.getUserVerification(saleParam)
         viewModel.userVerification.observe(
             this,
-            Observer {
+            {
                 cancelDialog()
-                if (it.responseCode.equals("0000", true)) {
+                if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
                     showLog("Void Test", it.responseDescription)
                     shortToast(it.responseDescription)
                     context!!.startActivity(Intent(getActivity(), MainActivity::class.java))
@@ -533,7 +573,7 @@ class HistoryDetailFragment :
         var pathStr = "mobiapr19"
 
         when {
-            historyData?.txnType.equals(CASH) -> {
+            historyData?.txnType.equals(CASH, ignoreCase = true) -> {
                 requestVal[Fields.Service] = CASH_CANCEL
                 requestVal[Fields.sessionId] = getLoginResponse().sessionId
                 requestVal[Fields.tid] = getLoginResponse().tid
@@ -541,7 +581,7 @@ class HistoryDetailFragment :
 
                 transactionVoid(pathStr, requestVal)
             }
-            historyData?.txnType.equals(Fields.BOOST) -> {
+            historyData?.txnType.equals(Fields.BOOST, ignoreCase = true) -> {
                 requestVal[Fields.Service] = BOOST_VOID
                 requestVal[Fields.sessionId] = getLoginResponse().sessionId
                 requestVal[Fields.tid] = getLoginResponse().tid
@@ -552,7 +592,7 @@ class HistoryDetailFragment :
 
                 transactionVoid(pathStr, requestVal)
             }
-            historyData?.txnType.equals(Fields.GRABPAY) -> {
+            historyData?.txnType.equals(Fields.GRABPAY, ignoreCase = true) -> {
                 pathStr = "grabpay"
 
                 if (historyData?.tid == getLoginResponse().gpayOnlineTid) {
@@ -571,7 +611,6 @@ class HistoryDetailFragment :
 
                     lifecycleScope.launch {
                         showDialog("Processing...")
-
                         viewModel.voidNGPayTransaction(pathStr, requestData).let {
                             when (it) {
                                 is NGrabPayResponse.Success -> {
@@ -595,11 +634,12 @@ class HistoryDetailFragment :
                                 }
                             }
                         }
-
                         cancelDialog()
                     }
 
-                } else if (historyData?.tid == getLoginResponse().gpayTid) {
+                }
+
+                if (historyData?.tid == getLoginResponse().gpayTid) {
 
                     requestVal[Fields.Service] = GPAY_REFUND
                     requestVal[Fields.sessionId] = getLoginResponse().sessionId
@@ -613,7 +653,6 @@ class HistoryDetailFragment :
                     transactionVoid(pathStr, requestVal)
                 }
 
-
             }
             histTrxType.equals(Fields.PREAUTH, false) -> {
                 requestVal[Fields.Service] = Fields.PRE_AUTH_VOID
@@ -625,7 +664,13 @@ class HistoryDetailFragment :
                 transactionVoid(pathStr, requestVal)
             }
             else -> {
-                requestVal[Fields.Service] = VOID
+                Log.e(TAG, "jsonVoidTransaction: service -> $VOID")
+
+                if (historyData!!.txnType.equals(Fields.AUTHSALE, ignoreCase = true)) {
+                    requestVal[Fields.Service] = Fields.EZYSPLIT_VOID
+                } else {
+                    requestVal[Fields.Service] = VOID
+                }
                 requestVal[Fields.sessionId] = getLoginResponse().sessionId
                 requestVal[Fields.trxId] = historyData?.txnId ?: ""
                 requestVal[Fields.HostType] = getLoginResponse().hostType
@@ -695,14 +740,14 @@ class HistoryDetailFragment :
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val activity = activity as? MainActivity
+        activity as? MainActivity
         return when (item.itemId) {
             android.R.id.home -> {
-//                (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-//                setTitle("Transactions", true)
-//                fragmentManager?.popBackStack()
+                (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                setTitle("Transactions", true)
+                fragmentManager?.popBackStack()
 
-                findNavController().navigateUp()
+//                findNavController().navigateUp()
                 true
             }
             R.id.action_receipt -> {

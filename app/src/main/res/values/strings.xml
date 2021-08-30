@@ -132,6 +132,14 @@
     <string name="forget_dec">No worries, Just Enter your Username</string>
     <string name="days_remaining">AUTO VOIDS IN: </string>
     <string name="please_wait_processing_data">Please wait, processing data</string>
+    <string name="submit_text">Submit</string>
+    <string name="yes_i_am_sure">Yes, I\'m Sure</string>
+    <string name="processing">Processing</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="app_update_note">
+        You will need to submit documents like Business Registration,
+        Bank statement and a couple more to upgrade and increase the daily limit.\n
+        Are you sure you want to Upgrade?</string>
 
 
 </resources>

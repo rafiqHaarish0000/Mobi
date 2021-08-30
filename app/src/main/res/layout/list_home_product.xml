@@ -17,8 +17,6 @@
         android:layout_width="@dimen/xxhdpi_100"
         android:layout_height="@dimen/xxhdpi_100"
         android:padding="@dimen/xxhdpi_5"
-        android:clickable="true"
-        android:focusable="true"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -42,7 +40,6 @@
                     android:paddingRight="@dimen/xxhdpi_10"
                     android:paddingTop="@dimen/xxhdpi_5"
                     android:paddingBottom="@dimen/xxhdpi_5"
-                    android:clickable="true"
                     android:src="@{productItem.isEnable == true ? context.getDrawable(productItem.productImage) : context.getDrawable(productItem.disableProductImage)}"
                     android:contentDescription="TODO"
                     android:focusable="true" />
@@ -57,7 +54,6 @@
                     android:padding="@dimen/xxhdpi_5"
                     android:maxLines="1"
                     android:fontFamily="@font/ubuntu_bold"
-                    android:clickable="true"
                     android:text="@{productItem.productName}"
                     android:textAllCaps="true"
                     android:textColor="@{productItem.isEnable == false? @color/txt_grey : @color/colorPrimary}"

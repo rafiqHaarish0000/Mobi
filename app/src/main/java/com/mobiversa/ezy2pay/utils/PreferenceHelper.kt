@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
-import com.mobiversa.ezy2pay.network.response.ResponseData
+import com.mobiversa.ezy2pay.network.response.LoginResponseData
 import java.io.Serializable
 
 
@@ -32,7 +32,7 @@ public object PreferenceHelper {
             is Boolean -> edit { it.putBoolean(key, value) }
             is Float -> edit { it.putFloat(key, value) }
             is Long -> edit { it.putLong(key, value) }
-            is ResponseData -> edit {
+            is LoginResponseData -> edit {
                 val gson = Gson()
                 val json = gson.toJson(value as Serializable)
                 it.putString(Constants.LoginResponse, json)

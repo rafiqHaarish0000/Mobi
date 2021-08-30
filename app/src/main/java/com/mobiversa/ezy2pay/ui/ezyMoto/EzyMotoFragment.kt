@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +20,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
@@ -38,10 +40,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
+internal val TAG = EzyMotoFragment::class.java.canonicalName
+
 class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     companion object {
-        fun newInstance() = EzyMotoFragment()
     }
 
     private lateinit var rootView: View
@@ -83,15 +86,20 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         rootView = inflater.inflate(R.layout.ezy_moto_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(EzyMotoViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
+
+        setHasOptionsMenu(true)
+        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         service = arguments!!.getString(Fields.Service) as String
         totalAmount = arguments!!.getString(Fields.Amount) as String
         invoiceId = arguments!!.getString(Fields.InvoiceId) as String
 
-        rootView.amount_txt.text = "RM $totalAmount"
+        Log.e(TAG, "onCreateView: $service")
+
+        rootView.amount_txt.text = String.format("RM %s", totalAmount)
         rootView.edt_reference_ezymoto.setText(invoiceId)
 
         contactNumList = getContactsIntoArrayList()
@@ -105,10 +113,6 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         return rootView
     }
 
-    override fun onResume() {
-        super.onResume()
-        setUpTitle()
-    }
 
     private fun initialize(rootView: View) {
 
@@ -149,9 +153,9 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
     private fun setUpTitle() {
         when (service) {
             Fields.EzyMoto, Fields.PreAuthMoto, Fields.EzyMotoLite -> {
-                rootView.btn_submit_ezymoto.text = "Submit"
+                rootView.btn_submit_ezymoto.text = getString(R.string.submit_text)
                 linearMonthEzyrec.visibility = View.GONE
-                if (service.equals(Fields.EzyMoto)) {
+                if (service == Fields.EzyMoto) {
                     chk_multioption_ezymoto.visibility = View.VISIBLE
                 } else {
                     chk_multioption_ezymoto.visibility = View.GONE
@@ -185,8 +189,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 chk_multioption_ezymoto.visibility = View.GONE
             }
         }
-        setHasOptionsMenu(true)
-        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
 
     private fun jsonCountryList(boostParams: HashMap<String, String>) {
@@ -194,7 +197,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         viewModel.countryList(boostParams)
         viewModel.countryList.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 cancelDialog()
                 if (it.responseCode.equals("0000", true)) {
                     countryArray.clear()
@@ -211,7 +214,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 } else {
                     setTitle("Home", true)
                     (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    fragmentManager?.popBackStack()
+                    requireActivity().supportFragmentManager.popBackStack()
                 }
             }
         )
@@ -255,7 +258,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 start: Int,
                 before: Int,
                 count: Int
-            ) { // TODO Auto-generated method stub
+            ) {
             }
 
             override fun beforeTextChanged(
@@ -263,7 +266,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 start: Int,
                 count: Int,
                 after: Int
-            ) { // TODO Auto-generated method stub
+            ) {
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -321,14 +324,14 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
             } else {
 
                 var phNum = edtPhoneNumEzymoto.text.toString().replace("+", "").replace(" ", "")
-                var countryCode = edtCountryCodeEzymoto.text.toString().replace("+", "")
+                val countryCode = edtCountryCodeEzymoto.text.toString().replace("+", "")
 
                 if (phNum.startsWith(countryCode)) {
-                    if (phNum.length> 10)
+                    if (phNum.length > 10)
                         phNum = phNum.substring(countryCode.length)
                 }
                 val num = edtCountryCodeEzymoto.text.toString() + phNum
-                if (num.length <9) {
+                if (num.length < 9) {
                     shortToast("Enter Valid Mobile number")
                     return
                 }
@@ -336,29 +339,59 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 paymentParams[Fields.WhatsApp] = getIsWhatsapp(chkWhatsapp.isChecked)
                 paymentParams[Fields.email] = ""
 
-                /*paymentParams[Fields.MobileNo] =
-                    edtCountryCodeEzymoto.text.toString() + edtPhoneNumEzymoto.text.toString()
-                paymentParams[Fields.WhatsApp] = getIsWhatsapp(chkWhatsapp.isChecked)
-                paymentParams[Fields.email] = ""*/
             }
         } else {
             paymentParams[Fields.MobileNo] = ""
             paymentParams[Fields.email] = ""
         }
 
+        Log.e(TAG, "applicationSubmit: $service")
         when (service) {
             Fields.EzyMoto, Fields.PreAuthMoto -> {
+                Log.e(TAG, "Service selection ->: $service")
+
+                // TODO: 23-08-2021
+                /*  Vignesh Selvam
+                * new api service update
+                * EZYSPLIT is no more a separate product.
+                * EZYSPLIT is a part of EZYLINK
+                * SPLIT_TXN_REQ is the new service called when EZYSPLIT is enabled for the merchant
+                * */
+
+//                If this login has EZYSPLIT enabled then
+                /*
+                * Pass the service to -> [Fields.EzySplit]
+                * mid -> mid
+                * tid -> tid
+                * splitTid -> ezysplitTid
+                * splitMid -> ezysplitMid
+                *
+                * else
+                *
+                * tid -> motoTid
+                * mid -> motoMid
+                *
+                *  */
+                if (getLoginResponse().enableSplit.equals("Yes", ignoreCase = true)) {
+                    paymentParams[Fields.Service] = Fields.EzySplit
+                    paymentParams[Fields.splitMid] = getLoginResponse().ezysplitMid
+                    paymentParams[Fields.splitTid] = getLoginResponse().ezysplitTid
+                }
+
                 paymentParams[Fields.tid] = getLoginResponse().motoTid
                 paymentParams[Fields.mid] = getLoginResponse().motoMid
+
                 paymentParams[Fields.HostType] = getLoginResponse().hostType
                 paymentParams[Fields.MultiOption] = getIsWhatsapp(chk_multioption_ezymoto.isChecked)
             }
+
             Fields.EzyMotoLite -> {
                 paymentParams[Fields.txnAmount] = totalAmount
                 paymentParams[Fields.tid] = getLoginResponse().motoTid
                 paymentParams[Fields.liteMid] = getLoginResponse().liteMid
 //                paymentParams[Fields.reqMode] = Constants.app
             }
+
             Fields.EzyRec -> {
                 paymentParams[Fields.tid] = getLoginResponse().ezyrecTid
                 paymentParams[Fields.mid] = getLoginResponse().ezyrecMid
@@ -368,9 +401,17 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 paymentParams[Fields.InstallmentCount] =
                     getMonthList()[monthSpinner.selectedItemPosition]
             }
+
+            // TODO: 24-08-2021
+            /*  Vignesh Selvam
+            *
+            * EzySplit will be removed in the future update.
+            * will be merged within the EzyLink.
+            * */
             Fields.EzySplit -> {
-                paymentParams[Fields.tid] = getLoginResponse().ezysplitTid
-                paymentParams[Fields.mid] = getLoginResponse().ezysplitMid
+                paymentParams[Fields.tid] = getLoginResponse().tid
+                paymentParams[Fields.mid] = getLoginResponse().mid
+
 //                paymentParams[Fields.tid] = "10003078"  //For Static values to test
 //                paymentParams[Fields.mid] = "000000000008971"
                 paymentParams[Fields.HostType] = getLoginResponse().hostType
@@ -391,29 +432,31 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
             )
         ) Constants.countryStr else ""
 
+
+
         ezyMotoRecPayment(paymentParams, clickAction)
 
         showLog(service, "" + paymentParams)
     }
 
     private fun ezyMotoRecPayment(paymentParams: HashMap<String, String>, clickAction: String) {
-        var urlStr = ""
 
-        if (getLoginResponse().type.equals("LITE", true)) {
-            urlStr = "mobilite/jsonservice"
+
+        val urlStr: String = if (getLoginResponse().type.equals("LITE", true)) {
+            "mobilite/jsonservice"
         } else {
-            urlStr = "mobiapr19/mobi_jsonservice"
+            "mobiapr19/mobi_jsonservice"
         }
-
         showLog("Moto", "" + paymentParams)
 
-//        getLoginResponse().
-        showDialog("Processing...")
+//        showDialog("Processing...")
+        showLoadingDialog("Processing...")
         viewModel.ezyMotoRecPayment(urlStr, paymentParams)
         viewModel.ezyMotoRecPayment.observe(
-            this,
-            Observer {
-                cancelDialog()
+            viewLifecycleOwner,
+            {
+//                cancelDialog()
+                closeLoadingDialog()
                 if (it.responseCode.equals("0000", true)) {
 
                     when (clickAction) {
@@ -487,11 +530,6 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         return if (whatsApp) "Yes" else "No"
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(EzyMotoViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
     }
@@ -560,7 +598,6 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                 } else if (phoneStr.isEmpty() && !isValidEmail(emailStr)) {
                     shortToast("Please enter Valid Email id")
                 } else {
-
                     when (service) {
                         Fields.EzyMoto, Fields.EzyMotoLite, Fields.PreAuthMoto -> {
                             val nameStr = edtNameEzymoto.text.toString()
@@ -592,7 +629,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
             android.R.id.home -> {
                 setTitle("Home", true)
                 (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                fragmentManager?.popBackStack()
+                requireActivity().supportFragmentManager.popBackStack()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -601,23 +638,23 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
 
     private fun getMonthList(): ArrayList<String> {
 
-        if (service.equals(Fields.EzyRec, true)) {
+        return if (service.equals(Fields.EzyRec, true)) {
             val month = ArrayList<String>()
             month.add("Select Month")
             for (i in 2..36)
                 month.add(i.toString())
-            return month
+            month
         } else {
             val month = ArrayList<String>()
             month.add("Select Month")
             for (i in 3..12 step 3)
                 month.add(i.toString())
-            return month
+            month
         }
     }
 
     private fun getContactsIntoArrayList(): ArrayList<ContactPojo> {
-        var mList: ArrayList<ContactPojo> = ArrayList()
+        val mList: ArrayList<ContactPojo> = ArrayList()
         val projection = arrayOf(
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER,

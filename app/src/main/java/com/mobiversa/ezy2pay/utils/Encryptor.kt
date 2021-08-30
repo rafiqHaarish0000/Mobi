@@ -122,7 +122,7 @@ class Encryptor {
             }
             hexText.append(initialHex)
         }
-        return hexText.toString().toUpperCase()
+        return hexText.toString().uppercase()
     }
 
     @JvmStatic

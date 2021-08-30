@@ -14,24 +14,35 @@ class AppSession(context: Context) {
     }
 
     fun saveSession(key: String, value: String, context: Context) {
-        val preferences = context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE).edit()
+        val preferences =
+            context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
+                .edit()
         preferences.putString(key, value)
         preferences.apply()
     }
 
     fun saveSession(key: String, value: Long, context: Context) {
-        val preferences = context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE).edit()
+        val preferences =
+            context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
+                .edit()
         preferences.putLong(key, value)
         preferences.apply()
     }
 
     fun getSession(key: String, default: String, context: Context): String {
-        val preferences = context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
+        val preferences =
+            context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
         return preferences.getString(key, default)!!
     }
 
     fun getSession(key: String, default: Long, context: Context): Long {
-        val preferences = context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
+        val preferences =
+            context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
         return preferences.getLong(key, default)
+    }
+
+    fun clearAppSession(context: Context) {
+        context.getSharedPreferences(Constants.Preferences.APP_SESSIONS, Context.MODE_PRIVATE)
+            .edit().clear().apply()
     }
 }

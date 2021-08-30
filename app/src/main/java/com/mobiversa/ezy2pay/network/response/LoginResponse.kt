@@ -2,12 +2,12 @@ package com.mobiversa.ezy2pay.network.response
 
 data class LoginResponse(
     val responseCode: String,
-    val responseData: ResponseData,
+    val responseData: LoginResponseData,
     val responseDescription: String,
     val responseMessage: String
 )
 
-data class ResponseData(
+data class LoginResponseData(
     val appStatus: String,
     val appVersion: String,
     val auth3DS: String,

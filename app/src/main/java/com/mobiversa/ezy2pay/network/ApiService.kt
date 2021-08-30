@@ -154,7 +154,7 @@ interface ApiService {
         private const val REGISTER_URL = "https://pay.gomobi.io/"
         private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
 
-        private const val BANK_URL = "https://fpxservice.gomobi.io/"
+        private const val BANK_URL = "https://fpxservice.gomobi.i/"
         private const val CITY_URL = "https://ocsservices.gomobi.io/"
 
         private val client = OkHttpClient().newBuilder()

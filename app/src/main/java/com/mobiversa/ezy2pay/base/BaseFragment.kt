@@ -3,7 +3,6 @@ package com.mobiversa.ezy2pay.base
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -26,11 +25,9 @@ import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -52,7 +49,6 @@ import com.mobiversa.ezy2pay.utils.Constants.Companion.EzyRec
 import com.mobiversa.ezy2pay.utils.Constants.Companion.EzySplit
 import com.mobiversa.ezy2pay.utils.Constants.Companion.Ezywire
 import com.mobiversa.ezy2pay.utils.Constants.Companion.GrabPay
-import com.mobiversa.ezy2pay.utils.Constants.Companion.GrabPayOnline
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MobiCash
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MobiPass
 import com.mobiversa.ezy2pay.utils.Fields
@@ -81,6 +77,19 @@ open class BaseFragment : Fragment() {
         activity = context as Activity
     }
 
+
+    // TODO: 23-08-2021
+    /** Vignesh Selvam
+     * add app session for login session variables.
+     * clear the session variables once user is logged out.
+     * call [AppSession.clearAppSession] to clear session
+     * */
+
+    fun getAppSession(): AppSession {
+        return AppSession.getInstance(requireContext())
+    }
+
+
     fun showDialog(message: String) {
         mProgressDialog = activity.indeterminateProgressDialog(message)
 
@@ -93,11 +102,11 @@ open class BaseFragment : Fragment() {
             mProgressDialog.dismiss()
     }
 
-    fun getLoginResponse(): ResponseData {
+    fun getLoginResponse(): LoginResponseData {
         val prefs: SharedPreferences = PreferenceHelper.defaultPrefs(activity)
         val response: String? = prefs[Constants.LoginResponse]
         val result = Gson()
-        return result.fromJson(response, ResponseData::class.java)
+        return result.fromJson(response, LoginResponseData::class.java)
     }
 
     fun getTidValue(): String {
@@ -198,6 +207,8 @@ open class BaseFragment : Fragment() {
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         // Staring Login Activity
         activity.startActivity(i)
+
+        getAppSession().clearAppSession(requireContext())
     }
 
     fun clearRegData() {
@@ -298,6 +309,7 @@ open class BaseFragment : Fragment() {
                     )
                 )
             }
+
             productList.add(
                 ProductList(
                     Ezywire,
@@ -308,6 +320,8 @@ open class BaseFragment : Fragment() {
                     Fields.EZYWIRE
                 )
             )
+
+
             productList.add(
                 ProductList(
                     EzyRec,
@@ -318,7 +332,16 @@ open class BaseFragment : Fragment() {
                     Fields.EZYREC
                 )
             )
-            productList.add(
+
+            // TODO: 23-08-2021
+            /*  Vignesh Selvam
+            *
+            * EZYSPLIT is no more a separate product, it is a part for EZYLINK.
+            * Api Service related to this product is updates.
+            *
+            * */
+
+/*            productList.add(
                 ProductList(
                     EzySplit,
                     R.drawable.ezyrec_blue_icon, R.drawable.recurring_disabled,
@@ -327,7 +350,8 @@ open class BaseFragment : Fragment() {
                     loginResponse.enableSplit.equals("Yes", false),
                     Fields.EZYSPLIT
                 )
-            )
+            )*/
+
             productList.add(
                 ProductList(
                     EzyAuth,
@@ -337,6 +361,7 @@ open class BaseFragment : Fragment() {
                     loginResponse.preAuth.equals("Yes", false), Fields.PREAUTH
                 )
             )
+
             productList.add(
                 ProductList(
                     MobiPass,
@@ -347,6 +372,7 @@ open class BaseFragment : Fragment() {
                     Fields.EZYPASS
                 )
             )
+
         }
 
         productList.add(

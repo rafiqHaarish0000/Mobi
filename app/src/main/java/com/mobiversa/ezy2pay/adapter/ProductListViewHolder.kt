@@ -17,21 +17,26 @@ class ProductListViewHolder(private val binding: ProductListDataItemBinding) :
         context: Context,
         homeFragment: HomeFragment
     ) {
-        binding.productItem = productList
 
-        binding.listProdImg.setOnClickListener {
-            Log.e("List ", productList.productName)
-            if (productList.isEnable)
-                homeFragment.productDetails(productList.productName)
-            else
-                Toast.makeText(context,"You are not Subscribed for ${productList.productName}",Toast.LENGTH_SHORT).show()
+        binding.apply {
+            productItem = productList
+            executePendingBindings()
         }
-        binding.listProdName.setOnClickListener {
-            Log.e("List ", productList.productName)
-            if (productList.isEnable)
-                homeFragment.productDetails(productList.productName)
-            else
-                Toast.makeText(context,"You are not Subscribed for ${productList.productName}",Toast.LENGTH_SHORT).show()
-        }
+
+//        binding.listProdImg.setOnClickListener {
+//            Log.e("List ", productList.productName)
+//            if (productList.isEnable)
+//                homeFragment.productDetails(productList.productName)
+//            else
+//                Toast.makeText(context,"You are not Subscribed for ${productList.productName}",Toast.LENGTH_SHORT).show()
+//        }
+//
+//        binding.listProdName.setOnClickListener {
+//            Log.e("List ", productList.productName)
+//            if (productList.isEnable)
+//                homeFragment.productDetails(productList.productName)
+//            else
+//                Toast.makeText(context,"You are not Subscribed for ${productList.productName}",Toast.LENGTH_SHORT).show()
+//        }
     }
 }

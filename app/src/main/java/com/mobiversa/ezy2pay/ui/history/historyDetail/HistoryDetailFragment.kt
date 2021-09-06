@@ -252,10 +252,36 @@ class HistoryDetailFragment :
             else -> {
                 // TODO: 24-08-2021
                 /*  Vignesh Selvam
+                *
                 * if the txnType is null or empty or none of the above and mobiRef is later then hide the void button.
+                *
+                * Code update:
+                *   date: 02-09-2021.
+                *   as per the discussion with mobile development and java team below are the latest updates.
+                *
+                *   Void Later , later and null is the resposne from the mobiref
+                *   VOIDLATER   -> show the void option
+                *   LATER       -> Hide the void button
+                *   NULL        -> show the void option
+                *
                 * */
-                if (historyData!!.mobiRef.equals("LATER", ignoreCase = true)) {
-                    rootView.btn_history_detail_void.visibility = View.GONE
+//                if (historyData!!.mobiRef.equals("LATER", ignoreCase = true)) {
+//                    rootView.btn_history_detail_void.visibility = View.GONE
+//                } else
+
+
+                historyData?.let {
+                    when (it.mobiRef) {
+                        "VOIDLATER" -> {
+                            rootView.btn_history_detail_void.visibility = View.VISIBLE
+                        }
+                        "LATER" -> {
+                            rootView.btn_history_detail_void.visibility = View.GONE
+                        }
+                        null -> {
+                            rootView.btn_history_detail_void.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }
@@ -664,7 +690,6 @@ class HistoryDetailFragment :
                 transactionVoid(pathStr, requestVal)
             }
             else -> {
-                Log.e(TAG, "jsonVoidTransaction: service -> $VOID")
 
                 if (historyData!!.txnType.equals(Fields.AUTHSALE, ignoreCase = true)) {
                     requestVal[Fields.Service] = Fields.EZYSPLIT_VOID
@@ -683,6 +708,8 @@ class HistoryDetailFragment :
     }
 
     private fun transactionVoid(pathStr: String, requestVal: HashMap<String, String>) {
+
+        Log.e(TAG, "transactionVoid: requestdata $requestVal")
 
         showDialog("Processing...")
         viewModel.setVoidHistory(pathStr, requestVal)

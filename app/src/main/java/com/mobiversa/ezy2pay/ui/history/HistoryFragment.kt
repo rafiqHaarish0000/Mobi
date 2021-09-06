@@ -558,6 +558,9 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     ) {
         var pathStr = "mobiapr19"
         val requestVal = requestData
+
+        Log.e(TAG, "jsonVoidTransaction: txnType -> ${historyData.txnType}")
+
         when (historyData.txnType) {
             (Fields.CASH) -> {
                 requestVal[Fields.Service] = Fields.CASH_CANCEL
@@ -630,6 +633,20 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     requestVal[Fields.tid] = getLoginResponse().motoTid
                 }
             }
+            Fields.AUTHSALE -> {
+//                if (historyData!!.txnType.equals(Fields.AUTHSALE, ignoreCase = true)) {
+//                    requestVal[Fields.Service] = Fields.EZYSPLIT_VOID
+//                } else {
+//                    requestVal[Fields.Service] = Fields.VOID
+//                }
+                requestVal[Fields.Service] = Fields.EZYSPLIT_VOID
+
+                requestVal[Fields.sessionId] = getLoginResponse().sessionId
+                requestVal[Fields.trxId] = historyData.txnId
+                requestVal[Fields.HostType] = getLoginResponse().hostType
+                requestVal[Fields.MerchantId] = getLoginResponse().merchantId
+                requestVal[Fields.tid] = getLoginResponse().tid
+            }
             else -> { // Ezywire
 
                 when {
@@ -651,6 +668,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 requestVal[Fields.tid] = getLoginResponse().tid
             }
         }
+
+        Log.e(TAG, "jsonVoidTransaction: request value $requestData")
 
         showDialog("Processing...")
         val apiResponse = ApiService.serviceRequest()
@@ -746,10 +765,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //            bundle
 //        )
 
-
         addFragment(historyDetailFragment, bundle, "History")
     }
 
+    @Deprecated("Cancel option for pending transaction is removed")
     fun showAlert(forSettlement: ForSettlement) {
 
         showLog("Trx_type", "" + forSettlement.txnType)

@@ -892,7 +892,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             }
             hexText.append(initialHex)
         }
-        return hexText.toString().toUpperCase()
+        return hexText.toString().uppercase(Locale.getDefault())
     }
 
     override fun onClick(v: View?) {

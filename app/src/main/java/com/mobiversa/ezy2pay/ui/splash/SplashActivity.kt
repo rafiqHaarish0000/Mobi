@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -38,7 +39,7 @@ class SplashActivity : BaseActivity() {
         FirebaseApp.initializeApp(applicationContext)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         startAnimations() // start the animation
-        val mHandler = Handler()
+        val mHandler = Handler(Looper.getMainLooper())
         val mRunnable = Runnable {
             // Check if the device is Rooted or not - if rooted exit the app (For PCI)
             if (RootUtil.isDeviceRooted) {
@@ -52,11 +53,11 @@ class SplashActivity : BaseActivity() {
                 var login = true
                 try {
                     val lastLoginStr = pref.getString("LastLoggedIn", "")
-                    val curFormater =
-                        SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+                    val curFormatter =
+                        SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault())
                     if (lastLoginStr!!.isNotEmpty()) {
-                        val lastLogIn = curFormater.parse(lastLoginStr)
-                        val timeDifference = today.time - lastLogIn.time
+                        val lastLogIn = curFormatter.parse(lastLoginStr)
+                        val timeDifference = today.time - lastLogIn!!.time
                         if (timeDifference / (60 * 60 * 1000) < 24) {
                             login = false
                         }
@@ -102,7 +103,7 @@ class SplashActivity : BaseActivity() {
     }
 
     /*Close the app and exit*/
-    fun showAlertDialogAndExitApp(message: String?) {
+    private fun showAlertDialogAndExitApp(message: String?) {
         val alertDialog: AlertDialog = AlertDialog.Builder(this).create()
         alertDialog.setTitle("Alert")
         alertDialog.setMessage(message)

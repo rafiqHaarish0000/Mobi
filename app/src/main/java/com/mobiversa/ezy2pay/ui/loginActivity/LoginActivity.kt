@@ -16,7 +16,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.facebook.*
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.Auth
@@ -27,12 +26,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
@@ -80,6 +80,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.regex.Pattern
+
+
+// TODO: 02-09-2021
+/*  */
 
 class LoginActivity :
     BaseActivity(),
@@ -134,13 +138,31 @@ class LoginActivity :
         customPrefs = PreferenceHelper.customPrefs(this, "REMEMBER")
 
         // FireBase Token
-        FirebaseInstanceId.getInstance()
-            .instanceId.addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
-                val newToken = instanceIdResult.token
-                showLog("newToken", newToken)
+//        FirebaseAnalytics.getInstance()
+//            .instanceId.addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
+//                val newToken = instanceIdResult.token
+//                showLog("newToken", newToken)
+//
+//                prefs[FIRE_BASE_TOKEN] = newToken
+//            }
 
-                prefs[FIRE_BASE_TOKEN] = newToken
+        // TODO: 06-09-2021
+        /*  Vignesh Selvam
+        *
+        * New Firebase token code update
+        * */
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                showLog("newToken", "Fetching FCM registration token failed")
+                return@OnCompleteListener
             }
+            // Get new FCM registration token
+            val token = task.result
+            showLog("newToken", token)
+            prefs[FIRE_BASE_TOKEN] = token
+
+        })
+
 
         finger = Finger(applicationContext)
         loginViewModel = ViewModelProvider(this@LoginActivity)[LoginViewModel::class.java]
@@ -152,6 +174,7 @@ class LoginActivity :
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
+
         mGoogleApiClient = GoogleApiClient.Builder(this)
             .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
             .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -386,7 +409,7 @@ class LoginActivity :
 //        Toast.makeText(this, R.string.message_success, Toast.LENGTH_SHORT).show()
         finger.subscribe(this)
 
-        if (userNameStr.equals(edt_username_login.text.toString(), true)) {
+        if (userNameStr.equals(edt_username_login.text.toString().trim(), true)) {
             if (isOnline(context = applicationContext)) {
                 val loginMap = HashMap<String, String>()
                 loginMap[Fields.Service] = Fields.ServiceLogin
@@ -406,7 +429,7 @@ class LoginActivity :
 
     private fun userLogin() {
 
-        val userName = edt_username_login.text.toString()
+        val userName = edt_username_login.text.toString().trim()
         val password = edt_pswd_login.text.toString()
 
         if (userName.isEmpty() || userName.length < 2) {

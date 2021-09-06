@@ -204,7 +204,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             }
         }
 
-        if (validateStr.equals("SUSPENDED")) {
+        if (validateStr.equals("SUSPENDED", ignoreCase = true)) {
             shortToast(invalidDescStr)
             return
         }

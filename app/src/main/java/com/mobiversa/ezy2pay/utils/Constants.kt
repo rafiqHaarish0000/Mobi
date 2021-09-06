@@ -28,6 +28,10 @@ class Constants {
         const val ASPIRASIA_URL = "https://aspirasi.co/pasar/capital-plus-mobi-asia"
     }
 
+    object Key{
+        const val MSKey ="f00840b1-19fd-4541-ba89-49a557beba79"
+    }
+
 
     object TransactionHistory {
         const val PENDING = "PENDING"

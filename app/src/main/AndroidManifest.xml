@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mobiversa.ezy2pay">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -24,22 +28,26 @@
 
 
     <application
+        android:name=".MyApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:allowBackup="false"
-        android:hardwareAccelerated="true"
-        android:largeHeap="true"
-        tools:replace="android:allowBackup"
-        android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name="com.mobiversa.ezy2pay.ui.receipt.PrinterActivity"/>
-        <activity
-            android:name="com.mobiversa.ezy2pay.ui.chat.ChatNotifyActivity" />
+        tools:replace="android:allowBackup">
+
+
+        <activity android:name="com.mobiversa.ezy2pay.ui.receipt.PrinterActivity" />
+        <activity android:name="com.mobiversa.ezy2pay.ui.chat.ChatNotifyActivity" />
         <activity android:name="com.mobiversa.ezy2pay.ui.notifications.notificationFcm.ShowNotificationAcknowledgement" />
         <activity android:name="com.mobiversa.ezy2pay.ui.notifications.notificationFcm.DialogActivityForChat" />
         <activity android:name="com.mobiversa.ezy2pay.ui.notifications.notificationFcm.ChatFcmActivity" />
+
+
         <activity
             android:name="com.mobiversa.ezy2pay.ui.splash.SplashActivity"
             android:screenOrientation="portrait"
@@ -47,16 +55,19 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mobiversa.ezy2pay.ui.chat.ChatLoginActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.mobiversa.ezy2pay.ui.chat.ChatLoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.mobiversa.ezy2pay.ui.tutorial.TutorialActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.mobiversa.ezy2pay.ui.contact.ContactActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.mobiversa.ezy2pay.ui.contact.ContactActivity"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -75,17 +86,17 @@
         <activity
             android:name="com.mobiversa.ezy2pay.ui.ezyWire.EzyWireActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:label="EZYWIRE" />
+            android:label="EZYWIRE"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.mobiversa.ezy2pay.ui.ezyWire.BaseOTAActivity" />
         <activity
             android:name="com.mobiversa.ezy2pay.ui.loginActivity.LoginActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.mobiversa.ezy2pay.MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
 
         <service
@@ -100,7 +111,8 @@
             android:name="com.mobiversa.ezy2pay.utils.ConnectivityReceiver"
             android:enabled="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
@@ -111,6 +123,7 @@
 
         <service android:name="com.mobiversa.ezy2pay.ui.fcm.AlarmNotificationService" /> <!-- Declare  Alarm Sound Service here -->
         <service android:name="com.mobiversa.ezy2pay.ui.fcm.AlarmSoundService" />
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
@@ -123,11 +136,11 @@
             android:label="Mobi Keyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
-                <action android:name="android.view.InputMethod"/>
+                <action android:name="android.view.InputMethod" />
             </intent-filter>
             <meta-data
                 android:name="android.view.im"
-                android:resource="@xml/method"/>
+                android:resource="@xml/method" />
         </service>
     </application>
 

@@ -165,7 +165,7 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
 
         historyData.txnType?.let {
             binding.prodNameTxt.text = it
-            when (it.toUpperCase()) {
+            when (it.uppercase(Locale.getDefault())) {
                 Fields.CASH -> {
                     if (historyData.status.equals("CASH CANCELLED", true)) {
                         binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.void_red))
@@ -263,7 +263,6 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
                             )
                         }
                     }
-
                 }
                 else -> {
                     binding.txtRrnHistory.visibility = View.VISIBLE
@@ -281,7 +280,6 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
                         }
                     }
                 }
-
             }
         }
 
@@ -296,9 +294,15 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
             if (status.equals("Completed", true) || status.equals("Cash Sale", true)) {
                 fragment.addFragment(historyData, bundle = bundle)
             }
-            if (status.equals("PENDING", false)) {
+
+            // TODO: 31-08-2021
+            /*  Vignesh Selvam
+            * Cancel option for pending transaction is removed
+            * methoed will be removed in the future update
+            * */
+           /* if (status.equals("PENDING", false)) {
                 fragment.showAlert(historyData)
-            }
+            } */
         }
 
         binding.txtRrnHistory.visibility = View.GONE

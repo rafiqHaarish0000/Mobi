@@ -161,8 +161,6 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
     }
 
     private fun checkReferralPrompt() {
-
-
         val lastTimeStamp =
             appSession().getSession(
                 Constants.Preferences.KEY_LAST_TIME_STAMP,

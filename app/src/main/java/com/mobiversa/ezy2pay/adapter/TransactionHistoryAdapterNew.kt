@@ -165,7 +165,7 @@ class TransactionHistoryNewBinding(private val binding: HistoryListItemBinding) 
 
         historyData.txnType?.let {
             binding.prodNameTxt.text = it
-            when (it.toUpperCase()) {
+            when (it.uppercase(Locale.getDefault())) {
                 Fields.CASH -> {
                     if (historyData.status.equals("CASH CANCELLED", true)) {
                         binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.void_red))

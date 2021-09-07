@@ -80,6 +80,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.regex.Pattern
+import android.app.Activity
+import android.os.IBinder
+import android.view.inputmethod.InputMethodManager
 
 
 // TODO: 02-09-2021
@@ -605,37 +608,50 @@ class LoginActivity :
         cancelDialog()
         if (it.responseCode == "0000") {
             warning_rel.visibility = View.GONE
-            if (loginMap[Fields.Service].equals(Fields.ServiceLogin)) {
-                Toast.makeText(applicationContext, it.responseDescription, Toast.LENGTH_SHORT)
-                    .show()
 
-                val gson = Gson()
-                val json = gson.toJson(it.responseData)
-                prefs[LoginResponse] = json
-                prefs[UserName] = loginMap[Fields.username]
-                prefs[IsLoggedIn] = true
-                customPrefs[UserName] = loginMap[Fields.username]
-                customPrefs[RememberMe] = chk_remember_me.isChecked
+            Log.e(TAG, "loginResponse: -> ${it.responseData}")
+            when {
+                it.responseData.type.equals("LITE", true) -> {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        getString(R.string.lite_user_disabled_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                loginMap[Fields.Service].equals(Fields.ServiceLogin) -> {
+                    Toast.makeText(applicationContext, it.responseDescription, Toast.LENGTH_SHORT)
+                        .show()
 
-                if (it.responseData.auth3DS.equals("Yes", true) ||
-                    it.responseData.type.equals("LITE", true)
-                ) {
-                    Constants.EzyMoto = "EZYLINK"
-                    prefs[Constants.UpgradeStatus] = getLoginResponse(applicationContext).liteUpdate
-                } else
-                    Constants.EzyMoto = "EZYMOTO"
+                    val gson = Gson()
+                    val json = gson.toJson(it.responseData)
+                    prefs[LoginResponse] = json
+                    prefs[UserName] = loginMap[Fields.username]
+                    prefs[IsLoggedIn] = true
+                    customPrefs[UserName] = loginMap[Fields.username]
+                    customPrefs[RememberMe] = chk_remember_me.isChecked
 
-                showLog("IsRemember 1", "" + chk_remember_me.isChecked)
-                showLog("IsRemember 2", "" + getIsRemember())
+                    if (it.responseData.auth3DS.equals("Yes", true) ||
+                        it.responseData.type.equals("LITE", true)
+                    ) {
+                        Constants.EzyMoto = "EZYLINK"
+                        prefs[Constants.UpgradeStatus] =
+                            getLoginResponse(applicationContext).liteUpdate
+                    } else
+                        Constants.EzyMoto = "EZYMOTO"
 
-                startActivity(Intent(this, MainActivity::class.java))
-            } else {
-                Toast.makeText(applicationContext, it.responseDescription, Toast.LENGTH_SHORT)
-                    .show()
-                forgot_linear.visibility = View.GONE
-                login_linear.visibility = View.VISIBLE
-                txt_new_user.text = "Still without account?"
-                txt_signup.text = "Create One"
+                    showLog("IsRemember 1", "" + chk_remember_me.isChecked)
+                    showLog("IsRemember 2", "" + getIsRemember())
+
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+                else -> {
+                    Toast.makeText(applicationContext, it.responseDescription, Toast.LENGTH_SHORT)
+                        .show()
+                    forgot_linear.visibility = View.GONE
+                    login_linear.visibility = View.VISIBLE
+                    txt_new_user.text = "Still without account?"
+                    txt_signup.text = "Create One"
+                }
             }
         } else {
             warning_rel.visibility = View.VISIBLE

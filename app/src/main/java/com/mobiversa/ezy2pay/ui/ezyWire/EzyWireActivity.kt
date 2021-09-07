@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.os.*
-import android.text.Selection
 import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
@@ -19,8 +18,6 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.databinding.library.BuildConfig
@@ -295,6 +292,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             }
             Constants.OnlineProcess -> {
                 Log.e("TEST", Constants.OnlineProcess)
+                // Status Online Process
                 if (isOnline(applicationContext)) {
                     sendPaymentInformation()
                 } else {
@@ -313,6 +311,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                         getSignature("RM " + String.format("%.2f", totalPrice))
                     }
                 } else {
+                    // Status Online Process
                     if (isOnline(applicationContext)) {
                         Log.e("TEST", Constants.CardCompleted)
                         if (Constants.isSwipe)
@@ -677,6 +676,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                     response: Response<PaymentInfoModel>
                 ) {
                     cancelDialog()
+
                     if (response.isSuccessful) {
                         val it = response.body()!!
                         if (it.responseCode.equals("0000", true)) {
@@ -706,6 +706,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
                             //Have to include Dialog Interface
                             cancelTrackingData()
+
                             showHideLayout(Constants.FailureTransaction,it.responseDescription)
                         }
                     } else {

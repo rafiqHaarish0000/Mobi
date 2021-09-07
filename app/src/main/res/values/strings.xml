@@ -140,6 +140,5 @@
         You will need to submit documents like Business Registration,
         Bank statement and a couple more to upgrade and increase the daily limit.\n
         Are you sure you want to Upgrade?</string>
-
-
+    <string name="lite_user_disabled_message">We have disabled EZYLINK LITE users!, please contact the customer support team.</string>
 </resources>

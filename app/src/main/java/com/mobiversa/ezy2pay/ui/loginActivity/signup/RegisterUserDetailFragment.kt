@@ -145,7 +145,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
         args.putInt(Constants.DAY, calender[Calendar.DAY_OF_MONTH])
         date.arguments = args
         date.setCallBack(dob)
-        date.show(fragmentManager!!, "Date Picker")
+        date.show(requireActivity().supportFragmentManager, "Date Picker")
     }
 
     @SuppressLint("SetTextI18n")
@@ -267,10 +267,10 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
     private fun jsonVerifyUser(dataMap: HashMap<String, String>, userMap: HashMap<String, String>) {
         showDialog("Processing in...")
         viewModel.checkUserType(dataMap)
-        viewModel.verifyUserResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.verifyUserResponse.observe(viewLifecycleOwner, {
             cancelDialog()
             if (it.responseCode == "0000") {
-                if (it.responseData.type.equals(Constants.LITE)) {
+                if (it.responseData.type == Constants.LITE) {
                     jsonUserDetails(userMap, false)
                 } else {
                     rootView.activation_linear.visibility = View.VISIBLE
@@ -363,9 +363,9 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
 //                val auth = EmailService.UserPassAuthenticator("ezylinklite@gmail.com", "Mobi123ver$@")
 //                val to = listOf(InternetAddress("ezylinklite@gmail.com"))
 //                val from = InternetAddress("ezylinklite@email.com")
-                val auth = EmailService.UserPassAuthenticator("sangavi@gomobi.io", "S@9943291177")
+                val auth = EmailService.UserPassAuthenticator("vignesh@gomobi.io", "Mobi@2021")
                 val to = listOf(InternetAddress("ezylinklite@gmail.com"))
-                val from = InternetAddress("sangavi@gomobi.io")
+                val from = InternetAddress("vignesh@gomobi.io")
                 val email =
                     EmailService.Email(auth, to, from, "Lite merchant info", gmailMail.toString())
                 val emailService = EmailService("smtp.office365.com", 587)

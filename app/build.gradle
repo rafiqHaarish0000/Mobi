@@ -14,7 +14,7 @@ android {
         applicationId "com.mobiversa.ezy2pay"
         minSdkVersion 17
         targetSdkVersion 30
-        versionCode 192
+        versionCode 194
 //        todo 18/08/2021
 
         versionName "4.1.17"
@@ -99,6 +99,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.1'
     implementation 'com.google.firebase:firebase-analytics-ktx:19.0.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
 
     kapt 'com.google.dagger:dagger-android-processor:2.25.4'
     kapt 'com.google.dagger:dagger-compiler:2.25.4'

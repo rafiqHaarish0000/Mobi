@@ -1,7 +1,6 @@
 package com.mobiversa.ezy2pay.utils
 
 import android.bluetooth.BluetoothDevice
-import com.mobiversa.ezy2pay.ui.loginActivity.signup.BusinessDetailFragment
 import java.util.*
 
 class Constants {
@@ -28,8 +27,12 @@ class Constants {
         const val ASPIRASIA_URL = "https://aspirasi.co/pasar/capital-plus-mobi-asia"
     }
 
-    object Key{
-        const val MSKey ="f00840b1-19fd-4541-ba89-49a557beba79"
+    object Key {
+        const val MSKey = "f00840b1-19fd-4541-ba89-49a557beba79"
+    }
+
+    object NavigationKey {
+        const val TID = "tid"
     }
 
 
@@ -37,7 +40,7 @@ class Constants {
         const val PENDING = "PENDING"
         const val REFUND = "REFUND"
         const val SUCCESS = "SUCCESS"
-        const val COMPLETED="COMPLETED"
+        const val COMPLETED = "COMPLETED"
     }
 
     companion object {

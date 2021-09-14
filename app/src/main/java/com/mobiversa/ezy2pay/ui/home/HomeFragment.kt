@@ -212,7 +212,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         if (!checkAndRequestPermissions()) {
             shortToast("Enable Location Permission From Settings")
             return
-        } else if (!isLocationEnabled(this.context!!)) {
+        } else if (!isLocationEnabled(requireContext())) {
             isGPSEnabled()
             shortToast("Enable GPS to Start")
             return

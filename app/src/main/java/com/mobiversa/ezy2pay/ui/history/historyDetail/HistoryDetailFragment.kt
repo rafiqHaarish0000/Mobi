@@ -12,15 +12,14 @@ import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
 import android.util.Log
-import android.view.* // ktlint-disable no-wildcard-imports
-import android.widget.* // ktlint-disable no-wildcard-imports
+import android.view.*
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -42,12 +41,10 @@ import com.mobiversa.ezy2pay.utils.AppViewModelFactory
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.Constants.Companion.MainAct
 import com.mobiversa.ezy2pay.utils.Fields
-import com.mobiversa.ezy2pay.utils.Fields.Companion.BOOST
 import com.mobiversa.ezy2pay.utils.Fields.Companion.BOOST_VOID
 import com.mobiversa.ezy2pay.utils.Fields.Companion.CASH
 import com.mobiversa.ezy2pay.utils.Fields.Companion.CASH_CANCEL
 import com.mobiversa.ezy2pay.utils.Fields.Companion.GPAY_REFUND
-import com.mobiversa.ezy2pay.utils.Fields.Companion.GRABPAY
 import com.mobiversa.ezy2pay.utils.Fields.Companion.VOID
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
@@ -118,14 +115,12 @@ class HistoryDetailFragment :
         (activity as MainActivity).supportActionBar?.title = "Transactions"
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-
-        historyData = arguments!!.getSerializable("History") as ForSettlement?
+        historyData = requireArguments().getSerializable("History") as ForSettlement?
 
         Log.e(TAG, "initialize: historyData -> $historyData")
-        amount = arguments!!.getString(Constants.Amount).toString()
-        val date = arguments!!.getString(Constants.Date)
-        histTrxType = arguments!!.getString(Fields.TRX_TYPE).toString()
+        amount = requireArguments().getString(Constants.Amount).toString()
+        val date = requireArguments().getString(Constants.Date)
+        histTrxType = requireArguments().getString(Fields.TRX_TYPE).toString()
 
         val amtStr = amount.replace("RM ", "")
         currentAmount = amtStr.replace(",", "").toDouble()
@@ -138,7 +133,7 @@ class HistoryDetailFragment :
         rootView.btn_history_detail_receipt.setOnClickListener(this)
         rootView.btn_history_detail_void.setOnClickListener(this)
 
-        finger = Finger(this.context!!)
+        finger = Finger(requireContext())
 
         btn_history_detail_receipt = rootView.btn_history_detail_receipt
         rootView.txt_amount_history.text = amount
@@ -154,7 +149,7 @@ class HistoryDetailFragment :
 
         if (historyData?.txnType.equals("FPX")) {
             rootView.txt_stan_history.visibility = View.GONE
-            Glide.with(this.context!!)
+            Glide.with(requireContext())
                 .load(historyData?.latitude) // image url
                 .centerInside()
                 .into(rootView.history_logo_img) // imageview object
@@ -355,7 +350,7 @@ class HistoryDetailFragment :
 
     private fun showDialog() {
         finger.showDialog(
-            this.getActivity()!!,
+            requireActivity(),
             Triple(
                 // title
                 getString(R.string.text_fingerprint),
@@ -384,7 +379,7 @@ class HistoryDetailFragment :
     @SuppressLint("InflateParams")
     private fun showPasswordPrompt() {
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_void_validate, null)
         val etUsername = alertLayout.findViewById<View>(R.id.username_edt_void) as EditText
         val etPassword = alertLayout.findViewById<View>(R.id.password_edt_void) as EditText
@@ -403,7 +398,7 @@ class HistoryDetailFragment :
 
         val fingerprintsEnabled = finger.hasFingerprintEnrolled()
         if (!fingerprintsEnabled) {
-            shortToast(context!!.resources.getString(R.string.error_override_hw_unavailable))
+            shortToast(requireContext().resources.getString(R.string.error_override_hw_unavailable))
         } else {
             btnFinger.visibility = View.VISIBLE
         }
@@ -441,7 +436,7 @@ class HistoryDetailFragment :
     private fun showConvertSaleAlert() {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = LayoutInflater.from(requireContext())
         val alertLayout: View = inflater.inflate(R.layout.alert_sale_amount, null)
         val confirm_sale_rg = alertLayout.findViewById<View>(R.id.confirm_sale_rg) as RadioGroup
         val preAuthAmountTxt = alertLayout.findViewById<View>(R.id.pre_auth_amount_txt) as TextView
@@ -586,7 +581,7 @@ class HistoryDetailFragment :
                 if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
                     showLog("Void Test", it.responseDescription)
                     shortToast(it.responseDescription)
-                    context!!.startActivity(Intent(getActivity(), MainActivity::class.java))
+                    requireContext().startActivity(Intent(getActivity(), MainActivity::class.java))
                 } else {
                     shortToast(it.responseDescription)
                 }

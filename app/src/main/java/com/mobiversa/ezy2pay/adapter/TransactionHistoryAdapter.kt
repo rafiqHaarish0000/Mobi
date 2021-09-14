@@ -16,7 +16,6 @@ import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.databinding.HistoryListItemBinding
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.ui.history.HistoryFragment
-import com.mobiversa.ezy2pay.ui.history.HistoryFragmentNew
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.DateFormatter
 import com.mobiversa.ezy2pay.utils.Fields
@@ -111,7 +110,7 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
         val today_date = dateFormat.format(Calendar.getInstance().time)
         val dateStr = dateFormat.format(date!!)
         binding.root.txt_date.text = dateStr
-        val timeFormat = SimpleDateFormat("hh:mm a",Locale.getDefault())
+        val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
         val timeStr = timeFormat.format(date)
         binding.root.txt_time.text = timeStr
 
@@ -291,7 +290,11 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
             bundle.putString(Constants.Amount, cost)
             bundle.putString(Constants.Date, binding.txtDate.text.toString())
             val status = binding.txtStatusHistory.text.toString()
-            if (status.equals("Completed", true) || status.equals("Cash Sale", true)) {
+
+            if (status.equals("Completed", true)
+                || status.equals("Cash Sale", true)
+                || status.equals("E", true)
+            ) {
                 fragment.addFragment(historyData, bundle = bundle)
             }
 
@@ -300,9 +303,9 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
             * Cancel option for pending transaction is removed
             * methoed will be removed in the future update
             * */
-           /* if (status.equals("PENDING", false)) {
-                fragment.showAlert(historyData)
-            } */
+            /* if (status.equals("PENDING", false)) {
+                 fragment.showAlert(historyData)
+             } */
         }
 
         binding.txtRrnHistory.visibility = View.GONE

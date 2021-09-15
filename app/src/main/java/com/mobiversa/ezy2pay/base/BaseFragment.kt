@@ -70,7 +70,7 @@ open class BaseFragment : Fragment() {
     lateinit var activity: Activity
     val MULTIPLE_PERMISSIONS = 10
 
-    var loadingDialog: AlertDialog? = null
+    private var loadingDialog: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

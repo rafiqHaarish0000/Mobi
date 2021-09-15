@@ -34,6 +34,7 @@ import com.mobiversa.ezy2pay.utils.Fields.Companion.PREAUTH
 import com.mobiversa.ezy2pay.utils.PreferenceHelper.get
 import de.adorsys.android.finger.Finger
 import de.adorsys.android.finger.FingerListener
+import kotlinx.android.synthetic.main.activity_show_notification_acknowledgement.*
 import kotlinx.android.synthetic.main.fragment_history.*
 import kotlinx.android.synthetic.main.fragment_history.view.*
 import kotlinx.coroutines.launch
@@ -69,7 +70,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        historyViewModel.transactionHistoryList.observeForever(dataObserver)
+        historyViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
     }
 
     override fun onResume() {
@@ -225,20 +226,20 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
     private fun jsonHistoryListEnque(historyParam: HashMap<String, String>) {
-        showDialog("Loading History...")
+        showLoadingDialog(message = "Loading History...")
         transactionType = historyParam[Fields.Service]!!
         val apiResponse = ApiService.serviceRequest()
         apiResponse.getTransactionHistory(historyParam).enqueue(object :
             Callback<TransactionHistoryModel> {
             override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
-                cancelDialog()
+                closeLoadingDialog()
             }
 
             override fun onResponse(
                 call: Call<TransactionHistoryModel>,
                 response: Response<TransactionHistoryModel>
             ) {
-                cancelDialog()
+                closeLoadingDialog()
                 if (response.isSuccessful) {
                     historyObserveData(response.body()!!)
                 }
@@ -290,6 +291,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private fun historyObserveData(it: TransactionHistoryModel) {
         var count = 0
         var completedCount = 0
+        closeLoadingDialog()
         if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
             showLog("Auth", trxType)
             if (trxType.equals(PREAUTH, true)) {
@@ -377,7 +379,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     btnSettlementHistory.visibility = View.VISIBLE
                 }
             }
-            Fields.Moto, Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
+            Fields.Moto -> {
+                btnSettlementHistory.visibility = View.VISIBLE
+            }
+            Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
                 if (completedCount > 0 && getLoginResponse().hostType.equals("P", true)) {
                     btnSettlementHistory.visibility = View.VISIBLE
                 } else {
@@ -964,8 +969,24 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         when (v.id) {
             R.id.button_settlement_history -> {
-                jsonSettlement()
+
+                Log.i(TAG, "onClick: trxType ->$trxType / ${Fields.Moto}")
+                if (trxType == Fields.Moto) {
+                    val bundle = Bundle()
+                    bundle.putString(Constants.NavigationKey.TID, getLoginResponse().tid)
+                    findNavController().navigate(
+                        R.id.action_navigation_history_to_transactionStatusFragment,
+                        bundle
+                    )
+                } else {
+                    jsonSettlement()
+                }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        historyViewModel.transactionHistoryList.removeObserver(dataObserver)
     }
 }

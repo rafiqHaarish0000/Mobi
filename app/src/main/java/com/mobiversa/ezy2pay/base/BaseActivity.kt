@@ -20,8 +20,10 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -30,8 +32,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.BuildConfig
 import com.mobiversa.ezy2pay.R
-import com.mobiversa.ezy2pay.network.response.ProductList
 import com.mobiversa.ezy2pay.network.response.LoginResponseData
+import com.mobiversa.ezy2pay.network.response.ProductList
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.Constants.Companion.countryStr
 import com.mobiversa.ezy2pay.utils.Constants.Companion.latitudeStr
@@ -50,6 +52,8 @@ import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity() {
+
+    private var loadingDialog: AlertDialog? = null
     private val DOT = "."
     lateinit var mProgressDialog: ProgressDialog
 
@@ -411,5 +415,34 @@ open class BaseActivity : AppCompatActivity() {
 
     interface OnAfterTextChangedListener {
         fun complete()
+    }
+
+    fun showLoadingDialog(message: String) {
+        if (loadingDialog != null) {
+            loadingDialog = null
+        }
+
+        val inflater: LayoutInflater = this.layoutInflater
+        val view = inflater.inflate(R.layout.base_loading_layout, null)
+
+        val builder = AlertDialog.Builder(this@BaseActivity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val textViewMessage = view.findViewById<TextView>(R.id.text_view_message)
+            textViewMessage.text = message
+            builder.setView(view)
+        } else {
+            builder.setMessage(message)
+        }
+        builder.setCancelable(false)
+
+        loadingDialog = builder.create()
+        loadingDialog!!.show()
+    }
+
+    fun closeLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog!!.dismiss()
+        }
+        loadingDialog = null
     }
 }

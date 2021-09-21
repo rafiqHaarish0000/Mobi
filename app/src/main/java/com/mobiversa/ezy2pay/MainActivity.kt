@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -355,5 +356,11 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         }
         return components1.size.compareTo(components2.size)
     }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+
 }
 

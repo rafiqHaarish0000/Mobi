@@ -46,11 +46,13 @@ class TransactionHistoryAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
+        val item = filterHistoryList[position]
         (holder as TransactionHistoryBinding).bind(
             context,
-            filterHistoryList[position],
+            item,
             historyFragment
         )
+
     }
 
     fun getData(): ArrayList<ForSettlement> {

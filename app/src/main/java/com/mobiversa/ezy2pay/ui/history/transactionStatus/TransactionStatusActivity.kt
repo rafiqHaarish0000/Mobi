@@ -2,80 +2,93 @@ package com.mobiversa.ezy2pay.ui.history.transactionStatus
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import androidx.fragment.app.Fragment
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.TransactionStatusAdapter
+import com.mobiversa.ezy2pay.base.AppFunctions
 import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
 import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
-import com.mobiversa.ezy2pay.databinding.TransactionStatusFragmentBinding
+import com.mobiversa.ezy2pay.databinding.ActivityTransactionStatusBinding
 import com.mobiversa.ezy2pay.utils.AppRepository
 import com.mobiversa.ezy2pay.utils.AppViewModelFactory
 import com.mobiversa.ezy2pay.utils.Constants
+import kotlinx.android.synthetic.main.activity_transaction_status.*
 import kotlinx.coroutines.launch
 
-internal val TAG = TransactionStatusFragment::class.java.canonicalName
 
-class TransactionStatusFragment : Fragment(R.layout.transaction_status_fragment) {
+internal val TAG = TransactionStatusActivity::class.java.canonicalName
 
+class TransactionStatusActivity : AppCompatActivity() {
 
     private lateinit var transactionStatusAdapter: TransactionStatusAdapter
-    private lateinit var _binding: TransactionStatusFragmentBinding
-    private val binding: TransactionStatusFragmentBinding get() = _binding
+    private lateinit var _binding: ActivityTransactionStatusBinding
+    private val binding: ActivityTransactionStatusBinding get() = _binding
     private lateinit var viewModel: TransactionStatusViewModel
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = TransactionStatusFragmentBinding.bind(view)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar!!.hide();
+        _binding = DataBindingUtil.setContentView(
+            this@TransactionStatusActivity,
+            R.layout.activity_transaction_status
+        )
+        setContentView(binding.root)
         setupViewModel()
-        setHasOptionsMenu(true)
 
-        arguments?.let {
-            val tid = it.getString(Constants.NavigationKey.TID, "")
+//        setSupportActionBar(binding.toolbar)
+
+        intent.getStringExtra(Constants.NavigationKey.TID)?.let { tid ->
             Log.i(TAG, "onViewCreated: tid -> $tid")
             getTransactionStatus(tid)
         }
 
         transactionStatusAdapter = TransactionStatusAdapter()
+
+        binding.imageButtonBack.setOnClickListener {
+            finish()
+        }
         binding.recyclerTransactionStatusList.apply {
             layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(
+                    this@TransactionStatusActivity,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
             adapter = transactionStatusAdapter
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        return when (item.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
-                findNavController().navigateUp()
-                true
+                finish()
             }
             else -> {
                 super.onOptionsItemSelected(item)
             }
         }
+        return true
     }
 
     private fun getTransactionStatus(tid: String) {
         lifecycleScope.launch {
-
             try {
+                AppFunctions.Dialogs.showLoadingDialog("Loading", this@TransactionStatusActivity)
                 when (val result = viewModel.getTransactionStatus(tid)) {
                     is TransactionStatusResponse.Success -> {
-                        displayTransactionStatusList(result.data)
+
+                        if (result.data.responseData.motoTxndetails.isNotEmpty()) {
+                            displayTransactionStatusList(result.data)
+                        } else {
+                            showErrorCondition("No Transaction Available")
+                        }
                     }
 
                     is TransactionStatusResponse.Error -> {
@@ -89,19 +102,20 @@ class TransactionStatusFragment : Fragment(R.layout.transaction_status_fragment)
             } catch (e: Exception) {
                 // exception
                 showErrorCondition(e.message!!)
+            } finally {
+                AppFunctions.Dialogs.closeLoadingDialog()
             }
 
         }
     }
 
     private fun showErrorCondition(errorMessage: String) {
-
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun displayTransactionStatusList(data: ResponseTransactionStatusDataModel) {
-
-        transactionStatusAdapter.updateDataSet(data.responseData.motoTxndetails)
-
+        val arrayList = data.responseData.motoTxndetails
+        transactionStatusAdapter.updateDataSet(arrayList)
     }
 
     private fun setupViewModel() {
@@ -112,10 +126,7 @@ class TransactionStatusFragment : Fragment(R.layout.transaction_status_fragment)
             ViewModelProvider(this, viewModelFactory).get(TransactionStatusViewModel::class.java)
         binding.apply {
             transactionViewModel = viewModel
-            lifecycleOwner = this@TransactionStatusFragment.viewLifecycleOwner
             executePendingBindings()
         }
     }
-
-
 }

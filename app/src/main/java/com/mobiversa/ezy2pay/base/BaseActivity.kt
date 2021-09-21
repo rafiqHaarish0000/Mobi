@@ -116,9 +116,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getAmount(amount: String): String {
-
         val ams: String = amount.replace(".", "")
-
         return String.format("%012d", ams.toLong())
     }
 

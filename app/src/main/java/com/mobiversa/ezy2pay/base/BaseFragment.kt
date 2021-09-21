@@ -65,6 +65,7 @@ import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
 open class BaseFragment : Fragment() {
+    private val TAG = BaseFragment::class.java.canonicalName
 
     lateinit var mProgressDialog: ProgressDialog
     lateinit var activity: Activity
@@ -227,6 +228,10 @@ open class BaseFragment : Fragment() {
     }
 
     fun shortToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun longToast(text: String) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
@@ -697,6 +702,7 @@ open class BaseFragment : Fragment() {
     }
 
     fun closeLoadingDialog() {
+        Log.i(TAG, "closeLoadingDialog: $loadingDialog")
         if (loadingDialog != null) {
             loadingDialog!!.dismiss()
         }

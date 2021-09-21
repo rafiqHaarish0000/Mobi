@@ -1,7 +1,6 @@
 package com.mobiversa.ezy2pay.ui.history.historyDetail
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
@@ -16,7 +15,7 @@ class HistoryDetailViewModel internal constructor(private val appRepository: App
     // TODO: Implement the ViewModel
 
     private val service = HistoryModel()
-    private var transactionHistoryList = MediatorLiveData<TransactionHistoryModel>()
+    private var transactionHistoryList = MutableLiveData<TransactionHistoryModel>()
     var userVerification = MutableLiveData<SuccessModel>()
     var setVoidHistory = MutableLiveData<VoidHistoryModel>()
     var settlementData = MutableLiveData<SuccessModel>()

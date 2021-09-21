@@ -50,7 +50,7 @@
         tools:layout="@layout/history_detail_fragment_new" />
     <fragment
         android:id="@+id/transactionStatusFragment"
-        android:name="com.mobiversa.ezy2pay.ui.history.transactionStatus.TransactionStatusFragment"
+        android:name="com.mobiversa.ezy2pay.ui.history.transactionStatus.TransactionStatusActivity"
         android:label="TransactionStatusFragment" />
 
 </navigation>

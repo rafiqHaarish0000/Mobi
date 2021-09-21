@@ -149,15 +149,15 @@ interface ApiService {
 //        private const val REGISTER_URL = "https://paydee.gomobi.io/"
 //        private const val NOTIFICATION_URL = "https://paydee.gomobi.io/notificationservices/"
 
-        private const val BASE_URL = "https://ecom.gomobi.io/"
-        private const val REGISTER_URL = "https://ecom.gomobi.io/"
-        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
+//        private const val BASE_URL = "https://ecom.gomobi.io/"
+//        private const val REGISTER_URL = "https://ecom.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
 
 
         //        Production credentials
-//        private const val BASE_URL = "https://pay.gomobi.io/"
-//        private const val REGISTER_URL = "https://pay.gomobi.io/"
-//        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
+        private const val BASE_URL = "https://pay.gomobi.io/"
+        private const val REGISTER_URL = "https://pay.gomobi.io/"
+        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
 
         private const val BANK_URL = "https://fpxservice.gomobi.io/"
         private const val CITY_URL = "https://ocsservices.gomobi.io/"
@@ -217,5 +217,6 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build().create(ApiService::class.java)
         }
+
     }
 }

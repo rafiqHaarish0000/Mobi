@@ -132,6 +132,7 @@
                             android:fontFamily="@font/ubuntu_normal"
                             android:hint="User Name"
                             android:maxLines="1"
+                            android:imeOptions="actionNext"
                             android:theme="@style/EditTextTheme_bgblue"
                             android:textColor="@color/colorPrimary"
                             android:textColorHint="#848484"

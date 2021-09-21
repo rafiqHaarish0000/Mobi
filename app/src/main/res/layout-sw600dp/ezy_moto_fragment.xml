@@ -356,59 +356,63 @@
 
             </androidx.cardview.widget.CardView>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/xxhdpi_30"
                 android:layout_marginRight="@dimen/xxhdpi_30"
-                android:layout_marginTop="@dimen/xxhdpi_20"
-                android:layout_marginBottom="@dimen/xxhdpi_20"
-                android:weightSum="2">
+                android:layout_marginBottom="@dimen/xxhdpi_30">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                <Button
+                    android:id="@+id/txt_send_ezymoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/rect_bor"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:drawableLeft="@drawable/ic_send"
+                    android:drawablePadding="@dimen/xxhdpi_10"
+                    android:paddingLeft="@dimen/xxhdpi_20"
+                    android:paddingTop="@dimen/xxhdpi_10"
+                    android:paddingRight="@dimen/xxhdpi_20"
+                    android:paddingBottom="@dimen/xxhdpi_10"
+                    android:text="@string/send"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_button_copy_to_clipboard"
+                    app:layout_constraintEnd_toStartOf="@+id/image_button_copy_to_clipboard"
+                    app:layout_constraintTop_toTopOf="@+id/image_button_copy_to_clipboard" />
 
-                    <TextView
-                        android:id="@+id/txt_send_ezymoto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/t_xxh_26"
-                        android:background="@drawable/rect_bor"
-                        android:drawableLeft="@drawable/ic_send"
-                        android:drawablePadding="@dimen/xxhdpi_30"
-                        android:backgroundTint="@color/colorPrimaryDark"
-                        android:paddingLeft="@dimen/xxhdpi_60"
-                        android:paddingTop="@dimen/xxhdpi_30"
-                        android:paddingRight="@dimen/xxhdpi_60"
-                        android:paddingBottom="@dimen/xxhdpi_30"
-                        android:text="@string/send"
-                        android:textColor="@color/white" />
 
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/image_button_copy_to_clipboard"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_copy_link"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/txt_share_ezymoto"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:layout_marginStart="24dp"
+                    android:src="@drawable/ic_share"
+                    android:text="@string/share"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_button_copy_to_clipboard"
+                    app:layout_constraintStart_toEndOf="@+id/image_button_copy_to_clipboard"
+                    app:layout_constraintTop_toTopOf="@+id/image_button_copy_to_clipboard" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/txt_share_ezymoto"
-                        android:layout_width="@dimen/xxhdpi_75"
-                        android:layout_height="@dimen/xxhdpi_75"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_share"
-                        android:text="@string/share"
-                        android:textColor="@color/colorPrimary" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>

@@ -247,6 +247,7 @@
                                 android:fontFamily="@font/ubuntu_normal"
                                 android:hint="User Name"
                                 android:maxLines="1"
+                                android:imeOptions="actionNext"
                                 android:textColor="@color/txt_clr"
                                 android:textColorHint="#848484"
                                 android:textSize="@dimen/t_xxh_18" />

@@ -1,7 +1,6 @@
 package com.mobiversa.ezy2pay.ui.history
 
 import android.util.Log
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.SuccessModel
@@ -14,13 +13,14 @@ import retrofit2.Response
 class HistoryModel {
 
     private val apiResponse = ApiService.serviceRequest()
-    val data = MediatorLiveData<TransactionHistoryModel>()
+    val data = MutableLiveData<TransactionHistoryModel>()
     val successData = MutableLiveData<SuccessModel>()
     val voidData = MutableLiveData<VoidHistoryModel>()
     val settlementData = MutableLiveData<SuccessModel>()
     val saleData = MutableLiveData<SuccessModel>()
 
-    fun getTransactionHistory(postParam: HashMap<String, String>): MediatorLiveData<TransactionHistoryModel> {
+    fun getTransactionHistory(postParam: HashMap<String, String>): MutableLiveData<TransactionHistoryModel> {
+
         apiResponse.getTransactionHistory(postParam).enqueue(object : Callback<TransactionHistoryModel> {
                 override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
                     notificationFailureResponse(data)
@@ -30,10 +30,11 @@ class HistoryModel {
                     response: Response<TransactionHistoryModel>
                 ) {
                     if (response.isSuccessful) {
-                        data.value = response.body()
+                        data.postValue(response.body())
                     }
                 }
             })
+
         return data
     }
     fun getUserVerification(postParam: HashMap<String, String>): MutableLiveData<SuccessModel> {

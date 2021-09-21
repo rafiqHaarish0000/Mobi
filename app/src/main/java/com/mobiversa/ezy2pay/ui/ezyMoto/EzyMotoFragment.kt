@@ -1,9 +1,7 @@
 package com.mobiversa.ezy2pay.ui.ezyMoto
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
@@ -19,9 +17,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
@@ -93,9 +89,12 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         setHasOptionsMenu(true)
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        service = arguments!!.getString(Fields.Service) as String
-        totalAmount = arguments!!.getString(Fields.Amount) as String
-        invoiceId = arguments!!.getString(Fields.InvoiceId) as String
+        arguments?.let {
+            service = it.getString(Fields.Service) as String
+            totalAmount = it.getString(Fields.Amount) as String
+            invoiceId = it.getString(Fields.InvoiceId) as String
+        }
+
 
         Log.e(TAG, "onCreateView: $service")
 
@@ -139,8 +138,9 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         rootView.txt_send_ezymoto.setOnClickListener(this)
         rootView.txt_share_ezymoto.setOnClickListener(this)
         rootView.btn_submit_ezymoto.setOnClickListener(this)
+        rootView.image_button_copy_to_clipboard.setOnClickListener(this)
 
-        adapter = PeopleAdapter(context!!, R.layout.activity_main, contactNumList)
+        adapter = PeopleAdapter(requireContext(), R.layout.activity_main, contactNumList)
         edtPhoneNumEzymoto.setAdapter(adapter)
         edtPhoneNumEzymoto.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, view, pos, id -> // this is the way to find selected object/item
@@ -286,7 +286,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
     private fun setUpCountrySpinner() {
 
         countryAdapter = ArrayAdapter(
-            context!!,
+            requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
             countryArray
         )
@@ -298,7 +298,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         countrySpinner.onItemSelectedListener = this
 
         monthAdapter = ArrayAdapter(
-            context!!,
+            requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
             getMonthList()
         )
@@ -462,7 +462,12 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                     when (clickAction) {
                         "Send" -> {
                             shortToast(it.responseData.invoiceId)
-                            context!!.startActivity(Intent(getActivity(), MainActivity::class.java))
+                            requireContext().startActivity(
+                                Intent(
+                                    getActivity(),
+                                    MainActivity::class.java
+                                )
+                            )
 //                        setTitle("Home", true)
 //                        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 //                        fragmentManager?.popBackStack()
@@ -478,6 +483,22 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                             )
                             startActivity(Intent.createChooser(share, "Share $Constants.EzyMoto"))
                         }
+
+                        "Copy" -> {
+                            val clipboard =
+                                requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            val clip =
+                                ClipData.newPlainText(
+                                    "Mobi Ezylink OPT",
+                                    "${it.responseData.invoiceId} ${it.responseData.opt}"
+                                )
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(
+                                requireContext(),
+                                "Link copied to clipboard",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 } else {
                     if (it.responseDescription.equals(
@@ -488,7 +509,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
                         DialogInterface.OnClickListener { dialog, which ->
                             if (true) { // Check Network
                                 val appPackageName =
-                                    getActivity()!!.packageName // getPackageName() from Context or Activity object
+                                    requireActivity().packageName // getPackageName() from Context or Activity object
                                 try {
                                     startActivity(
                                         Intent(
@@ -552,6 +573,20 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         when (v?.id) {
             R.id.txt_send_ezymoto -> {
                 sendLinearEzymoto.visibility = View.VISIBLE
+            }
+            R.id.image_button_copy_to_clipboard -> {
+                sendLinearEzymoto.visibility = View.GONE
+                when (service) {
+                    Fields.EzyMoto, Fields.PreAuthMoto, Fields.EzyMotoLite, Fields.EzyRec -> {
+                        val nameStr = edtNameEzymoto.text.toString()
+                        if (nameStr.isEmpty() || nameStr.length < 2) {
+                            edtNameEzymoto.error = "Enter Valid Name"
+                        } else if (service == Fields.EzyRec && monthSpinner.selectedItemPosition <= 0) {
+                            longToast("Please select number of payments")
+                        } else
+                            applicationSubmit("Copy")
+                    }
+                }
             }
             R.id.txt_share_ezymoto -> {
                 sendLinearEzymoto.visibility = View.GONE
@@ -662,7 +697,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         )
         var cursor: Cursor? = null
         try {
-            cursor = context!!.contentResolver.query(
+            cursor = requireContext().contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 projection,
                 null,

@@ -246,6 +246,7 @@
                                 android:drawablePadding="@dimen/xxhdpi_10"
                                 android:fontFamily="@font/ubuntu_normal"
                                 android:hint="User Name"
+                                android:imeOptions="actionNext"
                                 android:maxLines="1"
                                 android:textColor="@color/txt_clr"
                                 android:textColorHint="#848484"

@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="dataModel"
-            type="com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel.ResponseData.TransactionStatusData" />
+            type="com.mobiversa.ezy2pay.dataModel.TransactionStatusData" />
 
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,10 +27,11 @@
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="18dp"
+                android:src="@drawable/icon_ezylink_success_transaction"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/icon_ezylink_success_transaction" />
+                tools:ignore="VectorDrawableCompat" />
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -47,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="TextView"
+                    android:text="@{dataModel.name}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -57,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="TextView" />
+                    android:text="@{dataModel.getParsedReference()}" />
             </LinearLayout>
 
             <LinearLayout
@@ -77,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="TextView"
+                    android:text="@{dataModel.getConvertedAmount()}"
                     android:textColor="#2454F3"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -87,15 +90,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="TextView"
+                    android:text="@{dataModel.getParsedDate()}"
                     android:textSize="10sp" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/textView_status_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="TextView"
+                    android:text="@{dataModel.getParsedStatus()}"
                     android:textSize="10sp" />
             </LinearLayout>
 

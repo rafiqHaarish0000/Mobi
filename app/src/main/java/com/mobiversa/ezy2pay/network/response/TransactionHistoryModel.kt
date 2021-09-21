@@ -10,8 +10,8 @@ data class TransactionHistoryModel(
 )
 
 data class HistoryResponseData(
-    val forSettlement: List<ForSettlement>?,
-    val preAuthorization: List<ForSettlement>?
+    var forSettlement: List<ForSettlement>? = null,
+    var preAuthorization: List<ForSettlement>? = null
 )
 
 data class ForSettlement(

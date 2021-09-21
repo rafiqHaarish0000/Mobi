@@ -45,10 +45,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-internal val TAG = HistoryFragmentNew::class.java.canonicalName
 
 class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener {
-
+    private val TAG = HistoryFragmentNew::class.java.canonicalName
     private var position: Int? = null
 
     private lateinit var historyViewModel: HistoryViewModel
@@ -258,7 +257,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
             historyParam[Fields.Service] = Fields.LITE_TXN_HISTORY
         }
 
-        historyParam[Fields.Type] = getLoginResponse().type.toUpperCase(Locale.ROOT)
+        historyParam[Fields.Type] = getLoginResponse().type.uppercase(Locale.ROOT)
         jsonHistoryListEnque(historyParam)
     }
 
@@ -367,9 +366,11 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                 }
             } else {
                 if (it.responseData.forSettlement != null) {
-                    if (it.responseData.forSettlement.isNotEmpty()) {
+                    if (it.responseData.forSettlement!!.isNotEmpty()) {
                         historyList.clear()
-                        historyList.addAll(it.responseData.forSettlement)
+                        historyList.addAll(
+                            it.responseData.forSettlement!!
+                        )
                         historyAdapter.notifyDataSetChanged()
 
                         for (historyData in historyList) {

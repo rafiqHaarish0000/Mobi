@@ -3,9 +3,14 @@ package com.mobiversa.ezy2pay.dataModel
 import com.mobiversa.ezy2pay.base.AppFunctions
 import com.mobiversa.ezy2pay.utils.Constants
 
-data class RequestTransactionStatusDataModel(
+
+data class TransactionStatusRequestDataModel(
     val service: String = "MOTO_LINK_LIST",
-    val tid: String
+    val tid: String,
+    val pageNo: String = "1",
+    val fromDate: String = "",
+    val toDate: String = "",
+    val searchKey: String = ""
 )
 
 data class ResponseTransactionStatusDataModel(

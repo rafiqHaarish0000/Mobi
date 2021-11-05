@@ -1,4 +1,4 @@
-package com.mobiversa.ezy2pay.adapter
+package com.mobiversa.ezy2pay.adapter.transactionStatus
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -17,8 +17,8 @@ import com.mobiversa.ezy2pay.utils.Constants
 //internal const val DATE_VIEW: Int = 0
 //internal const val TRANSACTION_VIEW: Int = 1
 
-class TransactionStatusAdapter :
-    RecyclerView.Adapter<TransactionStatusAdapter.TransactionStatusViewHolder>() {
+class TransactionStatusAdapterBackup :
+    RecyclerView.Adapter<TransactionStatusAdapterBackup.TransactionStatusViewHolder>() {
 
 
 //    private var dataSet: ArrayList<TransactionStatusAdapterModal> =
@@ -59,7 +59,7 @@ class TransactionStatusAdapter :
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: TransactionStatusViewHolder, position: Int) {
         val item = dataSet[position]
-        item?.run {
+        item.run {
             val bind = (holder).bind(this@run)
 
             when (item.status) {
@@ -147,7 +147,7 @@ class TransactionStatusAdapter :
                 else -> {
                     Glide
                         .with(bind.root.context)
-                        .load(R.drawable.link_not_used_transaction_16_px)
+                        .load(R.drawable.link_not_used_16_px)
                         .into(bind.imageView)
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -155,7 +155,7 @@ class TransactionStatusAdapter :
                             null,
                             null,
                             bind.root.context.resources.getDrawable(
-                                R.drawable.link_not_used_transaction_16_px,
+                                R.drawable.link_not_used_16_px,
                                 bind.root.context.theme
                             ),
                             null
@@ -165,7 +165,7 @@ class TransactionStatusAdapter :
                             null,
                             null,
                             bind.root.context.resources.getDrawable(
-                                R.drawable.link_not_used_transaction_16_px
+                                R.drawable.link_not_used_16_px
                             ),
                             null
                         )

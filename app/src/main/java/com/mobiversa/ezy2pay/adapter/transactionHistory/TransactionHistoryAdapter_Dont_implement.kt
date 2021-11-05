@@ -1,4 +1,4 @@
-package com.mobiversa.ezy2pay.adapter
+package com.mobiversa.ezy2pay.adapter.transactionHistory
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.databinding.HistoryListItemBinding
 import com.mobiversa.ezy2pay.network.response.ForSettlement
-import com.mobiversa.ezy2pay.ui.history.HistoryFragment
+import com.mobiversa.ezy2pay.ui.history.HistoryFragmentNew
 import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.DateFormatter
 import com.mobiversa.ezy2pay.utils.Fields
@@ -25,19 +25,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal val TAG = TransactionHistoryAdapter::class.java.canonicalName
+internal val TAG_TRANSACTION_NEW = TransactionHistoryAdapterNew::class.java.canonicalName
 
-class TransactionHistoryAdapter(
+class TransactionHistoryAdapterNew(
     private val historyList: ArrayList<ForSettlement>,
     val context: Context,
-    private val historyFragment: HistoryFragment
+    private val historyFragment: HistoryFragmentNew
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     private var filterHistoryList = historyList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return TransactionHistoryBinding(HistoryListItemBinding.inflate(layoutInflater))
+        return TransactionHistoryNewBinding(HistoryListItemBinding.inflate(layoutInflater))
     }
 
     override fun getItemCount(): Int {
@@ -46,12 +46,12 @@ class TransactionHistoryAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        val item = filterHistoryList[position]
-        (holder as TransactionHistoryBinding).bind(
+        (holder as TransactionHistoryNewBinding).bind(
             context,
-            item,
+            filterHistoryList[position],
             historyFragment
         )
+
 
     }
 
@@ -63,7 +63,6 @@ class TransactionHistoryAdapter(
 
         return object : Filter() {
             @SuppressLint("DefaultLocale")
-
 
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString()
@@ -97,22 +96,22 @@ class TransactionHistoryAdapter(
     }
 }
 
-class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
+class TransactionHistoryNewBinding(private val binding: HistoryListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("DefaultLocale")
-    fun bind(context: Context, historyData: ForSettlement, fragment: HistoryFragment) {
+    fun bind(context: Context, historyData: ForSettlement, fragment: HistoryFragmentNew) {
         binding.historyItem = historyData
 
 //        14-Nov-2019
         //Aug 5, 2019 6:49:06 PM
         var dateFormat = SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.US)
-        val date = dateFormat.parse("${historyData.date} ${historyData.time}")
-        dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val date = dateFormat.parse(historyData.date + " " + historyData.time)
+        dateFormat = SimpleDateFormat("dd MMM yyyy")
         val today_date = dateFormat.format(Calendar.getInstance().time)
-        val dateStr = dateFormat.format(date!!)
+        val dateStr = dateFormat.format(date)
         binding.root.txt_date.text = dateStr
-        val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val timeFormat = SimpleDateFormat("hh:mm a")
         val timeStr = timeFormat.format(date)
         binding.root.txt_time.text = timeStr
 
@@ -259,11 +258,12 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
                         }
                         else -> {
                             Log.i(
-                                TAG,
+                                TAG_TRANSACTION_NEW,
                                 "bind: unknown transaction status : '${historyData.status}' "
                             )
                         }
                     }
+
                 }
                 else -> {
                     binding.txtRrnHistory.visibility = View.VISIBLE
@@ -281,33 +281,30 @@ class TransactionHistoryBinding(private val binding: HistoryListItemBinding) :
                         }
                     }
                 }
+
             }
         }
 
 
         binding.root.list_history_relative.setOnClickListener {
 
-            Log.i(TAG, "bind: list_history_relative --> Clicked")
+            Log.i(TAG_TRANSACTION_NEW, "bind: list_history_relative --> Clicked")
+
             val bundle = Bundle()
             bundle.putString(Constants.Amount, cost)
             bundle.putString(Constants.Date, binding.txtDate.text.toString())
             val status = binding.txtStatusHistory.text.toString()
 
-            if (status.equals("Completed", true)
-                || status.equals("Cash Sale", true)
-                || status.equals("E", true)
+            if (status.equals("Completed", true) || status.equals(
+                    "Cash Sale",
+                    true
+                ) || status.equals("E", true)
             ) {
                 fragment.addFragment(historyData, bundle = bundle)
             }
-
-            // TODO: 31-08-2021
-            /*  Vignesh Selvam
-            * Cancel option for pending transaction is removed
-            * methoed will be removed in the future update
-            * */
-            /* if (status.equals("PENDING", false)) {
-                 fragment.showAlert(historyData)
-             } */
+            if (status.equals("PENDING", false)) {
+                fragment.showAlert(historyData)
+            }
         }
 
         binding.txtRrnHistory.visibility = View.GONE

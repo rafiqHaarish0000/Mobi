@@ -4,8 +4,8 @@ import com.google.gson.GsonBuilder
 import com.mobiversa.ezy2pay.BuildConfig
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
 import com.mobiversa.ezy2pay.dataModel.NGrabPayResponseData
-import com.mobiversa.ezy2pay.dataModel.RequestTransactionStatusDataModel
 import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
+import com.mobiversa.ezy2pay.dataModel.TransactionStatusRequestDataModel
 import com.mobiversa.ezy2pay.network.response.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -138,8 +138,13 @@ interface ApiService {
     fun getStateList(@Body postParam: HashMap<String, String>): Call<StateModel>
 
     @POST("payment/mobiapr19/mobi_jsonservice")
-    suspend fun getTransactionStatus(@Body requestTransactionStatusDataModel: RequestTransactionStatusDataModel): Response<ResponseTransactionStatusDataModel>
+    suspend fun getTransactionStatus(@Body transactionStatusRequestDataModel: TransactionStatusRequestDataModel): Response<ResponseTransactionStatusDataModel>
 
+    // TODO: 03-11-2021
+    /* Vignesh Selvam
+    *
+    * Transaction Status Paging Library
+    * */
     companion object RetrofitClient {
 //        private const val BANK_URL = "https://fpx.mobiversa.com/"
 //        private const val CITY_URL = "https://ocsservices.mobiversa.com/"
@@ -149,15 +154,20 @@ interface ApiService {
 //        private const val REGISTER_URL = "https://paydee.gomobi.io/"
 //        private const val NOTIFICATION_URL = "https://paydee.gomobi.io/notificationservices/"
 
-//        private const val BASE_URL = "https://ecom.gomobi.io/"
-//        private const val REGISTER_URL = "https://ecom.gomobi.io/"
-//        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
+        private const val BASE_URL = "https://ecom.gomobi.io/"
+        private const val REGISTER_URL = "https://ecom.gomobi.io/"
+        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
+
+
+//        private const val BASE_URL = "https://san.gomobi.io/"
+//        private const val REGISTER_URL = "https://san.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://san.gomobi.io/notificationservices/"
 
 
         //        Production credentials
-        private const val BASE_URL = "https://pay.gomobi.io/"
-        private const val REGISTER_URL = "https://pay.gomobi.io/"
-        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
+//        private const val BASE_URL = "https://pay.gomobi.io/"
+//        private const val REGISTER_URL = "https://pay.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
 
         private const val BANK_URL = "https://fpxservice.gomobi.io/"
         private const val CITY_URL = "https://ocsservices.gomobi.io/"

@@ -36,7 +36,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:allowBackup">
+        android:networkSecurityConfig="@xml/network_config"
+        tools:replace="android:allowBackup"
+        tools:targetApi="n">
 
         <activity android:name=".ui.receipt.PrinterActivity" />
         <activity android:name=".ui.chat.ChatNotifyActivity" />

@@ -145,6 +145,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:19.0.1'
     implementation platform('com.google.firebase:firebase-bom:28.4.0')
 
+
+    def paging_version = "3.0.1"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }
 
 configurations.all {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.widget.TextView
+import com.mobiversa.ezy2pay.BuildConfig
 import com.mobiversa.ezy2pay.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,7 +45,10 @@ object AppFunctions {
             } else {
                 builder.setMessage(message)
             }
-            builder.setCancelable(false)
+
+            if (!BuildConfig.DEBUG) {
+                builder.setCancelable(false)
+            }
 
             loadingDialog = builder.create()
             loadingDialog!!.show()

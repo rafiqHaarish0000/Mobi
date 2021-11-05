@@ -144,4 +144,13 @@
     <string name="amount">Amount</string>
     <string name="rm_00_00">RM 00.00</string>
     <string name="status">Status</string>
+    <string name="filter_transaction_status">filter transaction status</string>
+    <string name="search">Search</string>
+    <string name="search_filter">Search Filter</string>
+    <string name="pending">Pending</string>
+    <string name="not_in_use">Not In Use</string>
+    <string name="transaction_status">Transaction Status</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="click_to_set_date">Click to set date</string>
 </resources>

@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
-import com.mobiversa.ezy2pay.adapter.TransactionHistoryAdapter
+import com.mobiversa.ezy2pay.adapter.transactionHistory.TransactionHistoryAdapter
 import com.mobiversa.ezy2pay.base.BaseFragment
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
 import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
@@ -253,11 +253,14 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
 
         historyParam[Fields.Type] = getLoginResponse().type.uppercase(Locale.ROOT)
-        jsonHistoryListEnque(historyParam)
+        requestTransactionHistoryData(historyParam)
     }
 
-    private fun jsonHistoryListEnque(historyParam: HashMap<String, String>) {
+    private fun requestTransactionHistoryData(historyParam: HashMap<String, String>) {
         showLoadingDialog(message = "Loading History...")
+
+        historyParam[Fields.PAGE_NUMBER] = "1"
+
         transactionType = historyParam[Fields.Service]!!
         val apiResponse = ApiService.serviceRequest()
         apiResponse.getTransactionHistory(historyParam).enqueue(object :
@@ -296,7 +299,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             historyParam[Fields.tid] = getLoginResponse().tid
         }
 
-        jsonHistoryListEnque(historyParam)
+        requestTransactionHistoryData(historyParam)
     }
 
 
@@ -323,6 +326,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
     private fun historyObserveData(it: TransactionHistoryModel?) {
+
+        Log.e(TAG, "historyObserveData: trxType --> $trxType")
         closeLoadingDialog()
         if (it != null) {
             var count = 0

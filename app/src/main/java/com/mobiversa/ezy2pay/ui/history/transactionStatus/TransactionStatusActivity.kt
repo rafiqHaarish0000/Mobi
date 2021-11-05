@@ -10,15 +10,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.R
-import com.mobiversa.ezy2pay.adapter.TransactionStatusAdapter
+import com.mobiversa.ezy2pay.adapter.transactionStatus.TransactionStatusAdapter
 import com.mobiversa.ezy2pay.base.AppFunctions
 import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
 import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
 import com.mobiversa.ezy2pay.databinding.ActivityTransactionStatusBinding
+import com.mobiversa.ezy2pay.dialogs.SearchFilterDialog
 import com.mobiversa.ezy2pay.utils.AppRepository
 import com.mobiversa.ezy2pay.utils.AppViewModelFactory
 import com.mobiversa.ezy2pay.utils.Constants
 import kotlinx.android.synthetic.main.activity_transaction_status.*
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -26,6 +28,16 @@ internal val TAG = TransactionStatusActivity::class.java.canonicalName
 
 class TransactionStatusActivity : AppCompatActivity() {
 
+    private val searchCallback = object : SearchFilterDialog.SearchFilterCallBack {
+        override fun onSearch() {
+
+        }
+
+        override fun onCancel() {
+
+        }
+
+    }
     private lateinit var transactionStatusAdapter: TransactionStatusAdapter
     private lateinit var _binding: ActivityTransactionStatusBinding
     private val binding: ActivityTransactionStatusBinding get() = _binding
@@ -43,12 +55,6 @@ class TransactionStatusActivity : AppCompatActivity() {
         setupViewModel()
 
 //        setSupportActionBar(binding.toolbar)
-
-        intent.getStringExtra(Constants.NavigationKey.TID)?.let { tid ->
-            Log.i(TAG, "onViewCreated: tid -> $tid")
-            getTransactionStatus(tid)
-        }
-
         transactionStatusAdapter = TransactionStatusAdapter()
 
         binding.imageButtonBack.setOnClickListener {
@@ -62,6 +68,27 @@ class TransactionStatusActivity : AppCompatActivity() {
                     false
                 )
             adapter = transactionStatusAdapter
+        }
+
+        binding.imageButtonFilter.setOnClickListener {
+            val dialog = SearchFilterDialog.newInstance(searchCallback)
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, SearchFilterDialog::class.java.canonicalName)
+        }
+
+
+        intent.getStringExtra(Constants.NavigationKey.TID)?.let { tid ->
+            Log.i(TAG, "onViewCreated: tid -> $tid")
+//            getTransactionStatus(tid)
+            getTransactionStatusPaging(tid)
+        }
+    }
+
+    private fun getTransactionStatusPaging(tid: String) {
+        lifecycleScope.launch {
+            viewModel.getTransactionStatusPaging(tid, "2021-11-05", "2021-10-15").collectLatest {
+                transactionStatusAdapter.submitData(it)
+            }
         }
     }
 
@@ -115,7 +142,7 @@ class TransactionStatusActivity : AppCompatActivity() {
 
     private fun displayTransactionStatusList(data: ResponseTransactionStatusDataModel) {
         val arrayList = data.responseData.motoTxndetails
-        transactionStatusAdapter.updateDataSet(arrayList)
+//        transactionStatusAdapter.updateDataSet(arrayList)
     }
 
     private fun setupViewModel() {

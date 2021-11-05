@@ -3,12 +3,10 @@ package com.mobiversa.ezy2pay.ui.history
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
-import com.mobiversa.ezy2pay.adapter.TransactionHistoryAdapterNew
+import com.mobiversa.ezy2pay.adapter.transactionHistory.TransactionHistoryAdapterNew
 import com.mobiversa.ezy2pay.base.BaseFragment
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
 import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse

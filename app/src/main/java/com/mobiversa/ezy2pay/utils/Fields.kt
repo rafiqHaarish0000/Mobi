@@ -210,6 +210,7 @@ class Fields {
         const val State = "State"
         const val City = "City"
 
+        const val PAGE_NUMBER = "pageNo"
         // response success code
         val STATUS_SUCCESS = 0
         val STATUS_FAILED = 1

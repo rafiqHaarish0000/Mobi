@@ -695,7 +695,9 @@ open class BaseFragment : Fragment() {
         } else {
             builder.setMessage(message)
         }
-        builder.setCancelable(false)
+
+        if (!BuildConfig.DEBUG)
+            builder.setCancelable(false)
 
         loadingDialog = builder.create()
         loadingDialog!!.show()

@@ -2,14 +2,14 @@ package com.mobiversa.ezy2pay.network.response
 
 import java.io.Serializable
 
-data class TransactionHistoryModel(
+data class TransactionHistoryResponseData(
     val responseCode: String,
-    val responseData: HistoryResponseData,
+    val responseData: TransactionHistoryData,
     val responseDescription: String,
     val responseMessage: String
 )
 
-data class HistoryResponseData(
+data class TransactionHistoryData(
     var forSettlement: List<ForSettlement>? = null,
     var preAuthorization: List<ForSettlement>? = null
 )

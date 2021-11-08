@@ -2,8 +2,8 @@ package com.mobiversa.ezy2pay.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.mobiversa.ezy2pay.ui.history.HistoryViewModel
-import com.mobiversa.ezy2pay.ui.history.historyDetail.HistoryDetailViewModel
+import com.mobiversa.ezy2pay.ui.history.transactionHistory.HistoryViewModel
+import com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailViewModel
 import com.mobiversa.ezy2pay.ui.history.transactionStatus.TransactionStatusViewModel
 
 class AppViewModelFactory internal constructor(private val appRepository: AppRepository) :

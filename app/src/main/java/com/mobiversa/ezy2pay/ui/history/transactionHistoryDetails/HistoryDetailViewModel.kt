@@ -1,19 +1,21 @@
-package com.mobiversa.ezy2pay.ui.history
+package com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
-import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
 import com.mobiversa.ezy2pay.network.response.SuccessModel
-import com.mobiversa.ezy2pay.network.response.TransactionHistoryModel
+import com.mobiversa.ezy2pay.network.response.TransactionHistoryResponseData
 import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
+import com.mobiversa.ezy2pay.ui.history.HistoryModel
 import com.mobiversa.ezy2pay.utils.AppRepository
 
-class HistoryViewModel(val appRepository: AppRepository) : ViewModel() {
+class HistoryDetailViewModel internal constructor(private val appRepository: AppRepository) :
+    ViewModel() {
+    // TODO: Implement the ViewModel
 
     private val service = HistoryModel()
-    var transactionHistoryList = MutableLiveData<TransactionHistoryModel>()
+    private var transactionHistoryList = MutableLiveData<TransactionHistoryResponseData>()
     var userVerification = MutableLiveData<SuccessModel>()
     var setVoidHistory = MutableLiveData<VoidHistoryModel>()
     var settlementData = MutableLiveData<SuccessModel>()
@@ -39,13 +41,9 @@ class HistoryViewModel(val appRepository: AppRepository) : ViewModel() {
         saleData = service.setSale(saleParam)
     }
 
-    suspend fun cancelPendingTransaction(pathStr: String, requestData: NGrabPayRequestData): NGrabPayResponse {
-        return appRepository.voidNGPayTransaction(
-            pathStr = pathStr,
-            requestData = requestData
-        )
+    suspend fun voidNGPayTransaction(pathStr: String, requestData: NGrabPayRequestData): Any {
+        return appRepository.voidNGPayTransaction(pathStr,requestData)
     }
-
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

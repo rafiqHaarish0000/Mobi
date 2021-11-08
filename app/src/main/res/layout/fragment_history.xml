@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
-    android:clickable="true"
-    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightWhite">
+    android:background="@color/lightWhite"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/xxhdpi_10"
-                    android:layout_toLeftOf="@id/spinner_transaction_type"
+                    android:layout_toLeftOf="@id/image_button_filter_product"
                     android:background="@drawable/rect_bor">
 
                     <SearchView
@@ -54,19 +54,21 @@
                     android:layout_alignParentRight="true"
                     android:contentDescription="TODO"
                     android:padding="@dimen/xxhdpi_5"
-                    android:src="@drawable/ic_filter" />
+                    android:src="@drawable/ic_filter"
+                    android:visibility="gone" />
 
-                <com.mobiversa.ezy2pay.ui.history.NDSpinner
-                    android:id="@+id/spinner_transaction_type"
+                <ImageButton
+                    android:id="@+id/image_button_filter_product"
                     android:layout_width="@dimen/xxhdpi_40"
                     android:layout_height="@dimen/xxhdpi_40"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:background="@null"
+                    android:contentDescription="@string/filter_product"
                     android:dropDownWidth="800dp"
                     android:dropDownVerticalOffset="@dimen/xxhdpi_50"
                     android:gravity="center_horizontal"
                     android:spinnerMode="dropdown"
+                    android:src="@drawable/ic_baseline_filter_list_24"
                     android:textAlignment="center"
                     android:visibility="visible" />
 
@@ -114,8 +116,8 @@
         android:id="@+id/textview_state_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:text="No Transactions available"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

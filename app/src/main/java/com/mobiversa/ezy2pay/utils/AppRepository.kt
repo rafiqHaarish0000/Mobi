@@ -1,10 +1,7 @@
 package com.mobiversa.ezy2pay.utils
 
 import android.util.Log
-import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
-import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusRequestDataModel
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.network.ApiService
 import java.io.IOException
 
@@ -90,6 +87,35 @@ class AppRepository {
         }
 
         return TransactionStatusResponse.Error(errorMessage = "Something went wrong")
+    }
+
+    suspend fun getTransactionHistoryData(transactionHistoryRequestData: TransactionHistoryRequestData): TransactionHistoryResponse {
+        try {
+            val response = apiService.getTransactionHistoryNew(transactionHistoryRequestData)
+            return if (response.isSuccessful) {
+                val data = response.body()!!
+                if (data.responseCode.equals(
+                        Constants.Network.RESPONSE_SUCCESS,
+                        ignoreCase = true
+                    )
+                ) {
+                    TransactionHistoryResponse.Success(data = data.responseData)
+                } else {
+                    TransactionHistoryResponse.Error(errorMessage = data.responseDescription)
+                }
+            } else {
+                TransactionHistoryResponse.Error(errorMessage = response.message())
+            }
+
+        } catch (e: Exception) {
+            return TransactionHistoryResponse.Exception(exceptionMessage = e.message!!)
+        } catch (e: IOException) {
+            return TransactionHistoryResponse.Exception(exceptionMessage = e.message!!)
+        }
+    }
+
+    fun deleteTransactionLink(transactionLinkDeleteRequestData: TransactionLinkDeleteRequestData) {
+
     }
 
 }

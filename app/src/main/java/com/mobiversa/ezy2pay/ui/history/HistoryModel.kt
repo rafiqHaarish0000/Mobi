@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.SuccessModel
-import com.mobiversa.ezy2pay.network.response.TransactionHistoryModel
+import com.mobiversa.ezy2pay.network.response.TransactionHistoryResponseData
 import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,21 +13,21 @@ import retrofit2.Response
 class HistoryModel {
 
     private val apiResponse = ApiService.serviceRequest()
-    val data = MutableLiveData<TransactionHistoryModel>()
+    val data = MutableLiveData<TransactionHistoryResponseData>()
     val successData = MutableLiveData<SuccessModel>()
     val voidData = MutableLiveData<VoidHistoryModel>()
     val settlementData = MutableLiveData<SuccessModel>()
     val saleData = MutableLiveData<SuccessModel>()
 
-    fun getTransactionHistory(postParam: HashMap<String, String>): MutableLiveData<TransactionHistoryModel> {
+    fun getTransactionHistory(postParam: HashMap<String, String>): MutableLiveData<TransactionHistoryResponseData> {
 
-        apiResponse.getTransactionHistory(postParam).enqueue(object : Callback<TransactionHistoryModel> {
-                override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
+        apiResponse.getTransactionHistory(postParam).enqueue(object : Callback<TransactionHistoryResponseData> {
+                override fun onFailure(call: Call<TransactionHistoryResponseData>, t: Throwable) {
                     notificationFailureResponse(data)
                 }
                 override fun onResponse(
-                    call: Call<TransactionHistoryModel>,
-                    response: Response<TransactionHistoryModel>
+                    call: Call<TransactionHistoryResponseData>,
+                    response: Response<TransactionHistoryResponseData>
                 ) {
                     if (response.isSuccessful) {
                         data.postValue(response.body())
@@ -109,7 +109,7 @@ class HistoryModel {
         return saleData
     }
 
-    private fun notificationFailureResponse(data: MutableLiveData<TransactionHistoryModel>) {
+    private fun notificationFailureResponse(data: MutableLiveData<TransactionHistoryResponseData>) {
         Log.e("Transaction History ", "" + data)
     }
     private fun dataFailureResponse(data: MutableLiveData<SuccessModel>) {

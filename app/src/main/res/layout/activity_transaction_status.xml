@@ -12,7 +12,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -58,24 +60,91 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
 
-        <EditText
-            android:id="@+id/editTextTextPersonName"
+
+        <!--        <EditText-->
+        <!--            android:id="@+id/editText_search"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:autofillHints="name"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:drawableStart="@drawable/ic_baseline_search_24"-->
+        <!--            android:drawablePadding="10dp"-->
+        <!--            android:ems="10"-->
+        <!--            android:hint="@string/search"-->
+        <!--            android:imeOptions="actionDone"-->
+        <!--            android:inputType="textPersonName"-->
+        <!--            android:maxLines="1"-->
+        <!--            android:paddingTop="5dp"-->
+        <!--            android:paddingBottom="5dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/imageButton_filter"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/toolbar" />-->
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_baseline_search_24"
-            android:drawablePadding="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="Search"
+            android:background="@drawable/search_background"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toStartOf="@+id/imageButton_filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_background"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="8dp">
+
+                <EditText
+                    android:id="@+id/editText_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/ic_baseline_search_24"
+                    android:drawablePadding="8dp"
+                    android:ems="10"
+                    android:hint="@string/search"
+                    android:inputType="textPersonName" />
+
+                <ImageButton
+                    android:id="@+id/imageButton_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/clear_search"
+                    android:padding="8dp"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_baseline_clear_24"
+                    tools:ignore="VectorDrawableCompat" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ImageButton
+            android:id="@+id/imageButton_filter"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/filter_transaction_status"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/ic_baseline_filter_list_24"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cardView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_transaction_status_list"
@@ -85,21 +154,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
-
-        <ImageButton
-            android:id="@+id/imageButton_filter"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:src="@drawable/ic_baseline_filter_list_24"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName"
-            android:contentDescription="@string/filter_transaction_status" />
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

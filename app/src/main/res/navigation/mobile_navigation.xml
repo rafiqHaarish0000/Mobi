@@ -13,13 +13,12 @@
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.mobiversa.ezy2pay.ui.history.HistoryFragment"
+        android:name="com.mobiversa.ezy2pay.ui.history.transactionHistory.HistoryFragment"
         android:label="@string/title_history"
-        tools:layout="@layout/fragment_history" >
+        tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_navigation_history_to_historyDetailFragment2"
-            app:destination="@id/historyDetailFragment"
-            app:popUpTo="@id/navigation_history" />
+            app:destination="@id/historyDetailFragment" />
         <action
             android:id="@+id/action_navigation_history_to_transactionStatusFragment"
             app:destination="@id/transactionStatusFragment" />
@@ -45,7 +44,7 @@
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/historyDetailFragment"
-        android:name="com.mobiversa.ezy2pay.ui.history.historyDetail.HistoryDetailFragment"
+        android:name="com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailFragment"
         android:label="history_detail_fragment_copy"
         tools:layout="@layout/history_detail_fragment_new" />
     <fragment

@@ -2,10 +2,7 @@ package com.mobiversa.ezy2pay.network
 
 import com.google.gson.GsonBuilder
 import com.mobiversa.ezy2pay.BuildConfig
-import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
-import com.mobiversa.ezy2pay.dataModel.NGrabPayResponseData
-import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusRequestDataModel
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.network.response.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -81,7 +78,7 @@ interface ApiService {
     fun getDeclineNotifyData(@Body postParam: HashMap<String, String>): Call<SendDeclineNotifyModel>
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
-    fun getTransactionHistory(@Body postParam: HashMap<String, String>): Call<TransactionHistoryModel>
+    fun getTransactionHistory(@Body postParam: HashMap<String, String>): Call<TransactionHistoryResponseData>
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun getUserValidation(@Body postParam: HashMap<String, String>): Call<SuccessModel>
@@ -140,6 +137,10 @@ interface ApiService {
     @POST("payment/mobiapr19/mobi_jsonservice")
     suspend fun getTransactionStatus(@Body transactionStatusRequestDataModel: TransactionStatusRequestDataModel): Response<ResponseTransactionStatusDataModel>
 
+
+    @POST("payment/mobiapr19/mobi_jsonservice/")
+    suspend fun getTransactionHistoryNew(@Body postParam: TransactionHistoryRequestData): Response<TransactionHistoryResponseData>
+
     // TODO: 03-11-2021
     /* Vignesh Selvam
     *
@@ -154,17 +155,15 @@ interface ApiService {
 //        private const val REGISTER_URL = "https://paydee.gomobi.io/"
 //        private const val NOTIFICATION_URL = "https://paydee.gomobi.io/notificationservices/"
 
-        private const val BASE_URL = "https://ecom.gomobi.io/"
-        private const val REGISTER_URL = "https://ecom.gomobi.io/"
-        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
+//        private const val BASE_URL = "https://ecom.gomobi.io/"
+//        private const val REGISTER_URL = "https://ecom.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
 
+        private const val BASE_URL = "https://san.gomobi.io/"
+        private const val REGISTER_URL = "https://san.gomobi.io/"
+        private const val NOTIFICATION_URL = "https://san.gomobi.io/notificationservices/"
 
-//        private const val BASE_URL = "https://san.gomobi.io/"
-//        private const val REGISTER_URL = "https://san.gomobi.io/"
-//        private const val NOTIFICATION_URL = "https://san.gomobi.io/notificationservices/"
-
-
-        //        Production credentials
+//        Production credentials
 //        private const val BASE_URL = "https://pay.gomobi.io/"
 //        private const val REGISTER_URL = "https://pay.gomobi.io/"
 //        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"

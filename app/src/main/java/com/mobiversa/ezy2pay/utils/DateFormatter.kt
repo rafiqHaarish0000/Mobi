@@ -90,33 +90,29 @@ class DateFormatter {
             return formatterOut.format(date)
         }
 
-        fun getDaysCount(date1: Date,
-                         date2: Date) : String{
-            val myFormat = SimpleDateFormat("dd MM yyyy")
-            var days : Long = 0
+        fun getDaysCount(
+            date1: Date,
+            date2: Date
+        ): String {
+
+            var days: Long = 0
             try {
-//                val date1 = myFormat.parse(dateStr1)
-//                val date2 = myFormat.parse(dateStr2)
                 val diff = date2.time - date1.time
-                Log.e("Days: " ,""+ TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
+                Log.e("Days: ", "" + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
                 days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
 
-
-            if (days<30){
-
-                return  "" + (30 - days)
-
-            }else{
-                return "1"
+            return if (days < 30) {
+                "" + (30 - days)
+            } else {
+                "1"
             }
 
 
         }
     }
-
 
 
 }

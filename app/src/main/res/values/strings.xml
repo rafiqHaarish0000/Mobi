@@ -153,4 +153,17 @@
     <string name="from_date">From Date</string>
     <string name="to_date">To Date</string>
     <string name="click_to_set_date">Click to set date</string>
+    <string name="all">All</string>
+    <string name="please_choose_a_product">Please choose a product</string>
+    <string name="ezywireEnabled">EZYWIRE</string>
+    <string name="ezywireDisabled">EZYWIRE (Disabled)</string>
+    <string name="ezyLinkEnabled">EZYLINK</string>
+    <string name="ezyLinkDisabled">EZYLINK (Disabled)</string>
+    <string name="digitalEnabled">DIGITAL</string>
+    <string name="digitalDisabled">DIGITAL (Disabled)</string>
+    <string name="retry">Retry</string>
+    <string name="failure">Failure</string>
+    <string name="clear_search">clear search</string>
+    <string name="search_strart_typing_something">Search (Strart typing something)</string>
+    <string name="filter_product">filter product</string>
 </resources>

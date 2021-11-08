@@ -1,5 +1,22 @@
 package com.mobiversa.ezy2pay.dataModel
 
+import com.mobiversa.ezy2pay.network.response.TransactionHistoryData
+
+
+data class TransactionHistoryRequestData(
+    var trxType: String? = null,
+    var hostType: String? = null,
+    var merchantId: String? = null,
+    var service: String = "TXN_HISTORY",
+    var sessionId: String? = null,
+    var username: String? = null,
+    var type: String? = null,
+    var tid: String? = null,
+    var liteMid: String? = null,
+    var pageNo: String = "1"
+)
+
+
 data class NGrabPayRequestData(
     val sessionId: String,
     val service: String,
@@ -30,4 +47,11 @@ sealed class NGrabPayResponse {
     data class Success(val data: NGrabPayResponseData) : NGrabPayResponse()
     data class Error(val errorMessage: String) : NGrabPayResponse()
     data class Exception(val exceptionMessage: String) : NGrabPayResponse()
+}
+
+
+sealed class TransactionHistoryResponse {
+    data class Success(val data: TransactionHistoryData) : TransactionHistoryResponse()
+    data class Error(val errorMessage: String) : TransactionHistoryResponse()
+    data class Exception(val exceptionMessage: String) : TransactionHistoryResponse()
 }

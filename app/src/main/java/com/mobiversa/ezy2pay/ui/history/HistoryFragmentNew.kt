@@ -24,9 +24,10 @@ import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
 import com.mobiversa.ezy2pay.databinding.FragmentHistoryNewBinding
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.ForSettlement
-import com.mobiversa.ezy2pay.network.response.TransactionHistoryModel
+import com.mobiversa.ezy2pay.network.response.TransactionHistoryResponseData
 import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
-import com.mobiversa.ezy2pay.ui.history.historyDetail.HistoryDetailFragment
+import com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailFragment
+import com.mobiversa.ezy2pay.ui.history.transactionHistory.HistoryViewModel
 import com.mobiversa.ezy2pay.utils.*
 import com.mobiversa.ezy2pay.utils.Constants.Companion.UserName
 import com.mobiversa.ezy2pay.utils.Fields.Companion.PREAUTH
@@ -206,7 +207,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                         else
                             preAuthTransHistory(Fields.EZYMOTO)
                     } else {
-                        transactionHistory("1")
+                        getTransactionHistory("1")
                     }
                 }
 
@@ -218,7 +219,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
         }
     }
 
-    fun transactionHistory(s: String) {
+    fun getTransactionHistory(s: String) {
         Log.i(TAG, "transactionHistory: $s")
 
         val historyParam = HashMap<String, String>()
@@ -254,8 +255,9 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
             historyParam[Fields.liteMid] = getLoginResponse().liteMid
             historyParam[Fields.Service] = Fields.LITE_TXN_HISTORY
         }
-
         historyParam[Fields.Type] = getLoginResponse().type.uppercase(Locale.ROOT)
+
+
         jsonHistoryListEnque(historyParam)
     }
 
@@ -270,15 +272,15 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
         transactionType = historyParam[Fields.Service]!!
         val apiResponse = ApiService.serviceRequest()
         apiResponse.getTransactionHistory(historyParam).enqueue(object :
-            Callback<TransactionHistoryModel> {
-            override fun onFailure(call: Call<TransactionHistoryModel>, t: Throwable) {
+            Callback<TransactionHistoryResponseData> {
+            override fun onFailure(call: Call<TransactionHistoryResponseData>, t: Throwable) {
 //                cancelDialog()
                 closeLoadingDialog()
             }
 
             override fun onResponse(
-                call: Call<TransactionHistoryModel>,
-                response: Response<TransactionHistoryModel>
+                call: Call<TransactionHistoryResponseData>,
+                response: Response<TransactionHistoryResponseData>
             ) {
 //                cancelDialog()
                 closeLoadingDialog()
@@ -326,11 +328,11 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
         )
     }
 
-    private val dataObserver = Observer<TransactionHistoryModel> { data ->
+    private val dataObserver = Observer<TransactionHistoryResponseData> { data ->
         historyObserveData(data)
     }
 
-    private fun historyObserveData(it: TransactionHistoryModel) {
+    private fun historyObserveData(it: TransactionHistoryResponseData) {
         var count = 0
         var completedCount = 0
         Log.i(TAG, "historyObserveData: item Count ${it.responseData.forSettlement?.size}")
@@ -715,7 +717,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                     cancelDialog()
                     if (response.isSuccessful) {
                         shortToast(response.body()!!.responseDescription)
-                        transactionHistory("2")
+                        getTransactionHistory("2")
                     }
                 }
             })
@@ -762,7 +764,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
             Observer {
                 cancelDialog()
                 if (it.responseCode.equals("0000", true)) {
-                    transactionHistory("3")
+                    getTransactionHistory("3")
                 }
                 shortToast(it.responseDescription)
             }

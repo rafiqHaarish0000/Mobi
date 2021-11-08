@@ -32,6 +32,7 @@ class Constants {
     }
 
     object NavigationKey {
+        const val TRANSACTION_HISTORY_KEY: String = "TransactionHistoryData"
         const val TID = "tid"
     }
 

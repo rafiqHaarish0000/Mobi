@@ -1,12 +1,10 @@
 package com.mobiversa.ezy2pay.ui.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,11 +17,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.ProductListAdapter
 import com.mobiversa.ezy2pay.base.BaseFragment
+import com.mobiversa.ezy2pay.dialogs.EAuthDialog
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.UserValidation
 import com.mobiversa.ezy2pay.ui.ezyCash.EzyCashViewModel
@@ -83,8 +81,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         viewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
 
-        prefs = PreferenceHelper.defaultPrefs(context!!)
-        customPrefs = PreferenceHelper.customPrefs(context!!, "REMEMBER")
+        prefs = PreferenceHelper.defaultPrefs(requireContext())
+        customPrefs = PreferenceHelper.customPrefs(requireContext(), "REMEMBER")
 
 //        Log.e("REG_DATA",  ""+getRegisterUserDetail())
 
@@ -110,7 +108,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
 
         val productList = getProductList()
 
-        productListAdapter = ProductListAdapter(productList, context!!, this)
+        productListAdapter = ProductListAdapter(productList, requireContext(), this)
 
         root.rcy_home_product.apply {
             layoutManager =
@@ -161,9 +159,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                 jsonValidate(validateaMap, productName)
             }
             EzyAuth -> {
-                if (checkAndRequestPermissions())
-                    showAuthPrompt()
+                if (checkAndRequestPermissions()) {
+                    // TODO: 06-11-2021
+                        /* Vignesh Selvam
+                        *
+                        * Dialog Change to bottom Sheet
+                        * Old prompt will be removed in future update
+                        *
+                        * */
+//                    showAuthPrompt()
+                    showEzyAuthBottomSheetPrompt()
+                }
             }
+
             PREMOTO -> {
                 validateaMap[Fields.tid] = getLoginResponse().motoTid
                 jsonValidate(validateaMap, productName)
@@ -358,10 +366,47 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         invoiceEdt.setText("")
     }
 
+
+    private fun showEzyAuthBottomSheetPrompt() {
+
+//        if (getProductList()[1].isEnable)
+//            ezywireImg.setImageResource(R.drawable.ezyauth)
+//        else
+//            ezywireImg.setImageResource(R.drawable.auth_wire_disable)
+
+
+        val ezyAuthDialog =
+            EAuthDialog.newInstance(callback = object : EAuthDialog.EAuthDialogInterface {
+                override fun onEzyWire() {
+                    if (getProductList()[1].isEnable) {
+                        productDetails(PREWIRE)
+                    } else {
+                        shortToast("You are not Subscribed for ${getProductList()[1].productName}")
+                    }
+                }
+
+                override fun onDigital() {
+                    if (getProductList()[0].isEnable) {
+                        productDetails(PREMOTO)
+                    } else {
+                        shortToast("You are not Subscribed for ${getProductList()[0].productName}")
+                    }
+                }
+
+                override fun onCancel() {
+                }
+            }, getProductList(), getLoginResponse().auth3DS)
+
+        ezyAuthDialog.show(
+            requireActivity().supportFragmentManager,
+            EAuthDialog::class.java.canonicalName
+        )
+    }
+
     private fun showAuthPrompt() {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_ezyauth, null)
         val digitalImg = alertLayout.findViewById<View>(R.id.ezydigital_img) as ImageView
         val ezywireImg = alertLayout.findViewById<View>(R.id.ezywire_img) as ImageView
@@ -412,7 +457,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
 
     private fun showUpgradePrompt(amount: String) {
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_upgrade, null)
         val mBuilder = context.let {
             AlertDialog.Builder(it)
@@ -465,7 +510,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         }
 
         upgrade_txt.setOnClickListener {
-            if (upgrade_txt.text.toString().equals(getString(R.string.upgrade), ignoreCase = true)) {
+            if (upgrade_txt.text.toString()
+                    .equals(getString(R.string.upgrade), ignoreCase = true)
+            ) {
                 upgrade_txt.text = getString(R.string.yes_i_am_sure)
                 updateImg.setImageDrawable(resources.getDrawable(R.drawable.ic_upgrade))
                 desc_txt.text = getString(R.string.app_update_note)

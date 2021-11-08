@@ -10,7 +10,8 @@ data class TransactionStatusRequestDataModel(
     val pageNo: String = "1",
     val fromDate: String = "",
     val toDate: String = "",
-    val searchKey: String = ""
+    val searchKey: String = "",
+    val linkTxnStatus: String = ""
 )
 
 data class ResponseTransactionStatusDataModel(
@@ -105,3 +106,31 @@ sealed class TransactionStatusResponse {
 }
 
 
+// TODO: 07-11-2021
+
+
+data class TransactionLinkDeleteRequestData(
+    val service: String = "MOTO_LINK_DE_ACTIVE",
+    val tid: String,
+    val mid: String,
+    val smsData: String
+)
+
+//{
+//    "responseCode": "0000",
+//    "responseMessage": "SUCCESS",
+//    "responseDescription": "Link Deleted Successfully"
+//}
+
+data class TransactionLinkDeleteResponseData(
+    val responseCode: String,
+    val responseMessage: String,
+    val responseDescription: String
+)
+
+sealed class TransactionLinkDeleteResponse {
+    data class Success(val data: TransactionLinkDeleteResponseData) :
+        TransactionLinkDeleteResponse()
+    data class Error(val errorMessage: String) : TransactionLinkDeleteResponse()
+    data class Exception(val exceptionMessage: String) : TransactionLinkDeleteResponse()
+}

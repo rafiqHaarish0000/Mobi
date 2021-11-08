@@ -1,18 +1,25 @@
 package com.mobiversa.ezy2pay.ui.history.transactionStatus
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.transactionStatus.TransactionStatusAdapter
 import com.mobiversa.ezy2pay.base.AppFunctions
 import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
+import com.mobiversa.ezy2pay.dataModel.TransactionStatusData
 import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
 import com.mobiversa.ezy2pay.databinding.ActivityTransactionStatusBinding
 import com.mobiversa.ezy2pay.dialogs.SearchFilterDialog
@@ -28,21 +35,58 @@ internal val TAG = TransactionStatusActivity::class.java.canonicalName
 
 class TransactionStatusActivity : AppCompatActivity() {
 
-    private val searchCallback = object : SearchFilterDialog.SearchFilterCallBack {
-        override fun onSearch() {
+    private val transactionStatusInterface = object : TransactionStatusAdapter.TransactionStatusInterface{
+        override fun onItemSelect(item: TransactionStatusData) {
+            showDeleteDialog(item)
+        }
+    }
 
+    private fun showDeleteDialog(item: TransactionStatusData) {
+        val builder = AlertDialog.Builder(this@TransactionStatusActivity)
+        builder.setTitle("Authentication Required")
+        builder.setMessage("Are you sure do you want to delete this line #${item.id} | ${item.getConvertedAmount()}")
+        builder.setPositiveButton("Delete") { dialog, which ->
+            deleteTransactionLink(item)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.dismiss()
+        }
+        builder.setCancelable(false)
+        builder.create().show()
+    }
+
+    private fun deleteTransactionLink(item: TransactionStatusData) {
+        lifecycleScope.launch {
+//            val response = viewModel.deleteTransactionLink(item)
+        }
+    }
+
+    private lateinit var tid: String
+
+    private var searchString = ""
+    private var transactionStatus = ""
+    private lateinit var transactionStatusAdapter: TransactionStatusAdapter
+    private lateinit var _binding: ActivityTransactionStatusBinding
+    private val binding: ActivityTransactionStatusBinding get() = _binding
+    private lateinit var viewModel: TransactionStatusViewModel
+
+
+    private val searchCallback = object : SearchFilterDialog.SearchFilterCallBack {
+        override fun onSearch(fromDate: Long, toDate: Long, status: String) {
+            transactionStatus = status
+            getTransactionStatusPaging(tid, searchString, status)
         }
 
         override fun onCancel() {
 
         }
 
+        override fun onSearchWithTransaction(status: String) {
+            transactionStatus = status
+            getTransactionStatusPaging(tid, searchString, status)
+        }
     }
-    private lateinit var transactionStatusAdapter: TransactionStatusAdapter
-    private lateinit var _binding: ActivityTransactionStatusBinding
-    private val binding: ActivityTransactionStatusBinding get() = _binding
-    private lateinit var viewModel: TransactionStatusViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +99,8 @@ class TransactionStatusActivity : AppCompatActivity() {
         setupViewModel()
 
 //        setSupportActionBar(binding.toolbar)
-        transactionStatusAdapter = TransactionStatusAdapter()
+        transactionStatusAdapter = TransactionStatusAdapter(callBack = transactionStatusInterface)
+
 
         binding.imageButtonBack.setOnClickListener {
             finish()
@@ -70,26 +115,79 @@ class TransactionStatusActivity : AppCompatActivity() {
             adapter = transactionStatusAdapter
         }
 
+
         binding.imageButtonFilter.setOnClickListener {
             val dialog = SearchFilterDialog.newInstance(searchCallback)
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, SearchFilterDialog::class.java.canonicalName)
         }
 
-
         intent.getStringExtra(Constants.NavigationKey.TID)?.let { tid ->
             Log.i(TAG, "onViewCreated: tid -> $tid")
 //            getTransactionStatus(tid)
-            getTransactionStatusPaging(tid)
+            this.tid = tid
+            getTransactionStatusPaging(tid, "", transactionStatus)
+
+        }
+
+        binding.imageButtonClear.setOnClickListener {
+            binding.editTextSearch.apply {
+                text.clear()
+                clearFocus()
+            }
+            AppFunctions.SoftKeyboard.closeSoftKeyboard(
+                this.currentFocus,
+                this@TransactionStatusActivity
+            )
+        }
+
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                if (s.isNotEmpty()) {
+                    searchString = s.toString()
+                    getTransactionStatusPaging(tid, s.toString(), transactionStatus)
+                    binding.imageButtonClear.visibility = View.VISIBLE
+                } else {
+                    searchString = ""
+                    getTransactionStatusPaging(tid, "", transactionStatus)
+                    binding.imageButtonClear.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    private fun handleError(loadState: CombinedLoadStates) {
+        val errorState = loadState.source.append as? LoadState.Error
+            ?: loadState.source.prepend as? LoadState.Error
+            ?: loadState.mediator?.refresh as? LoadState.Error
+
+        errorState?.let {
+            Toast.makeText(this@TransactionStatusActivity, it.error.message, Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
-    private fun getTransactionStatusPaging(tid: String) {
+    private fun getTransactionStatusPaging(
+        tid: String,
+        searchKey: String,
+        status: String
+    ) {
+//        AppFunctions.Dialogs.showLoadingDialog("Loading...", this@TransactionStatusActivity)
         lifecycleScope.launch {
-            viewModel.getTransactionStatusPaging(tid, "2021-11-05", "2021-10-15").collectLatest {
+            viewModel.getTransactionStatusPaging(tid, "", "", searchKey, status).collectLatest {
+//                AppFunctions.Dialogs.closeLoadingDialog()
                 transactionStatusAdapter.submitData(it)
             }
         }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -155,5 +253,14 @@ class TransactionStatusActivity : AppCompatActivity() {
             transactionViewModel = viewModel
             executePendingBindings()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        AppFunctions.SoftKeyboard.closeSoftKeyboard(
+            this.currentFocus,
+            this@TransactionStatusActivity
+        )
     }
 }

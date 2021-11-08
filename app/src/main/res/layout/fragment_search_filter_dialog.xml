@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,9 +24,17 @@
         android:text="@string/transaction_status" />
 
     <RadioGroup
+        android:id="@+id/radio_group_transaction_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp">
+
+        <RadioButton
+            android:id="@+id/radio_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/all" />
 
         <RadioButton
             android:id="@+id/radio_pending"
@@ -38,6 +47,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/success" />
+
+        <RadioButton
+            android:id="@+id/radio_failure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/failure" />
 
         <RadioButton
             android:id="@+id/radio_not_in_use"
@@ -61,18 +76,16 @@
                 android:id="@+id/textView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/from_date" />
 
             <TextView
                 android:id="@+id/textView_from_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableStart="@drawable/ic_calendar"
                 android:drawablePadding="8dp"
                 android:padding="8dp"
-                android:text="@string/click_to_set_date" />
+                android:text="@string/click_to_set_date"
+                app:drawableStartCompat="@drawable/ic_calendar" />
         </LinearLayout>
 
         <LinearLayout
@@ -91,11 +104,10 @@
                 android:id="@+id/textView_to_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableStart="@drawable/ic_calendar"
                 android:drawablePadding="8dp"
                 android:padding="8dp"
-                android:text="@string/click_to_set_date" />
+                android:text="@string/click_to_set_date"
+                app:drawableStartCompat="@drawable/ic_calendar" />
         </LinearLayout>
 
     </LinearLayout>
@@ -109,20 +121,20 @@
 
         <Button
             android:id="@+id/button_search"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/search"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/button_cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/cancel"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 </LinearLayout>

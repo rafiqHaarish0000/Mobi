@@ -1,4 +1,4 @@
-package com.mobiversa.ezy2pay.ui.history.historyDetail
+package com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -115,7 +116,11 @@ class HistoryDetailFragment :
         (activity as MainActivity).supportActionBar?.title = "Transactions"
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        historyData = requireArguments().getSerializable("History") as ForSettlement?
+//        historyData = requireArguments().getSerializable("History") as ForSettlement?
+
+        requireArguments().let {
+            historyData = it.getSerializable(Constants.NavigationKey.TRANSACTION_HISTORY_KEY) as ForSettlement
+        }
 
         Log.e(TAG, "initialize: historyData -> $historyData")
         amount = requireArguments().getString(Constants.Amount).toString()
@@ -525,7 +530,6 @@ class HistoryDetailFragment :
             }*/
 
             if (isNewAmount) {
-
                 when {
                     newAmount.isEmpty() -> {
                         newAmtEdt.error = "Enter Valid amount"
@@ -767,9 +771,9 @@ class HistoryDetailFragment :
             android.R.id.home -> {
                 (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 setTitle("Transactions", true)
-                fragmentManager?.popBackStack()
+//                fragmentManager?.popBackStack()
 
-//                findNavController().navigateUp()
+                findNavController().navigateUp()
                 true
             }
             R.id.action_receipt -> {

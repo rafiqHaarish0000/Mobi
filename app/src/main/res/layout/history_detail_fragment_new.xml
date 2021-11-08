@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".ui.history.historyDetail.HistoryDetailFragment">
+    tools:context=".ui.history.transactionHistoryDetails.HistoryDetailFragment">
 
 
     <ScrollView

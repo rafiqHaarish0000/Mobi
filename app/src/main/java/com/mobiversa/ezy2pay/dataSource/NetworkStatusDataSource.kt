@@ -11,7 +11,9 @@ class NetworkStatusDataSource(
     val apiService: ApiService,
     private val tid: String,
     private val fromDate: String,
-    private val toDate: String
+    private val toDate: String,
+    private val searchKey: String,
+    private val status: String
 ) :
     PagingSource<Int, TransactionStatusData>() {
     override fun getRefreshKey(state: PagingState<Int, TransactionStatusData>): Int? {
@@ -25,27 +27,31 @@ class NetworkStatusDataSource(
         try {
             // Start refresh at page 1 if undefined.
             var nextPageNumber = params.key ?: 1
+
+
             val response =
                 apiService.getTransactionStatus(
                     TransactionStatusRequestDataModel(
                         tid = tid,
                         fromDate = fromDate,
                         toDate = toDate,
-                        pageNo = nextPageNumber.toString()
+                        pageNo = nextPageNumber.toString(),
+                        searchKey = searchKey,
+                        linkTxnStatus = status
                     )
                 )
 
             if (response.isSuccessful) {
                 val data = response.body()!!
-
                 when (data.responseCode) {
                     Constants.Network.RESPONSE_SUCCESS -> {
-                        nextPageNumber += nextPageNumber
+                        nextPageNumber++
                         return LoadResult.Page(
                             data = data.responseData.motoTxndetails,
                             prevKey = null, // Only paging forward.
                             nextKey = nextPageNumber
                         )
+
                     }
                     else -> {
                         return LoadResult.Page(

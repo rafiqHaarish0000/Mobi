@@ -141,6 +141,12 @@ interface ApiService {
     @POST("payment/mobiapr19/mobi_jsonservice/")
     suspend fun getTransactionHistoryNew(@Body postParam: TransactionHistoryRequestData): Response<TransactionHistoryResponseData>
 
+    @POST("payment/mobiapr19/mobi_jsonservice")
+    suspend fun deleteTransactionStatus(@Body transactionLinkDeleteRequestData: TransactionLinkDeleteRequestData): Response<TransactionLinkDeleteResponseData>
+
+    @POST("payment/mobiapr19/mobi_jsonservice/")
+    suspend fun makeSettlements(@Body requestData: SettlementsDataRequestData): Response<SuccessModel>
+
     // TODO: 03-11-2021
     /* Vignesh Selvam
     *
@@ -159,14 +165,14 @@ interface ApiService {
 //        private const val REGISTER_URL = "https://ecom.gomobi.io/"
 //        private const val NOTIFICATION_URL = "https://ecom.gomobi.io/notificationservices/"
 
-        private const val BASE_URL = "https://san.gomobi.io/"
-        private const val REGISTER_URL = "https://san.gomobi.io/"
-        private const val NOTIFICATION_URL = "https://san.gomobi.io/notificationservices/"
+//        private const val BASE_URL = "https://san.gomobi.io/"
+//        private const val REGISTER_URL = "https://san.gomobi.io/"
+//        private const val NOTIFICATION_URL = "https://san.gomobi.io/notificationservices/"
 
-//        Production credentials
-//        private const val BASE_URL = "https://pay.gomobi.io/"
-//        private const val REGISTER_URL = "https://pay.gomobi.io/"
-//        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
+        //        Production credentials
+        private const val BASE_URL = "https://pay.gomobi.io/"
+        private const val REGISTER_URL = "https://pay.gomobi.io/"
+        private const val NOTIFICATION_URL = "https://pay.gomobi.io/notificationservices/"
 
         private const val BANK_URL = "https://fpxservice.gomobi.io/"
         private const val CITY_URL = "https://ocsservices.gomobi.io/"

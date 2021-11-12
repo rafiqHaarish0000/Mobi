@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +33,7 @@ class TransactionHistoryAdapter(
     private var flag = 1 // 1 - for settlements, 2 pre auth transaction
 
 
+    private var trxHistory = Fields.TRX_HISTORY
     private var historyList: ArrayList<ForSettlement> = ArrayList()
     private var filterHistoryList = historyList
 
@@ -123,7 +123,7 @@ class TransactionHistoryAdapter(
             val timeStr = timeFormat.format(date)
             binding.root.txt_time.text = timeStr
 
-            if (historyData.txnType.equals(Fields.PREAUTH)) {
+            if (trxHistory.equals(Fields.PERAUTHHIST, ignoreCase = true)) {
                 val totalDays =
                     DateFormatter.getDaysCount(
                         dateFormat.parse(dateStr),
@@ -334,27 +334,39 @@ class TransactionHistoryAdapter(
     }
 
 
-    fun updateDataset(data: List<ForSettlement>?, flag: Int) {
-        Log.e(TAG, "updateDataset: $data")
-        if (this.flag != flag) {
-            val lastPosition = if (this.historyList.size > 0) {
-                this.historyList.size - 1
-            } else {
-                0
-            }
-            this.historyList = data as ArrayList<ForSettlement>
-            notifyItemChanged(lastPosition)
-            this.filterHistoryList = this.historyList
+//    fun updateDataset(data: List<ForSettlement>?, flag: Int) {
+//        Log.e(TAG, "updateDataset: $data")
+//        if (this.flag != flag) {
+//            val lastPosition = if (this.historyList.size > 0) {
+//                this.historyList.size - 1
+//            } else {
+//                0
+//            }
+//            this.historyList = data as ArrayList<ForSettlement>
+//            notifyItemChanged(lastPosition)
+//            this.filterHistoryList = this.historyList
+//        } else {
+//            val lastPosition = if (this.historyList.size > 0) {
+//                this.historyList.size - 1
+//            } else {
+//                0
+//            }
+//            this.historyList.addAll(data as ArrayList<ForSettlement>)
+//            notifyItemChanged(lastPosition)
+//            this.filterHistoryList = this.historyList
+//        }
+//    }
+
+
+    fun updateDataset(newDataSet: ArrayList<ForSettlement>) {
+        val lastPosition = if (this.historyList.size > 0) {
+            this.historyList.size - 1
         } else {
-            val lastPosition = if (this.historyList.size > 0) {
-                this.historyList.size - 1
-            } else {
-                0
-            }
-            this.historyList.addAll(data as ArrayList<ForSettlement>)
-            notifyItemChanged(lastPosition)
-            this.filterHistoryList = this.historyList
+            0
         }
+        this.historyList.addAll(newDataSet as ArrayList<ForSettlement>)
+        notifyItemChanged(lastPosition)
+        this.filterHistoryList = this.historyList
     }
 
     fun setTransactionType(transactionType: String) {
@@ -365,6 +377,10 @@ class TransactionHistoryAdapter(
         this.historyList.clear()
         this.filterHistoryList.clear()
         notifyDataSetChanged()
+    }
+
+    fun setServiceType(trxHistory: String) {
+        this.trxHistory = trxHistory
     }
 }
 

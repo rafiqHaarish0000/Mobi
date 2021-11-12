@@ -12,7 +12,7 @@ import com.mobiversa.ezy2pay.dataModel.TransactionStatusData
 import com.mobiversa.ezy2pay.databinding.RecyclerEzylinkTransactionListItemBinding
 import com.mobiversa.ezy2pay.utils.Constants
 
-class TransactionStatusAdapter(private val callBack : TransactionStatusInterface) :
+class TransactionStatusAdapter(private val callBack: TransactionStatusInterface) :
     PagingDataAdapter<TransactionStatusData, TransactionStatusAdapter.TransactionStatusViewHolder>(
         DIFF_CALLBACK
     ) {
@@ -31,8 +31,9 @@ class TransactionStatusAdapter(private val callBack : TransactionStatusInterface
         item?.let {
             val bind = (holder).bind(it)
 
-            bind.root.setOnClickListener {
+            bind.root.setOnLongClickListener {
                 callBack.onItemSelect(item)
+                false
             }
             when (it.status) {
                 Constants.TransactionStatus.FAILURE -> {

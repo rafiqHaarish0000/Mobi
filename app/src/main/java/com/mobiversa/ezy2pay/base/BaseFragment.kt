@@ -111,7 +111,6 @@ open class BaseFragment : Fragment() {
     }
 
     fun getTidValue(): String {
-
         when {
             getLoginResponse().tid.isNotEmpty() -> {
                 return getLoginResponse().tid

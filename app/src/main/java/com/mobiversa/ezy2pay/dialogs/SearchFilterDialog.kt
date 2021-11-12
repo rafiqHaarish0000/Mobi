@@ -10,7 +10,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.mobiversa.ezy2pay.R
 import java.text.SimpleDateFormat
@@ -26,9 +25,10 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
     private var fromDate: Long = 0L
     private var toDate: Long = 0L
 
-    override
+    private lateinit var textViewFromDate: TextView
+    private lateinit var textViewToDate: TextView
 
-    fun onResume() {
+    override fun onResume() {
         super.onResume()
         val params: ViewGroup.LayoutParams = dialog!!.window!!.attributes
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -48,10 +48,22 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
         radioTransactionStatus = view.findViewById(R.id.radio_group_transaction_status)
         view.findViewById<Button>(R.id.button_search).setOnClickListener(this)
         view.findViewById<Button>(R.id.button_cancel).setOnClickListener(this)
-        val fromDate = view.findViewById<TextView>(R.id.textView_from_date)
-        fromDate.setOnClickListener(this)
-        val toDate = view.findViewById<TextView>(R.id.textView_to_date)
-        toDate.setOnClickListener(this)
+        textViewFromDate = view.findViewById(R.id.textView_from_date)
+        textViewFromDate.apply {
+            text = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            ).format(Calendar.getInstance().timeInMillis)
+            setOnClickListener(this@SearchFilterDialog)
+        }
+        textViewToDate = view.findViewById(R.id.textView_to_date)
+        textViewToDate.apply {
+            text = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            ).format(Calendar.getInstance().timeInMillis)
+            setOnClickListener(this@SearchFilterDialog)
+        }
 
     }
 
@@ -70,33 +82,47 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
             }
             R.id.button_search -> {
 
-                if (fromDate == 0L && toDate == 0L) {
-                    val transactionStatus: String =
-                        when (radioTransactionStatus.checkedRadioButtonId) {
-                            R.id.radio_pending -> "P"
-                            R.id.radio_success -> "S"
-                            R.id.radio_failure -> "F"
-                            R.id.radio_not_in_use -> "NO STATUS"
-                            else -> ""
-                        }
-                    callback.onSearchWithTransaction(transactionStatus)
-                } else if (fromDate != 0L && toDate != 0L) {
-                    val transactionStatus: String =
-                        when (radioTransactionStatus.checkedRadioButtonId) {
-                            R.id.radio_pending -> "P"
-                            R.id.radio_success -> "S"
-                            R.id.radio_failure -> "F"
-                            R.id.radio_not_in_use -> "NO STATUS"
-                            else -> ""
-                        }
-                    callback.onSearch(fromDate, toDate, transactionStatus)
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Both From date and To date required",
-                        Toast.LENGTH_LONG
-                    ).show()
+                val status = when (radioTransactionStatus.checkedRadioButtonId) {
+                    R.id.radio_pending -> "P"
+                    R.id.radio_success -> "S"
+                    R.id.radio_failure -> "F"
+                    R.id.radio_not_in_use -> "N"
+                    else -> ""
                 }
+
+                val fromDate = textViewFromDate.text.toString()
+                val toDate = textViewToDate.text.toString()
+                callback.onSearch(fromDate = fromDate, toDate = toDate, status = status)
+
+//                if (fromDate == 0L && toDate == 0L) {
+//                    val transactionStatus: String =
+//
+//                    callback.onSearchWithTransaction(transactionStatus)
+//                } else if (fromDate != 0L && toDate != 0L) {
+//                    val transactionStatus: String =
+//                        when (radioTransactionStatus.checkedRadioButtonId) {
+//                            R.id.radio_pending -> "P"
+//                            R.id.radio_success -> "S"
+//                            R.id.radio_failure -> "F"
+//                            R.id.radio_not_in_use -> "NO STATUS"
+//                            else -> ""
+//                        }
+//                    callback.onSearch(fromDate, toDate, transactionStatus)
+//                } else {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Both From date and To date required",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//
+//                if (fromDate == 0L || toDate == 0L) {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Both From date and To date required",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
                 dismiss()
             }
             R.id.textView_from_date -> {
@@ -126,7 +152,7 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
                 toDate = newDate.timeInMillis
                 try {
                     rootView.findViewById<TextView>(R.id.textView_to_date).text = SimpleDateFormat(
-                        "dd-MM-yyyy",
+                        "yyyy-MM-dd",
                         Locale.getDefault()
                     ).format(newDate.time)
                 } catch (e: Exception) {
@@ -169,7 +195,7 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
                 try {
                     rootView.findViewById<TextView>(R.id.textView_from_date).text =
                         SimpleDateFormat(
-                            "dd-MM-yyyy",
+                            "yyyy-MM-dd",
                             Locale.getDefault()
                         ).format(newDate.time)
                 } catch (e: Exception) {
@@ -191,10 +217,8 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
 
 
     interface SearchFilterCallBack {
-        fun onSearch(fromDate: Long, toDate: Long, status: String)
+        fun onSearch(fromDate: String, toDate: String, status: String)
         fun onCancel()
         fun onSearchWithTransaction(status: String)
     }
-
-
 }

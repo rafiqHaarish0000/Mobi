@@ -1,6 +1,6 @@
 package com.mobiversa.ezy2pay.dataModel
 
-import com.mobiversa.ezy2pay.network.response.TransactionHistoryData
+import com.mobiversa.ezy2pay.network.response.ForSettlement
 
 
 data class TransactionHistoryRequestData(
@@ -51,7 +51,9 @@ sealed class NGrabPayResponse {
 
 
 sealed class TransactionHistoryResponse {
-    data class Success(val data: TransactionHistoryData) : TransactionHistoryResponse()
+//    data class Success(val data: TransactionHistoryData) : TransactionHistoryResponse()
+    data class NoRowAvailable(val message: String) : TransactionHistoryResponse()
+    data class Response(val data: ArrayList<ForSettlement>) : TransactionHistoryResponse()
     data class Error(val errorMessage: String) : TransactionHistoryResponse()
     data class Exception(val exceptionMessage: String) : TransactionHistoryResponse()
 }

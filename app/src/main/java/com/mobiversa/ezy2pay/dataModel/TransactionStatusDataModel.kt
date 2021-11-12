@@ -6,12 +6,12 @@ import com.mobiversa.ezy2pay.utils.Constants
 
 data class TransactionStatusRequestDataModel(
     val service: String = "MOTO_LINK_LIST",
-    val tid: String,
-    val pageNo: String = "1",
-    val fromDate: String = "",
-    val toDate: String = "",
-    val searchKey: String = "",
-    val linkTxnStatus: String = ""
+    var tid: String,
+    var pageNo: String = "1",
+    var fromDate: String = "",
+    var toDate: String = "",
+    var searchKey: String = "",
+    var linkTxnStatus: String = ""
 )
 
 data class ResponseTransactionStatusDataModel(
@@ -49,12 +49,12 @@ data class TransactionStatusData(
     val splitTid: String
 ) {
     fun getConvertedAmount(): String {
-        return AppFunctions.parseAmount(amount.toFloat())
+        return AppFunctions.parseAmount(amount.toString())
     }
 
     fun getParsedDate(): String {
         return AppFunctions.parseDate(
-            outputDatePattern = "dd/MMM | hh:mm aa",
+            outputDatePattern = "dd-MM-yyyy | hh:mm aa",
             dateString = reqDate
         )
     }
@@ -129,7 +129,7 @@ data class TransactionLinkDeleteResponseData(
 )
 
 sealed class TransactionLinkDeleteResponse {
-    data class Success(val data: TransactionLinkDeleteResponseData) :
+    data class Success(val message: String) :
         TransactionLinkDeleteResponse()
     data class Error(val errorMessage: String) : TransactionLinkDeleteResponse()
     data class Exception(val exceptionMessage: String) : TransactionLinkDeleteResponse()

@@ -6,9 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mobiversa.ezy2pay.dataModel.TransactionLinkDeleteRequestData
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusData
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.dataSource.NetworkStatusDataSource
 import com.mobiversa.ezy2pay.utils.AppRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,30 +21,22 @@ class TransactionStatusViewModel(private val appRepository: AppRepository) : Vie
 
 
     fun getTransactionStatusPaging(
-        tid: String,
-        fromDate: String,
-        toDate: String,
-        searchKey: String,
-        status: String
+        transactionLinkDeleteRequestData: TransactionStatusRequestDataModel,
     ): Flow<PagingData<TransactionStatusData>> {
         val flow = Pager(
             PagingConfig(pageSize = 20)
         ) {
             NetworkStatusDataSource(
                 appRepository.apiService,
-                tid = tid,
-                fromDate = fromDate,
-                toDate = toDate,
-                searchKey = searchKey,
-                status = status
+                transactionLinkDeleteRequestData
             )
         }.flow
             .cachedIn(viewModelScope)
         return flow
     }
 
-    fun deleteTransactionLink(item: TransactionStatusData) {
-        appRepository.deleteTransactionLink(TransactionLinkDeleteRequestData(
+    suspend fun deleteTransactionLink(item: TransactionStatusData): TransactionLinkDeleteResponse {
+       return appRepository.deleteTransactionLink(TransactionLinkDeleteRequestData(
             tid = item.tid,
             mid = item.mid,
             smsData = item.smsLink

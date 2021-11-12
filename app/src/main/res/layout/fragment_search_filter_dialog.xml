@@ -13,20 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:gravity="center"
         android:text="@string/search_filter"
         android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/transaction_status" />
+        android:text="@string/transaction_status"
+        android:textColor="@color/black" />
 
     <RadioGroup
         android:id="@+id/radio_group_transaction_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="10dp">
 
         <RadioButton
@@ -64,9 +68,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -76,7 +82,8 @@
                 android:id="@+id/textView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/from_date" />
+                android:text="@string/from_date"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView_from_date"
@@ -98,7 +105,8 @@
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/to_date" />
+                android:text="@string/to_date"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textView_to_date"
@@ -115,9 +123,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:gravity="end"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/button_search"
@@ -125,16 +143,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:text="@string/search"
-            android:textColor="@color/colorPrimary" />
-
-        <Button
-            android:id="@+id/button_cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:text="@string/cancel"
+            android:text="@string/filter"
             android:textColor="@color/colorPrimary" />
     </LinearLayout>
 </LinearLayout>

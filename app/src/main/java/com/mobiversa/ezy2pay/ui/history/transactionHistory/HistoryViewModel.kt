@@ -8,10 +8,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
-import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
-import com.mobiversa.ezy2pay.dataModel.TransactionHistoryRequestData
-import com.mobiversa.ezy2pay.dataModel.TransactionHistoryResponse
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.dataSource.TransactionHistoryDataSource
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.network.response.SuccessModel
@@ -80,5 +77,9 @@ class HistoryViewModel(val appRepository: AppRepository) : ViewModel() {
 
     suspend fun getTransactionHistoryData(transactionHistoryRequestData: TransactionHistoryRequestData): TransactionHistoryResponse {
         return appRepository.getTransactionHistoryData(transactionHistoryRequestData)
+    }
+
+    suspend fun makeSettlement(requestData: SettlementsDataRequestData): SettlementsResponse {
+        return appRepository.makeSettlement(requestData)
     }
 }

@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.mobiversa.ezy2pay.BuildConfig
 import com.mobiversa.ezy2pay.R
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,8 +18,18 @@ object AppFunctions {
     private var loadingDialog: AlertDialog? = null
     private var isLoading: Boolean = false
 
-    fun parseAmount(amount: Float): String {
-        return String.format("RM %.2f", amount)
+    fun parseAmount(amount: String): String {
+        val parsedAmount: String = String.format(
+            "%s.%s",
+            amount.substring(0, amount.length - 2),
+            amount.substring(amount.length - 2)
+        )
+        val formatter = DecimalFormat("#,##0.00")
+        return String.format(
+            "RM %s", formatter.format(
+                parsedAmount.toDouble()
+            )
+        )
     }
 
     fun parseDate(

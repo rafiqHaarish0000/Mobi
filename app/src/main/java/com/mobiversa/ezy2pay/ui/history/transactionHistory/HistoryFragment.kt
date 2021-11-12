@@ -27,10 +27,7 @@ import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.transactionHistory.TransactionHistoryAdapter
 import com.mobiversa.ezy2pay.base.AppFunctions
 import com.mobiversa.ezy2pay.base.BaseFragment
-import com.mobiversa.ezy2pay.dataModel.NGrabPayRequestData
-import com.mobiversa.ezy2pay.dataModel.NGrabPayResponse
-import com.mobiversa.ezy2pay.dataModel.TransactionHistoryRequestData
-import com.mobiversa.ezy2pay.dataModel.TransactionHistoryResponse
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.network.response.TransactionHistoryData
@@ -62,47 +59,11 @@ internal val TAG = HistoryFragment::class.java.canonicalName
 
 class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
-    private val biometricPromptCallback = object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationError(
-            errorCode: Int,
-            errString: CharSequence
-        ) {
-            super.onAuthenticationError(errorCode, errString)
-            Toast.makeText(
-                requireContext(),
-                "Authentication Failed", Toast.LENGTH_SHORT
-            )
-                .show()
-        }
 
-        override fun onAuthenticationSucceeded(
-            result: BiometricPrompt.AuthenticationResult
-        ) {
-            super.onAuthenticationSucceeded(result)
-            Toast.makeText(
-                requireContext(),
-                "Authentication succeeded!", Toast.LENGTH_SHORT
-            )
-                .show()
-
-            requestData.clear()
-            requestData[Fields.biomerticKey] = Fields.Success
-            requestData[Fields.username] = getSharedString(UserName)
-            jsonVoidTransaction("Void", historyData, requestData)
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            Toast.makeText(
-                requireContext(), "Authentication Failed",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
-
-    }
     private var loadMoreTransactionHistoryRequestData: TransactionHistoryRequestData? = null
     private var currentTransactionHistoryPageNumber = 1
+
+    private var serviceType = 1 // 1 is Transaction History and 2 is Pre Auth Transaction
 
     private var position: Int? = null
 
@@ -144,7 +105,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(1) && serviceType != 2) {
                     loadMoreTransactionHistory()
                 }
             }
@@ -160,6 +121,46 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 )
             }
         }
+
+    private val biometricPromptCallback = object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(
+            errorCode: Int,
+            errString: CharSequence
+        ) {
+            super.onAuthenticationError(errorCode, errString)
+            Toast.makeText(
+                requireContext(),
+                "Authentication Failed", Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+
+        override fun onAuthenticationSucceeded(
+            result: BiometricPrompt.AuthenticationResult
+        ) {
+            super.onAuthenticationSucceeded(result)
+            Toast.makeText(
+                requireContext(),
+                "Authentication succeeded!", Toast.LENGTH_SHORT
+            )
+                .show()
+
+            requestData.clear()
+            requestData[Fields.biomerticKey] = Fields.Success
+            requestData[Fields.username] = getSharedString(UserName)
+            jsonVoidTransaction("Void", historyData, requestData)
+        }
+
+        override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            Toast.makeText(
+                requireContext(), "Authentication Failed",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
+
+    }
 
     private fun loadMoreTransactionHistory() {
         loadMoreTransactionHistoryRequestData?.let {
@@ -307,12 +308,15 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         super.onResume()
         (activity as MainActivity).supportActionBar?.show()
         setTitle("Transactions", true)
+
+//        transactionType = Fields.ALL
+        currentTransactionHistoryPageNumber = 1
         transactionHistory("On Resume")
     }
 
-    fun transactionHistory(s: String) {
+    private fun transactionHistory(s: String) {
         Log.i(TAG, "transactionHistory: $s")
-
+        serviceType = 1
 //        val historyParam = HashMap<String, String>()
 //
 //        historyParam[Fields.username] = customPrefs[UserName]!!
@@ -360,12 +364,15 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             type = getLoginResponse().type.uppercase(Locale.ROOT)
         )
 
-        transactionHistoryRequestData.tid =
-            if (transactionType.equals(Fields.GRABPAY, ignoreCase = true)) {
-                getLoginResponse().gpayTid
-            } else {
-                getTidValue()
-            }
+//        transactionHistoryRequestData.tid =
+//            if (transactionType.equals(Fields.GRABPAY, ignoreCase = true)) {
+//                getLoginResponse().gpayTid
+//            } else {
+//                getTidValue()
+//            }
+
+        transactionHistoryRequestData.tid = getTidByTransactionType(transactionType)
+
 
         if (!getLoginResponse().type.equals(Constants.Normal, true)) {
             transactionHistoryRequestData.liteMid = getLoginResponse().liteMid
@@ -373,25 +380,270 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
 
         loadMoreTransactionHistoryRequestData = transactionHistoryRequestData
+
+        transactionHistoryAdapter.setServiceType(Fields.TRX_HISTORY)
         requestTransactionHistoryData(transactionHistoryRequestData)
 
 //        requestTransactionHistoryData(historyParam)
     }
 
+    private fun preAuthTransHistory(historyType: String) {
+        serviceType = 2
+        Log.i(TAG, "preAuthTransHistory: historyType $historyType")
+        transactionType = historyType
+
+//        val historyParam = HashMap<String, String>()
+//
+//        historyParam[Fields.sessionId] = getLoginResponse().sessionId
+//        historyParam[Fields.MerchantId] = getLoginResponse().merchantId
+//        historyParam[Fields.HostType] = getLoginResponse().hostType
+//        historyParam[Fields.TRX_TYPE] = transactionType
+//        historyParam[Fields.Service] = Fields.PERAUTHHIST
+//
+//        if (historyType.equals(Fields.EZYMOTO, true)) {
+//            historyParam[Fields.tid] = getLoginResponse().motoTid
+//        } else {
+//            historyParam[Fields.tid] = getLoginResponse().tid
+//        }
+
+        val transactionHistoryRequestData = TransactionHistoryRequestData(
+            sessionId = getLoginResponse().sessionId,
+            merchantId = getLoginResponse().merchantId,
+            hostType = getLoginResponse().hostType,
+            trxType = transactionType,
+            service = Fields.PERAUTHHIST,
+        )
+//        transactionHistoryRequestData.tid = if (historyType.equals(Fields.EZYMOTO, true)) {
+//            getLoginResponse().motoTid
+//        } else {
+//            getLoginResponse().tid
+//        }
+        transactionHistoryRequestData.tid = getTidByTransactionType(transactionType)
+        loadMoreTransactionHistoryRequestData = transactionHistoryRequestData
+
+        transactionHistoryAdapter.setServiceType(Fields.PERAUTHHIST)
+        requestTransactionHistoryData(transactionHistoryRequestData)
+
+//        requestTransactionHistoryData(historyParam)
+    }
+
+    private fun getTidByTransactionType(transactionType: String): String {
+        return when (transactionType) {
+
+            Fields.CARD -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+            Fields.CASH -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+                    getLoginResponse().ezypassTid.isNotEmpty() -> {
+                        getLoginResponse().ezypassTid
+                    }
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+            Fields.EZYWIRE -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+            Fields.PREAUTH -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.EZYMOTO -> {
+                when {
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+            Fields.ALL -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+
+                    getLoginResponse().ezypassTid.isNotEmpty() -> {
+                        getLoginResponse().ezypassTid
+                    }
+
+                    getLoginResponse().ezyrecTid.isNotEmpty() -> {
+                        getLoginResponse().ezyrecTid
+                    }
+
+                    getLoginResponse().ezysplitTid.isNotEmpty() -> {
+                        getLoginResponse().ezysplitTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.BOOST -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+
+                    getLoginResponse().ezypassTid.isNotEmpty() -> {
+                        getLoginResponse().ezypassTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.Moto -> {
+                when {
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.EZYPASS -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().ezypassTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.EZYREC -> {
+                when {
+                    getLoginResponse().tid.isNotEmpty() -> {
+                        getLoginResponse().tid
+                    }
+
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.GRABPAY -> {
+                when {
+                    getLoginResponse().gpayTid.isNotEmpty() -> {
+                        getLoginResponse().gpayTid
+                    }
+
+                    getLoginResponse().gpayOnlineTid.isNotEmpty() -> {
+                        getLoginResponse().gpayOnlineTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.FPX -> {
+                when {
+                    getLoginResponse().motoTid.isNotEmpty() -> {
+                        getLoginResponse().motoTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+            Fields.EZYSPLIT -> {
+                when {
+                    getLoginResponse().ezysplitTid.isNotEmpty() -> {
+                        getLoginResponse().ezysplitTid
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
     private fun requestTransactionHistoryData(transactionHistoryRequestData: TransactionHistoryRequestData) {
 
-        if (currentTransactionHistoryPageNumber == 1) {
-            Log.i(TAG, "requestTransactionHistoryData: show loading")
-            AppFunctions.Dialogs.showLoadingDialog("Loading History...", requireContext())
-        }
-        transactionHistoryRequestData.pageNo = currentTransactionHistoryPageNumber.toString()
 
         lifecycleScope.launch {
+
+            if (currentTransactionHistoryPageNumber == 1) {
+                Log.i(TAG, "requestTransactionHistoryData: show loading")
+                AppFunctions.Dialogs.showLoadingDialog("Loading History...", requireContext())
+            }
+
+            transactionHistoryRequestData.pageNo = currentTransactionHistoryPageNumber.toString()
+
             when (val response =
                 historyViewModel.getTransactionHistoryData(transactionHistoryRequestData)) {
-                is TransactionHistoryResponse.Success -> {
-                    transactionHistoryAdapter.setTransactionType(transactionType)
-                    showTransactionList(response.data)
+                is TransactionHistoryResponse.Response -> {
+                    historyList = response.data
+                    listTransactionHistoryData(response.data)
+                }
+                is TransactionHistoryResponse.NoRowAvailable -> {
+                    if (historyList.isEmpty()) {
+                        textview_state_message.text = response.message
+                        textview_state_message.isVisible = true
+//                        shortToast(response.message)
+                    }
+                    btnSettlementVisibility(transactionType)
                 }
                 is TransactionHistoryResponse.Error -> {
                     showErrorMessage(response.errorMessage)
@@ -404,23 +656,73 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
     }
 
+    private fun showSettlementsButton() {
+        when (transactionType) {
+            Fields.ALL -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+            Fields.CARD -> {
+//                if (completedCount > 0) {
+//                    btnSettlementHistory.visibility = View.VISIBLE
+//                } else {
+//                    btnSettlementHistory.visibility = View.GONE
+//                }
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+//            Fields.Moto -> {
+//                Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
+//                btnSettlementHistory.visibility = View.VISIBLE
+//                Glide
+//                    .with(requireContext())
+//                    .load(R.drawable.ezylink_meter_with_bg_60_px)
+//                    .circleCrop()
+//                    .into(fabImage)
+//
+//            }
+
+            Fields.Moto, Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
+                if (transactionType == Fields.Moto) {
+                    fabTransactionStatus.visibility = View.VISIBLE
+                } else {
+                    fabTransactionStatus.visibility = View.GONE
+                }
+
+                if (!getLoginResponse().hostType.equals("P", true)) {
+                    btnSettlementHistory.visibility = View.GONE
+                }
+            }
+
+            Fields.BOOST, Fields.GRABPAY, Fields.CASH, PREAUTH -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+            else -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+        }
+    }
+
     private fun showExceptionMessage(response: String) {
         if (currentTransactionHistoryPageNumber == 0) {
             textview_state_message.text = response
             textview_state_message.isVisible = true
+//            shortToast(response)
         }
-        shortToast(response)
+
     }
 
     private fun showErrorMessage(response: String) {
         if (currentTransactionHistoryPageNumber == 0) {
             textview_state_message.text = response
             textview_state_message.isVisible = true
-            shortToast(response)
+//            shortToast(response)
         }
     }
 
-
+    @Deprecated("Will be removed in future update")
     private fun historyObserveData(it: TransactionHistoryResponseData?) {
 
         Log.e(TAG, "historyObserveData: trxType --> $transactionType")
@@ -474,7 +776,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     } else {
                         historyList.clear()
                         transactionHistoryAdapter.notifyDataSetChanged()
-                        shortToast("No Data Found")
+                        shortToast("No Records Found")
                     }
                 } else {
                     if (it.responseData.forSettlement != null) {
@@ -496,21 +798,24 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                         } else {
                             historyList.clear()
                             transactionHistoryAdapter.notifyDataSetChanged()
-                            shortToast("No Data Found")
+                            shortToast("No Records Found")
                         }
                     }
                 }
 
-                btnSettlementVisibility(transactionType, count, completedCount)
+//                btnSettlementVisibility(transactionType, count, completedCount, historyData)
                 textview_state_message.isVisible = false
+
+
             } else {
                 textview_state_message.text = it.responseDescription
                 textview_state_message.isVisible = true
-                shortToast(it.responseDescription)
+//                shortToast(it.responseDescription)
             }
         }
     }
 
+    @Deprecated("Will be removed in future update")
     private fun showTransactionList(response: TransactionHistoryData) {
         textview_state_message?.apply {
             isVisible = false
@@ -548,7 +853,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 if (authSize > 0) {
                     historyList.clear()
                     it.preAuthorization?.let { it1 -> historyList.addAll(it1) }
-                    transactionHistoryAdapter.updateDataset(it.preAuthorization, 2)
+//                    transactionHistoryAdapter.updateDataset(it.preAuthorization, 2)
                     count = 0
 
                     for (historyData in historyList) {
@@ -565,14 +870,14 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 } else {
                     historyList.clear()
 //                    transactionHistoryAdapter.notifyDataSetChanged()
-                    shortToast("No Data Found")
+                    shortToast("No Records Found")
                 }
             } else {
                 if (it.forSettlement != null) {
                     if (it.forSettlement!!.isNotEmpty()) {
                         historyList.clear()
                         historyList.addAll(it.forSettlement!!)
-                        transactionHistoryAdapter.updateDataset(it.forSettlement, 1)
+//                        transactionHistoryAdapter.updateDataset(it.forSettlement, 1)
 
                         for (historyData in historyList) {
                             if (historyData.status.equals("PENDING", false)) {
@@ -587,13 +892,16 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     } else {
                         historyList.clear()
 //                        transactionHistoryAdapter.notifyDataSetChanged()
-                        shortToast("No Data Found")
+                        shortToast("No Records Found")
                     }
                 }
             }
 
-            btnSettlementVisibility(transactionType, count, completedCount)
+//            btnSettlementVisibility(transactionType, count, completedCount, historyData)
 
+            if (historyList.isEmpty()) {
+                showErrorMessage("No Records Found")
+            }
 //            if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
 //
 //            } else {
@@ -603,7 +911,106 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //            }
 
         }
+    }
 
+    private fun listTransactionHistoryData(transactionHistoryDataSet: ArrayList<ForSettlement>) {
+        textview_state_message?.apply {
+            isVisible = false
+        }
+
+        var count = 0
+        var completedCount = 0
+
+        transactionHistoryAdapter.updateDataset(newDataSet = transactionHistoryDataSet)
+
+        for (item in transactionHistoryDataSet) {
+            if (item.status.equals("PENDING", false)) {
+                count++
+            }
+            if (item.status.equals("COMPLETED", false)) {
+                completedCount++
+            }
+        }
+
+        Log.i(TAG, "listTransactionHistoryData: count -> $count / completed -> $completedCount")
+
+//        btnSettlementVisibility(transactionType, count, completedCount, transactionHistoryDataSet)
+        btnSettlementVisibility(transactionType)
+    }
+
+    // Show hide Settlement Button in History page
+    private fun btnSettlementVisibility(
+        trxType: String
+    ) {
+        showLog("Service", trxType)
+
+//        if (pendingCount > 0) {
+//            showDialog(
+//                title = "",
+//                description = "You have $pendingCount pending transaction(s), kindly complete.",
+//                activity = requireActivity()
+//            )
+//        }
+
+//        if (transactionHistoryDataSet.size <= 0) {
+//            btnSettlementHistory.visibility = View.GONE
+//        }
+
+        when (trxType) {
+            Fields.ALL -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+            Fields.CARD -> {
+//                if (completedCount > 0) {
+//                    btnSettlementHistory.visibility = View.VISIBLE
+//                } else {
+//                    btnSettlementHistory.visibility = View.GONE
+//                }
+                btnSettlementHistory.visibility = View.VISIBLE
+                fabTransactionStatus.visibility = View.GONE
+            }
+//            Fields.Moto -> {
+//                Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
+//                btnSettlementHistory.visibility = View.VISIBLE
+//                Glide
+//                    .with(requireContext())
+//                    .load(R.drawable.ezylink_meter_with_bg_60_px)
+//                    .circleCrop()
+//                    .into(fabImage)
+//
+//            }
+
+            Fields.Moto, Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
+                if (trxType == Fields.Moto) {
+                    fabTransactionStatus.visibility = View.VISIBLE
+                } else {
+                    fabTransactionStatus.visibility = View.GONE
+                }
+
+                if (getLoginResponse().hostType.equals("P", true)) {
+
+                    Glide
+                        .with(requireContext())
+                        .load(R.drawable.ic_coin)
+                        .circleCrop()
+                        .into(fabImage)
+
+                    btnSettlementHistory.visibility = View.VISIBLE
+                } else {
+                    btnSettlementHistory.visibility = View.GONE
+                }
+            }
+
+            Fields.BOOST, Fields.GRABPAY, Fields.CASH, PREAUTH -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+            else -> {
+                btnSettlementHistory.visibility = View.GONE
+                fabTransactionStatus.visibility = View.GONE
+            }
+        }
     }
 
 //    private fun requestTransactionHistoryData(historyParam: HashMap<String, String>) {
@@ -611,7 +1018,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //
 //        historyParam[Fields.PAGE_NUMBER] = "1"
 //
-//        transactionType = historyParam[Fields.Service]!!
+//        transactionType = historyParam[Fields.Service]!!w
 //        val apiResponse = ApiService.serviceRequest()
 //        apiResponse.getTransactionHistory(historyParam).enqueue(object :
 //            Callback<TransactionHistoryResponseData> {
@@ -630,27 +1037,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //            }
 //        })
 //    }
-
-    private fun preAuthTransHistory(historyType: String) {
-
-        this.historyType = historyType
-
-        val historyParam = HashMap<String, String>()
-
-        historyParam[Fields.sessionId] = getLoginResponse().sessionId
-        historyParam[Fields.MerchantId] = getLoginResponse().merchantId
-        historyParam[Fields.HostType] = getLoginResponse().hostType
-        historyParam[Fields.TRX_TYPE] = transactionType
-        historyParam[Fields.Service] = Fields.PERAUTHHIST
-
-        if (historyType.equals(Fields.EZYMOTO, true)) {
-            historyParam[Fields.tid] = getLoginResponse().motoTid
-        } else {
-            historyParam[Fields.tid] = getLoginResponse().tid
-        }
-
-//        requestTransactionHistoryData(historyParam)
-    }
 
 
     // Have to study about Observer and work
@@ -676,85 +1062,17 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //    }
 
 
-    // Show hide Settlement Button in History page
-    private fun btnSettlementVisibility(trxType: String, pendingCount: Int, completedCount: Int) {
-        showLog("Service", trxType)
-
-        if (pendingCount > 0) {
-            showDialog(
-                title = "",
-                description = "You have $pendingCount pending transaction(s), kindly complete.",
-                activity = requireActivity()
-            )
-        }
-
-        if (historyList.size <= 0) {
-            btnSettlementHistory.visibility = View.GONE
-        }
-
-        when (trxType) {
-            Fields.ALL -> {
-                btnSettlementHistory.visibility = View.GONE
-                fabTransactionStatus.visibility = View.GONE
-            }
-            Fields.CARD -> {
-                if (completedCount > 0) {
-                    btnSettlementHistory.visibility = View.VISIBLE
-                } else {
-                    btnSettlementHistory.visibility = View.GONE
-                }
-                fabTransactionStatus.visibility = View.GONE
-            }
-//            Fields.Moto -> {
-//                Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
-//                btnSettlementHistory.visibility = View.VISIBLE
-//                Glide
-//                    .with(requireContext())
-//                    .load(R.drawable.ezylink_meter_with_bg_60_px)
-//                    .circleCrop()
-//                    .into(fabImage)
-//
-//            }
-
-            Fields.Moto, Fields.EZYREC, Fields.EZYSPLIT, Fields.EZYPASS -> {
-                if (trxType == Fields.Moto) {
-                    fabTransactionStatus.visibility = View.VISIBLE
-                } else {
-                    fabTransactionStatus.visibility = View.GONE
-                }
-
-                if (completedCount > 0 && getLoginResponse().hostType.equals("P", true)) {
-                    Glide
-                        .with(requireContext())
-                        .load(R.drawable.ic_coin)
-                        .circleCrop()
-                        .into(fabImage)
-
-                    btnSettlementHistory.visibility = View.VISIBLE
-                } else {
-                    btnSettlementHistory.visibility = View.GONE
-                }
-            }
-
-            Fields.BOOST, Fields.GRABPAY, Fields.CASH, PREAUTH -> {
-                btnSettlementHistory.visibility = View.GONE
-                fabTransactionStatus.visibility = View.GONE
-            }
-            else -> {
-                btnSettlementHistory.visibility = View.GONE
-                fabTransactionStatus.visibility = View.GONE
-            }
-        }
-    }
-
     override fun onStop() {
         super.onStop()
 //        historyViewModel.transactionHistoryList.removeObservers(this)
     }
 
     private fun getTrxList(): ArrayList<String> {
+
+        Log.i(TAG, "getTrxList: ${getProductList()}")
+
         val histList = ArrayList<String>()
-        histList.add("All Transaction")
+        histList.add(Fields.ALL_TRANSACTION)
 
         for (data in getProductList()) {
             if (data.isEnable) {
@@ -764,7 +1082,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 histList.add(data.historyName)
             }
         }
-
         return histList
     }
 
@@ -886,6 +1203,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //        )
     }
 
+    @Deprecated("Will be removed in future update")
     override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
         Log.i(TAG, "onFingerprintAuthenticationFailure: ")
         showLog("Finger", " Failure")
@@ -893,6 +1211,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         finger.subscribe(this)
     }
 
+    @Deprecated("Will be removed in future update")
     override fun onFingerprintAuthenticationSuccess() {
         Log.i(TAG, "onFingerprintAuthenticationSuccess: ")
         finger.subscribe(this)
@@ -901,7 +1220,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         requestData[Fields.username] = getSharedString(UserName)
         jsonVoidTransaction("Void", historyData, requestData)
     }
-
+    
+    @Deprecated("Will be removed in future update")
     private fun jsonUserValidation(
         userValidateParam: HashMap<String, String>,
         item: ForSettlement
@@ -1040,23 +1360,30 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         Log.e(TAG, "jsonVoidTransaction: request value $requestData")
 
-        showDialog("Processing...")
+//        showDialog("Processing...")
+        AppFunctions.Dialogs.showLoadingDialog("Processing...", requireContext())
         val apiResponse = ApiService.serviceRequest()
         apiResponse.setVoidTransaction(pathStr, requestVal)
             .enqueue(object : Callback<VoidHistoryModel> {
                 override fun onFailure(call: Call<VoidHistoryModel>, t: Throwable) {
-                    cancelDialog()
+                    AppFunctions.Dialogs.closeLoadingDialog()
                 }
 
                 override fun onResponse(
                     call: Call<VoidHistoryModel>,
                     response: Response<VoidHistoryModel>
                 ) {
-                    cancelDialog()
+                    AppFunctions.Dialogs.closeLoadingDialog()
                     if (response.isSuccessful) {
                         shortToast(response.body()!!.responseDescription)
+                    }
+
+                    if (serviceType == 1) {
                         currentTransactionHistoryPageNumber = 1
                         transactionHistory("Void Transaction")
+                    } else {
+                        currentTransactionHistoryPageNumber = 1
+                        preAuthTransHistory(transactionType)
                     }
                 }
             })
@@ -1073,43 +1400,87 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //        })
     }
 
-    private fun jsonSettlement() {
-        showDialog("Validating...")
-        val reqParam = HashMap<String, String>()
-        reqParam[Fields.Service] = Fields.SETTLEMENT
-        reqParam[Fields.sessionId] = getLoginResponse().sessionId
-        reqParam[Fields.HostType] = getLoginResponse().hostType
-        reqParam[Fields.MerchantId] = getLoginResponse().merchantId
-        when (transactionType) {
-            Constants.EzyMoto -> {
-                reqParam[Fields.tid] = getLoginResponse().motoTid
+    private fun processSettlements() {
+//        showDialog("Validating...")
+
+//        val reqParam = HashMap<String, String>()
+//        reqParam[Fields.Service] = Fields.SETTLEMENT
+//        reqParam[Fields.sessionId] = getLoginResponse().sessionId
+//        reqParam[Fields.HostType] = getLoginResponse().hostType
+//        reqParam[Fields.MerchantId] = getLoginResponse().merchantId
+//        when (transactionType) {
+//            Constants.EzyMoto -> {
+//                reqParam[Fields.tid] = getLoginResponse().motoTid
+//            }
+//            Fields.EZYPASS -> {
+//                reqParam[Fields.tid] = getLoginResponse().ezypassTid
+//            }
+//            Fields.EZYREC -> {
+//                reqParam[Fields.tid] = getLoginResponse().ezyrecTid
+//            }
+//            Fields.EZYSPLIT -> {
+//                reqParam[Fields.tid] = getLoginResponse().ezysplitTid
+//            }
+//            else -> {
+//                reqParam[Fields.tid] = getLoginResponse().tid
+//            }
+//        }
+
+
+        val requestData = SettlementsDataRequestData(
+            service = Fields.SETTLEMENT,
+            sessionId = getLoginResponse().sessionId,
+            hostType = getLoginResponse().hostType,
+            merchantId = getLoginResponse().merchantId,
+            tid = when (transactionType) {
+                Constants.EzyMoto -> {
+                    getLoginResponse().motoTid
+                }
+                Fields.EZYPASS -> {
+                    getLoginResponse().ezypassTid
+                }
+                Fields.EZYREC -> {
+                    getLoginResponse().ezyrecTid
+                }
+                Fields.EZYSPLIT -> {
+                    getLoginResponse().ezysplitTid
+                }
+                else -> {
+                    getLoginResponse().tid
+                }
             }
-            Fields.EZYPASS -> {
-                reqParam[Fields.tid] = getLoginResponse().ezypassTid
-            }
-            Fields.EZYREC -> {
-                reqParam[Fields.tid] = getLoginResponse().ezyrecTid
-            }
-            Fields.EZYSPLIT -> {
-                reqParam[Fields.tid] = getLoginResponse().ezysplitTid
-            }
-            else -> {
-                reqParam[Fields.tid] = getLoginResponse().tid
+        )
+
+        lifecycleScope.launch {
+            AppFunctions.Dialogs.showLoadingDialog("Procession...", requireContext())
+            when (val response = historyViewModel.makeSettlement(requestData)) {
+                is SettlementsResponse.Response -> {
+                    shortToast(response.message)
+                    AppFunctions.Dialogs.closeLoadingDialog()
+                    transactionHistory("On Settlement done")
+                }
+
+                is SettlementsResponse.Exception -> {
+                    shortToast(response.exceptionMessage)
+                    AppFunctions.Dialogs.closeLoadingDialog()
+                    transactionHistory("On Settlement done")
+                }
             }
         }
 
-        historyViewModel.getSettlement(reqParam)
 
-        historyViewModel.settlementData.observe(
-            this,
-            {
-                cancelDialog()
-                if (it.responseCode.equals("0000", true)) {
-                    transactionHistory("3")
-                }
-                shortToast(it.responseDescription)
-            }
-        )
+//        historyViewModel.getSettlement(reqParam)
+
+//        historyViewModel.settlementData.observe(
+//            this,
+//            {
+//                cancelDialog()
+//                if (it.responseCode.equals("0000", true)) {
+//                    transactionHistory("3")
+//                }
+//                shortToast(it.responseDescription)
+//            }
+//        )
     }
 
     // Search Option
@@ -1335,12 +1706,12 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.button_settlement_history -> {
-                jsonSettlement()
+                processSettlements()
             }
             R.id.floating_action_button_transaction_status -> {
                 val intent = Intent(requireActivity(), TransactionStatusActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                intent.putExtra(Constants.NavigationKey.TID, getLoginResponse().tid)
+                intent.putExtra(Constants.NavigationKey.TID, getLoginResponse().motoTid)
                 requireContext().startActivity(intent)
             }
             R.id.image_button_filter_product -> {
@@ -1358,22 +1729,28 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             getAvailableProductCharArray()
         ) { dialog, position ->
             showLog("Selected", getTrxList()[position])
+
+            historyList.clear()
+            transactionHistoryAdapter.clearDataset()
+            currentTransactionHistoryPageNumber = 1
+
             transactionType = when (getTrxList()[position]) {
-                "All Transaction" -> Fields.ALL
-                Constants.EzyMoto, Constants.EzySplit -> "MOTO"
+                Fields.ALL_TRANSACTION -> Fields.ALL
+                Constants.EzyMoto, Constants.EzySplit -> Fields.Moto
                 Fields.EZYWIRE -> Fields.CARD
                 else -> getTrxList()[position]
             }
+
+
             if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
                 if (getProductList()[1].isEnable)
                     preAuthTransHistory(Fields.CARD)
                 else
                     preAuthTransHistory(Fields.EZYMOTO)
             } else {
+
 //                    reset page number to load from first
-                transactionHistoryAdapter.clearDataset()
-                currentTransactionHistoryPageNumber = 1
-                transactionHistory("Initial")
+                transactionHistory("on Transaction Type Change")
             }
         }
         val dialog = builder.create()

@@ -124,7 +124,8 @@
                                     android:paddingRight="@dimen/xxhdpi_10"
                                     android:paddingBottom="@dimen/xxhdpi_5"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/t_xxh_14" />
+                                    android:textSize="@dimen/t_xxh_14"
+                                    android:textAllCaps="true" />
 
                             </RelativeLayout>
 

@@ -193,7 +193,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                     (parentView?.getChildAt(0) as TextView?)?.setTextColor(0xFFFFFF)
 
                     trxType = when (getTrxList()[position]) {
-                        "All Transaction" -> {
+                        Fields.ALL_TRANSACTION -> {
                             Fields.ALL
                         }
                         Constants.EzyMoto, Constants.EzySplit -> "MOTO"
@@ -362,7 +362,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                 } else {
                     historyList.clear()
                     historyAdapter.notifyDataSetChanged()
-                    shortToast("No Data Found")
+                    shortToast("No Records Found")
                 }
             } else {
                 if (it.responseData.forSettlement != null) {
@@ -386,7 +386,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                     } else {
                         historyList.clear()
                         historyAdapter.notifyDataSetChanged()
-                        shortToast("No Data Found")
+                        shortToast("No Records Found")
                     }
                 }
             }
@@ -447,14 +447,14 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
 
     private fun getTrxList(): ArrayList<String> {
         val histList = ArrayList<String>()
-        histList.add("All Transaction")
+        histList.add(Fields.ALL_TRANSACTION.uppercase(Locale.getDefault()))
 
         for (data in getProductList()) {
             if (data.isEnable) {
                 if (data.historyName == Constants.MobiCash) {
                     histList.add(Fields.FPX)
                 }
-                histList.add(data.historyName)
+                histList.add(data.historyName.uppercase(Locale.getDefault()))
             }
         }
 

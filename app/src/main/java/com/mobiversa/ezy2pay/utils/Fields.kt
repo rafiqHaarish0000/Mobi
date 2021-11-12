@@ -8,6 +8,8 @@ class Fields {
         const val splitTid: String = "splitTid"
         var VERSION = "version"
 
+        const val ALL_TRANSACTION ="ALL TRANSACTION"
+
         // Service
         const val Service: String = "service"
         const val mobiApiKey: String = "mobiApiKey"
@@ -158,7 +160,6 @@ class Fields {
         const val EZYSPLIT: String = "EZYSPLIT"
         const val CASH: String = "CASH"
         const val FPX: String = "FPX"
-
         const val EZYWIRE: String = "EZYWIRE"
 
         // Void

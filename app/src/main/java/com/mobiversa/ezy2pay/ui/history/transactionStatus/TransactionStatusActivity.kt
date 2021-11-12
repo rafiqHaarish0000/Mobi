@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +17,10 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.R
+import com.mobiversa.ezy2pay.adapter.RecyclerViewLoadStateAdapter
 import com.mobiversa.ezy2pay.adapter.transactionStatus.TransactionStatusAdapter
 import com.mobiversa.ezy2pay.base.AppFunctions
-import com.mobiversa.ezy2pay.dataModel.ResponseTransactionStatusDataModel
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusData
-import com.mobiversa.ezy2pay.dataModel.TransactionStatusResponse
+import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.databinding.ActivityTransactionStatusBinding
 import com.mobiversa.ezy2pay.dialogs.SearchFilterDialog
 import com.mobiversa.ezy2pay.utils.AppRepository
@@ -35,11 +35,12 @@ internal val TAG = TransactionStatusActivity::class.java.canonicalName
 
 class TransactionStatusActivity : AppCompatActivity() {
 
-    private val transactionStatusInterface = object : TransactionStatusAdapter.TransactionStatusInterface{
-        override fun onItemSelect(item: TransactionStatusData) {
-            showDeleteDialog(item)
+    private val transactionStatusInterface =
+        object : TransactionStatusAdapter.TransactionStatusInterface {
+            override fun onItemSelect(item: TransactionStatusData) {
+                showDeleteDialog(item)
+            }
         }
-    }
 
     private fun showDeleteDialog(item: TransactionStatusData) {
         val builder = AlertDialog.Builder(this@TransactionStatusActivity)
@@ -58,7 +59,30 @@ class TransactionStatusActivity : AppCompatActivity() {
 
     private fun deleteTransactionLink(item: TransactionStatusData) {
         lifecycleScope.launch {
-//            val response = viewModel.deleteTransactionLink(item)
+
+            AppFunctions.Dialogs.showLoadingDialog(
+                "Processing, please wait",
+                this@TransactionStatusActivity
+            )
+            when (val response = viewModel.deleteTransactionLink(item)) {
+                is TransactionLinkDeleteResponse.Success -> {
+                    Toast.makeText(
+                        this@TransactionStatusActivity,
+                        response.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    transactionStatusAdapter.refresh()
+                }
+                is TransactionLinkDeleteResponse.Error -> {
+                    showErrorCondition(response.errorMessage)
+                }
+                is TransactionLinkDeleteResponse.Exception -> {
+                    showErrorCondition(response.exceptionMessage)
+                }
+            }
+
+            AppFunctions.Dialogs.closeLoadingDialog()
         }
     }
 
@@ -73,9 +97,15 @@ class TransactionStatusActivity : AppCompatActivity() {
 
 
     private val searchCallback = object : SearchFilterDialog.SearchFilterCallBack {
-        override fun onSearch(fromDate: Long, toDate: Long, status: String) {
+        override fun onSearch(fromDate: String, toDate: String, status: String) {
             transactionStatus = status
-            getTransactionStatusPaging(tid, searchString, status)
+            getTransactionStatusPaging(
+                tid = tid,
+                searchKey = searchString,
+                status = status,
+                fromDate = fromDate,
+                toDate = toDate
+            )
         }
 
         override fun onCancel() {
@@ -101,7 +131,6 @@ class TransactionStatusActivity : AppCompatActivity() {
 //        setSupportActionBar(binding.toolbar)
         transactionStatusAdapter = TransactionStatusAdapter(callBack = transactionStatusInterface)
 
-
         binding.imageButtonBack.setOnClickListener {
             finish()
         }
@@ -112,7 +141,10 @@ class TransactionStatusActivity : AppCompatActivity() {
                     LinearLayoutManager.VERTICAL,
                     false
                 )
-            adapter = transactionStatusAdapter
+            adapter = transactionStatusAdapter.withLoadStateHeaderAndFooter(
+                header = RecyclerViewLoadStateAdapter { transactionStatusAdapter.retry() },
+                footer = RecyclerViewLoadStateAdapter { transactionStatusAdapter.retry() }
+            )
         }
 
 
@@ -165,6 +197,7 @@ class TransactionStatusActivity : AppCompatActivity() {
     }
 
     private fun handleError(loadState: CombinedLoadStates) {
+        Log.i(TAG, "handleError: $loadState")
         val errorState = loadState.source.append as? LoadState.Error
             ?: loadState.source.prepend as? LoadState.Error
             ?: loadState.mediator?.refresh as? LoadState.Error
@@ -178,15 +211,48 @@ class TransactionStatusActivity : AppCompatActivity() {
     private fun getTransactionStatusPaging(
         tid: String,
         searchKey: String,
-        status: String
+        status: String,
+        fromDate: String = "",
+        toDate: String = ""
     ) {
 //        AppFunctions.Dialogs.showLoadingDialog("Loading...", this@TransactionStatusActivity)
+
+        val requestData = TransactionStatusRequestDataModel(
+            tid = tid,
+            fromDate = fromDate,
+            toDate = toDate,
+            searchKey = searchKey,
+            linkTxnStatus = status
+        )
+
         lifecycleScope.launch {
-            viewModel.getTransactionStatusPaging(tid, "", "", searchKey, status).collectLatest {
+            transactionStatusAdapter.loadStateFlow.collectLatest { loadStates ->
+
+                val refreshState = loadStates.mediator?.refresh
+                binding.progressBar.isVisible = refreshState is LoadState.Loading
+                binding.retry.isVisible = refreshState is LoadState.Error
+
+                if (loadStates.source.refresh is LoadState.NotLoading && loadStates.append.endOfPaginationReached && transactionStatusAdapter.itemCount < 1) {
+                    binding.errorMessage.apply {
+                        text = context.getString(R.string.no_data_available)
+                        isVisible = true
+                    }
+                } else {
+                    binding.errorMessage.apply {
+                        isVisible = false
+                    }
+                }
+                handleError(loadStates)
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.getTransactionStatusPaging(requestData).collectLatest {
 //                AppFunctions.Dialogs.closeLoadingDialog()
                 transactionStatusAdapter.submitData(it)
             }
         }
+
 
     }
 

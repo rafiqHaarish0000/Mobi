@@ -5,15 +5,13 @@ import androidx.paging.PagingState
 import com.mobiversa.ezy2pay.dataModel.TransactionStatusData
 import com.mobiversa.ezy2pay.dataModel.TransactionStatusRequestDataModel
 import com.mobiversa.ezy2pay.network.ApiService
+import com.mobiversa.ezy2pay.utils.AppExceptions
 import com.mobiversa.ezy2pay.utils.Constants
+import java.net.UnknownHostException
 
 class NetworkStatusDataSource(
     val apiService: ApiService,
-    private val tid: String,
-    private val fromDate: String,
-    private val toDate: String,
-    private val searchKey: String,
-    private val status: String
+    private val transactionLinkDeleteRequestData: TransactionStatusRequestDataModel
 ) :
     PagingSource<Int, TransactionStatusData>() {
     override fun getRefreshKey(state: PagingState<Int, TransactionStatusData>): Int? {
@@ -28,21 +26,15 @@ class NetworkStatusDataSource(
             // Start refresh at page 1 if undefined.
             var nextPageNumber = params.key ?: 1
 
-
+            transactionLinkDeleteRequestData.pageNo = nextPageNumber.toString()
             val response =
                 apiService.getTransactionStatus(
-                    TransactionStatusRequestDataModel(
-                        tid = tid,
-                        fromDate = fromDate,
-                        toDate = toDate,
-                        pageNo = nextPageNumber.toString(),
-                        searchKey = searchKey,
-                        linkTxnStatus = status
-                    )
+                    transactionLinkDeleteRequestData
                 )
 
             if (response.isSuccessful) {
                 val data = response.body()!!
+
                 when (data.responseCode) {
                     Constants.Network.RESPONSE_SUCCESS -> {
                         nextPageNumber++
@@ -60,9 +52,7 @@ class NetworkStatusDataSource(
                             nextKey = null
                         )
                     }
-
                 }
-
             } else {
                 return LoadResult.Page(
                     data = emptyList(),
@@ -75,6 +65,12 @@ class NetworkStatusDataSource(
             return LoadResult.Error(
                 throwable = e
             )
+        } catch (e: UnknownHostException) {
+            return LoadResult.Error(
+                throwable = AppExceptions.NoConnectivityException()
+            )
         }
     }
+
+
 }

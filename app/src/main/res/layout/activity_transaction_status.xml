@@ -156,5 +156,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/recycler_transaction_status_list"
+            app:layout_constraintEnd_toEndOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintStart_toStartOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintTop_toTopOf="@+id/recycler_transaction_status_list" />
+
+        <Button
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/primary_button"
+            android:text="@string/retry"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/recycler_transaction_status_list"
+            app:layout_constraintEnd_toEndOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintStart_toStartOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintTop_toTopOf="@+id/recycler_transaction_status_list" />
+
+
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/recycler_transaction_status_list"
+            app:layout_constraintEnd_toEndOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintStart_toStartOf="@+id/recycler_transaction_status_list"
+            app:layout_constraintTop_toTopOf="@+id/recycler_transaction_status_list" />
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

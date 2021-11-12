@@ -146,9 +146,9 @@
     <string name="status">Status</string>
     <string name="filter_transaction_status">filter transaction status</string>
     <string name="search">Search</string>
-    <string name="search_filter">Search Filter</string>
+    <string name="search_filter">Filter the list with status &amp; data !!!</string>
     <string name="pending">Pending</string>
-    <string name="not_in_use">Not In Use</string>
+    <string name="not_in_use">Not Used</string>
     <string name="transaction_status">Transaction Status</string>
     <string name="from_date">From Date</string>
     <string name="to_date">To Date</string>
@@ -166,4 +166,6 @@
     <string name="clear_search">clear search</string>
     <string name="search_strart_typing_something">Search (Strart typing something)</string>
     <string name="filter_product">filter product</string>
+    <string name="no_data_available">No data available</string>
+    <string name="filter">Filter</string>
 </resources>

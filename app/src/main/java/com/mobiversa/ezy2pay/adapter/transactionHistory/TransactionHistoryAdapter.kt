@@ -1,9 +1,9 @@
 package com.mobiversa.ezy2pay.adapter.transactionHistory
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +22,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class TransactionHistoryAdapter(
     val context: Context,
@@ -51,13 +52,11 @@ class TransactionHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         val item = filterHistoryList[position]
         (holder as TransactionHistoryViewHolder).bind(
             context,
             item
         )
-
     }
 
     fun getData(): ArrayList<ForSettlement> {
@@ -67,9 +66,6 @@ class TransactionHistoryAdapter(
     override fun getFilter(): Filter {
 
         return object : Filter() {
-            @SuppressLint("DefaultLocale")
-
-
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString()
                 filterHistoryList = if (charString.isEmpty()) {
@@ -126,8 +122,8 @@ class TransactionHistoryAdapter(
             if (trxHistory.equals(Fields.PERAUTHHIST, ignoreCase = true)) {
                 val totalDays =
                     DateFormatter.getDaysCount(
-                        dateFormat.parse(dateStr),
-                        dateFormat.parse(today_date)
+                        dateFormat.parse(dateStr)!!,
+                        dateFormat.parse(today_date)!!
                     )
                 binding.root.txt_days.text = "$totalDays Days"
                 binding.root.days_linear.visibility = View.VISIBLE
@@ -154,9 +150,9 @@ class TransactionHistoryAdapter(
             ) {
                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                 binding.timelineView.setBackgroundColor(Color.parseColor("#faa107"))
-                binding.txtStatusHistory.text = "PENDING"
+                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
             } else {
-                binding.txtStatusHistory.text = historyData.status
+                binding.txtStatusHistory.text = Constants.TransactionHistory.COMPLETED
                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                 binding.timelineView.setBackgroundColor(Color.parseColor("#52de97"))
             }
@@ -179,7 +175,7 @@ class TransactionHistoryAdapter(
             }
 
 
-            historyData.txnType?.let {
+            historyData.txnType?.let { it ->
                 binding.prodNameTxt.text = it
                 when (it.uppercase(Locale.getDefault())) {
                     Fields.CASH -> {
@@ -237,12 +233,13 @@ class TransactionHistoryAdapter(
                         binding.txtAuthcodeHistory.visibility = View.VISIBLE
                         when {
                             historyData.status.equals("VOID", true) -> {
-                                binding.txtStatusHistory.text = "Void"
+                                binding.txtStatusHistory.text = "VOID"
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_void)
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.void_red))
                             }
                             historyData.status.equals("COMPLETED", true) -> {
-                                binding.txtStatusHistory.text = historyData.status
+                                binding.txtStatusHistory.text =
+                                    Constants.TransactionHistory.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.completed))
                             }
@@ -252,7 +249,7 @@ class TransactionHistoryAdapter(
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.completed))
                             }
                             historyData.status.equals("PENDING", true) -> {
-                                binding.txtStatusHistory.text = "PENDING"
+                                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
                                 binding.txtRrnHistory.visibility = View.GONE
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.pending))
@@ -262,6 +259,7 @@ class TransactionHistoryAdapter(
                     }
                     Fields.PREAUTH -> {
 
+                        Log.i(TAG, "bind: ${Fields.PREAUTH}")
                         when (historyData.status) {
                             "D" -> {
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.pending))
@@ -269,6 +267,7 @@ class TransactionHistoryAdapter(
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                             }
                             "E" -> {
+                                Log.i(TAG, "bind: ${historyData.status}")
                                 binding.txtStatusHistory.text =
                                     Constants.TransactionHistory.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
@@ -280,18 +279,20 @@ class TransactionHistoryAdapter(
                     else -> {
                         binding.txtRrnHistory.visibility = View.VISIBLE
                         binding.txtAuthcodeHistory.visibility = View.VISIBLE
-
-                        when (historyData.cardType!!.lowercase(Locale.getDefault())) {
-                            "master" -> {
-                                binding.historyLogoImg.setImageResource(R.drawable.master)
-                            }
-                            "visa" -> {
-                                binding.historyLogoImg.setImageResource(R.drawable.visaa)
-                            }
-                            else -> {
-                                binding.historyLogoImg.setImageResource(R.drawable.union_pay_logo)
+                        historyData.cardType?.let {
+                            when (it.lowercase(Locale.getDefault())) {
+                                "master" -> {
+                                    binding.historyLogoImg.setImageResource(R.drawable.master)
+                                }
+                                "visa" -> {
+                                    binding.historyLogoImg.setImageResource(R.drawable.visaa)
+                                }
+                                else -> {
+                                    binding.historyLogoImg.setImageResource(R.drawable.union_pay_logo)
+                                }
                             }
                         }
+
                     }
                 }
             }
@@ -307,7 +308,6 @@ class TransactionHistoryAdapter(
                     || status.equals("Cash Sale", true)
                     || status.equals("E", true)
                 ) {
-
                     callback.onTransactionClicked(historyData = historyData, bundle = bundle)
 //                    fragment.addFragment(historyData, bundle = bundle)
                 }
@@ -358,7 +358,8 @@ class TransactionHistoryAdapter(
 //    }
 
 
-    fun updateDataset(newDataSet: ArrayList<ForSettlement>) {
+    fun updateDataset(transactionType: String, newDataSet: ArrayList<ForSettlement>) {
+        this.transactionType = transactionType
         val lastPosition = if (this.historyList.size > 0) {
             this.historyList.size - 1
         } else {
@@ -369,14 +370,20 @@ class TransactionHistoryAdapter(
         this.filterHistoryList = this.historyList
     }
 
-    fun setTransactionType(transactionType: String) {
-        this.transactionType = transactionType
+    fun setTransactionType() {
+
     }
 
     fun clearDataset() {
-        this.historyList.clear()
-        this.filterHistoryList.clear()
-        notifyDataSetChanged()
+        if (historyList.isNotEmpty()) {
+            this.historyList.clear()
+            notifyItemChanged(0)
+        }
+        if (filterHistoryList.isNotEmpty()) {
+            this.filterHistoryList.clear()
+            notifyItemChanged(0)
+        }
+
     }
 
     fun setServiceType(trxHistory: String) {

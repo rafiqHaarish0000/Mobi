@@ -3,6 +3,7 @@ package com.mobiversa.ezy2pay.base
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -13,23 +14,31 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+internal  val TAG = AppFunctions::class.java.canonicalName
 object AppFunctions {
 
     private var loadingDialog: AlertDialog? = null
     private var isLoading: Boolean = false
 
     fun parseAmount(amount: String): String {
-        val parsedAmount: String = String.format(
-            "%s.%s",
-            amount.substring(0, amount.length - 2),
-            amount.substring(amount.length - 2)
-        )
-        val formatter = DecimalFormat("#,##0.00")
-        return String.format(
-            "RM %s", formatter.format(
-                parsedAmount.toDouble()
+        try {
+            val parsedAmount: String = String.format(
+                "%s.%s",
+                amount.substring(0, amount.length - 2),
+                amount.substring(amount.length - 2)
             )
-        )
+            val formatter = DecimalFormat("#,##0.00")
+            return String.format(
+                "RM %s", formatter.format(
+                    parsedAmount.toDouble()
+                )
+            )
+        }catch (e: Exception){
+            e.printStackTrace()
+            Log.e(TAG, "parseAmount: $amount" )
+
+            return "RM 0.00"
+        }
     }
 
     fun parseDate(

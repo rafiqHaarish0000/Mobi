@@ -41,6 +41,7 @@ class Constants {
         const val PENDING = "PENDING"
         const val REFUND = "REFUND"
         const val SUCCESS = "SUCCESS"
+        const val Settled = "SETTLED"
         const val COMPLETED = "COMPLETED"
     }
 

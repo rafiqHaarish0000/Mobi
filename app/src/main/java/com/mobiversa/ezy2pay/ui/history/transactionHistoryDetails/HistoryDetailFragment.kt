@@ -119,13 +119,15 @@ class HistoryDetailFragment :
 //        historyData = requireArguments().getSerializable("History") as ForSettlement?
 
         requireArguments().let {
-            historyData = it.getSerializable(Constants.NavigationKey.TRANSACTION_HISTORY_KEY) as ForSettlement
+            historyData =
+                it.getSerializable(Constants.NavigationKey.TRANSACTION_HISTORY_KEY) as ForSettlement
+            histTrxType = it.getString(Fields.TRX_TYPE).toString()
         }
 
         Log.e(TAG, "initialize: historyData -> $historyData")
         amount = requireArguments().getString(Constants.Amount).toString()
         val date = requireArguments().getString(Constants.Date)
-        histTrxType = requireArguments().getString(Fields.TRX_TYPE).toString()
+//        histTrxType = requireArguments().getString(Fields.TRX_TYPE).toString()
 
         val amtStr = amount.replace("RM ", "")
         currentAmount = amtStr.replace(",", "").toDouble()
@@ -288,6 +290,7 @@ class HistoryDetailFragment :
 
         rootView.btn_history_detail_receipt.visibility = View.VISIBLE
 
+        Log.i(TAG, "initialize: $histTrxType")
         when {
             histTrxType.equals(Fields.PREAUTH, true) -> {
                 rootView.btn_history_detail_receipt.text = "Convert to Sale"
@@ -772,7 +775,6 @@ class HistoryDetailFragment :
                 (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 setTitle("Transactions", true)
 //                fragmentManager?.popBackStack()
-
                 findNavController().navigateUp()
                 true
             }

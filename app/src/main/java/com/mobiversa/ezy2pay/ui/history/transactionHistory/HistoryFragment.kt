@@ -103,7 +103,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     private val transactionHistoryRecyclerViewOnScrollListener =
         object : RecyclerView.OnScrollListener() {
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (!recyclerView.canScrollVertically(1) && serviceType != 2) {
                     loadMoreTransactionHistory()
@@ -114,7 +113,9 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private val transactionHistoryCallback =
         object : TransactionHistoryAdapter.TransactionHistoryInterface {
             override fun onTransactionClicked(historyData: ForSettlement, bundle: Bundle) {
+                Log.i(TAG, "onTransactionClicked: $historyData")
                 bundle.putSerializable(Constants.NavigationKey.TRANSACTION_HISTORY_KEY, historyData)
+                bundle.putString(Fields.TRX_TYPE, transactionType)
                 findNavController().navigate(
                     R.id.action_navigation_history_to_historyDetailFragment2,
                     bundle
@@ -310,7 +311,11 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         setTitle("Transactions", true)
 
 //        transactionType = Fields.ALL
+
+
         currentTransactionHistoryPageNumber = 1
+        transactionType = Fields.ALL
+        transactionHistoryAdapter.clearDataset()
         transactionHistory("On Resume")
     }
 
@@ -390,7 +395,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private fun preAuthTransHistory(historyType: String) {
         serviceType = 2
         Log.i(TAG, "preAuthTransHistory: historyType $historyType")
-        transactionType = historyType
+
 
 //        val historyParam = HashMap<String, String>()
 //
@@ -410,7 +415,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             sessionId = getLoginResponse().sessionId,
             merchantId = getLoginResponse().merchantId,
             hostType = getLoginResponse().hostType,
-            trxType = transactionType,
+            trxType = historyType,
             service = Fields.PERAUTHHIST,
         )
 //        transactionHistoryRequestData.tid = if (historyType.equals(Fields.EZYMOTO, true)) {
@@ -466,7 +471,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                     }
                 }
             }
-            Fields.PREAUTH -> {
+            PREAUTH -> {
                 when {
                     getLoginResponse().tid.isNotEmpty() -> {
                         getLoginResponse().tid
@@ -921,7 +926,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         var count = 0
         var completedCount = 0
 
-        transactionHistoryAdapter.updateDataset(newDataSet = transactionHistoryDataSet)
+        transactionHistoryAdapter.updateDataset(
+            transactionType,
+            newDataSet = transactionHistoryDataSet
+        )
 
         for (item in transactionHistoryDataSet) {
             if (item.status.equals("PENDING", false)) {
@@ -1220,7 +1228,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         requestData[Fields.username] = getSharedString(UserName)
         jsonVoidTransaction("Void", historyData, requestData)
     }
-    
+
     @Deprecated("Will be removed in future update")
     private fun jsonUserValidation(
         userValidateParam: HashMap<String, String>,
@@ -1741,14 +1749,18 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 else -> getTrxList()[position]
             }
 
+            Log.i(TAG, "showProductFilterDialog: $transactionType")
 
             if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
-                if (getProductList()[1].isEnable)
+                if (getProductList()[1].isEnable) {
+                    Log.i(TAG, "showProductFilterDialog: 2 ${Fields.CARD}")
                     preAuthTransHistory(Fields.CARD)
-                else
+                } else {
+                    Log.i(TAG, "showProductFilterDialog: 3 ${Fields.EZYMOTO}")
                     preAuthTransHistory(Fields.EZYMOTO)
+                }
             } else {
-
+                Log.i(TAG, "showProductFilterDialog: 4 Transaction History")
 //                    reset page number to load from first
                 transactionHistory("on Transaction Type Change")
             }

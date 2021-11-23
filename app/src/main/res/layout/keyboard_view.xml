@@ -28,49 +28,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/amount_rel"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="@dimen/xxhdpi_5"
-                android:layout_marginRight="@dimen/xxhdpi_20"
-                android:layout_marginLeft="@dimen/xxhdpi_20"
-                android:gravity="center"
-                android:background="@drawable/rect_bor_key"
-                android:layout_toLeftOf="@+id/send_img">
+                <RelativeLayout
+                    android:id="@+id/amount_rel"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="@dimen/xxhdpi_20"
+                    android:layout_marginTop="@dimen/xxhdpi_5"
+                    android:layout_marginRight="@dimen/xxhdpi_20"
+                    android:layout_toLeftOf="@+id/send_img"
+                    android:background="@drawable/rect_bor_key"
+                    android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_home"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:fontFamily="@font/lato_regular"
-                    android:gravity="center_vertical|end"
-                    android:paddingLeft="@dimen/xxhdpi_5"
-                    android:paddingRight="@dimen/xxhdpi_5"
-                    android:text="RM"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/t_xxh_20" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:fontFamily="@font/lato_regular"
+                        android:gravity="center_vertical|end"
+                        android:paddingLeft="@dimen/xxhdpi_5"
+                        android:paddingRight="@dimen/xxhdpi_5"
+                        android:text="RM"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/t_xxh_20"
+                        android:textStyle="bold" />
 
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/edt_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_toEndOf="@+id/text_home"
-                    android:background="@null"
-                    android:fontFamily="@font/lato_regular"
-                    android:gravity="center_vertical|end"
-                    android:maxLines="2"
-                    android:paddingLeft="@dimen/xxhdpi_5"
-                    android:paddingRight="@dimen/xxhdpi_5"
-                    android:text="0.00"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/t_xxh_20"/>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/edt_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/text_home"
+                        android:background="@null"
+                        android:fontFamily="@font/lato_regular"
+                        android:gravity="center_vertical|end"
+                        android:maxLines="2"
+                        android:paddingLeft="@dimen/xxhdpi_5"
+                        android:paddingRight="@dimen/xxhdpi_5"
+                        android:text="0.00"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/t_xxh_20"
+                        android:textStyle="bold" />
 
-            </RelativeLayout>
+                </RelativeLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/send_img"
@@ -104,18 +104,18 @@
                 android:background="@drawable/rect_bor"
                 android:layout_toLeftOf="@+id/send_img">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/invoice_home"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:fontFamily="@font/lato_regular"
-                android:gravity="center"
-                android:paddingLeft="@dimen/xxhdpi_5"
-                android:paddingRight="@dimen/xxhdpi_5"
-                android:hint="Invoice Reference"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/t_xxh_16" />
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/invoice_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:fontFamily="@font/lato_regular"
+                    android:gravity="center"
+                    android:hint="Invoice Reference"
+                    android:paddingLeft="@dimen/xxhdpi_5"
+                    android:paddingRight="@dimen/xxhdpi_5"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/t_xxh_16" />
 
             </RelativeLayout>
 

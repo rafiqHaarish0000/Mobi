@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -74,14 +75,17 @@ public class MyInputMethodService extends InputMethodService
             }
         });*/
 
-        amount_edt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isAmount = true;
-                keyboardView.setKeyboard(number_keyboard);
+        amount_edt.setOnClickListener(v -> {
+            isAmount = true;
+            keyboardView.setKeyboard(number_keyboard);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                amount_rel.setBackground(getResources().getDrawable(R.drawable.rect_bor_key, this.getTheme()));
+                invoice_rel.setBackground(getResources().getDrawable(R.drawable.rect_bor, this.getTheme()));
+            }else{
                 amount_rel.setBackground(getResources().getDrawable(R.drawable.rect_bor_key));
                 invoice_rel.setBackground(getResources().getDrawable(R.drawable.rect_bor));
             }
+
         });
 
 

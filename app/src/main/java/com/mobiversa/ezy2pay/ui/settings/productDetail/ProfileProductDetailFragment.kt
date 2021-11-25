@@ -41,7 +41,7 @@ class ProfileProductDetailFragment : BaseFragment() {
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
 
-        initialize(arguments!!.getString(Product), rootView)
+        initialize(requireArguments().getString(Product), rootView)
         return rootView
     }
 

@@ -46,7 +46,7 @@
                         android:id="@+id/prod_name_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EZYLINK"
+                        android:text="@string/ezylink"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="10sp"
                         android:layout_centerHorizontal="true"
@@ -107,7 +107,7 @@
                         android:drawablePadding="@dimen/xxhdpi_10"
                         android:drawableTint="#838ab5"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="Name" />
+                        android:text="@string/name" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edt_name_ezymoto"
@@ -131,7 +131,7 @@
                         android:drawableLeft="@drawable/ic_price_tag"
                         android:drawablePadding="@dimen/xxhdpi_10"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="Reason for Purchase" />
+                        android:text="@string/reason_for_purchase" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edt_reference_ezymoto"
@@ -155,7 +155,7 @@
                         android:buttonTint="@color/colorPrimary"
                         android:checked="false"
                         android:paddingLeft="5dp"
-                        android:text="Multi Use"
+                        android:text="@string/multi_use"
                         android:visibility="gone" />
 
                     <LinearLayout
@@ -172,7 +172,7 @@
                             android:drawableLeft="@drawable/ic_recuring"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="No.of.Payments" />
+                            android:text="@string/no_of_payments" />
 
 
                         <LinearLayout
@@ -204,7 +204,7 @@
                             android:drawableLeft="@drawable/ic_flag"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="Country" />
+                            android:text="@string/country" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -228,7 +228,7 @@
                             android:drawableTint="@color/grey"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="Contact" />
+                            android:text="@string/contact" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -274,7 +274,7 @@
                             android:drawableRight="@drawable/ic_whatsapp"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:paddingLeft="5dp"
-                            android:text="Send payment link through WhatsApp"
+                            android:text="@string/send_payment_link_through_whatsapp"
                             android:textSize="10sp" />
 
                         <RelativeLayout
@@ -296,7 +296,7 @@
                                 android:background="@drawable/circle_white"
                                 android:gravity="center"
                                 android:letterSpacing="0.08"
-                                android:text="or"
+                                android:text="@string/or"
                                 android:textColor="@color/txt_grey" />
 
                         </RelativeLayout>
@@ -309,7 +309,7 @@
                             android:background="@drawable/rect_bor"
                             android:backgroundTint="@color/white"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="Email"
+                            android:hint="@string/email"
                             android:inputType="textEmailAddress"
                             android:maxLines="1"
                             android:padding="@dimen/xxhdpi_10"

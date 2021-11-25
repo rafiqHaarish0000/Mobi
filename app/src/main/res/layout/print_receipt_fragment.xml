@@ -71,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/xxhdpi_5"
-                        android:text="Amount"
+                        android:text="@string/amount"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_16" />
 
@@ -80,7 +80,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="RM 00.00"
+                        android:text="@string/rm_00_00"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_28"
                         android:textStyle="bold" />
@@ -172,7 +172,7 @@
                             android:checked="true"
                             android:fontFamily="@font/ubuntu_normal"
                             android:paddingLeft="5dp"
-                            android:text="Send receipt through WhatsApp"
+                            android:text="@string/send_receipt_through_whatsapp"
                             android:visibility="visible" />
 
                         <RelativeLayout
@@ -194,7 +194,7 @@
                                 android:background="@drawable/circle_white"
                                 android:gravity="center"
                                 android:letterSpacing="0.08"
-                                android:text="or"
+                                android:text="@string/or"
                                 android:textColor="@color/txt_grey" />
 
                         </RelativeLayout>
@@ -203,7 +203,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_10"
-                            android:text="Email Address"
+                            android:text="@string/email_address"
                             android:drawableTint="@color/lite_blue"
                             android:drawableLeft="@drawable/ic_mail"
                             android:drawablePadding="@dimen/xxhdpi_10"
@@ -240,7 +240,7 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:text="Send Sales Slip"
+                                android:text="@string/send_sales_slip"
                                 android:textSize="10sp"
                                 android:textStyle="bold"
                                 android:drawablePadding="@dimen/xxhdpi_10"
@@ -275,7 +275,7 @@
                                     android:paddingTop="@dimen/xxhdpi_5"
                                     android:paddingRight="@dimen/xxhdpi_5"
                                     android:paddingBottom="@dimen/xxhdpi_5"
-                                    android:text="Print Receipt"
+                                    android:text="@string/print_receipt"
                                     android:textAllCaps="true"
                                     android:textAppearance="?android:textAppearanceMedium"
                                     android:textColor="@color/colorPrimary"

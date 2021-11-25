@@ -68,7 +68,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         motoViewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
 
         setTitle("Profile", true)
-        prefs = PreferenceHelper.defaultPrefs(context!!)
+        prefs = PreferenceHelper.defaultPrefs(requireContext())
 
         rootView.txt_profile_name.text = getSharedString(Constants.UserName)
         clearRegData()
@@ -149,7 +149,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
                 showLog("Percent", " $percent")
                 when (data.toInt()) {
                     in 0..20 -> {
-                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_0_graph))
+                        rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_25_graph))
                     }
                     in 20..41 -> {
                         rootView.graph_img.setImageDrawable(resources.getDrawable(R.drawable.ic_25_graph))
@@ -174,7 +174,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
 
     private fun showUpgradePrompt() {
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_upgrade, null)
         val mBuilder = context.let {
             AlertDialog.Builder(it)
@@ -298,7 +298,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
     private fun showLogoutPrompt() {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_logout, null)
         val positiveBtn = alertLayout.findViewById<View>(R.id.positive_btn) as Button
         val negativeBtn = alertLayout.findViewById<View>(R.id.negative_btn) as Button
@@ -376,7 +376,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
     private fun showReferralPrompt() {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_referal_main, null)
         val positiveBtn = alertLayout.findViewById<View>(R.id.referal_txt) as TextView
         val negativeBtn = alertLayout.findViewById<View>(R.id.alert_close_button) as ImageView

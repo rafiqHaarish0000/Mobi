@@ -79,7 +79,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:text="Attempt Remaining"
+                                android:text="@string/attempt_remaining"
                                 android:textStyle="bold"
                                 android:textColor="@color/txt_black"
                                 android:textSize="@dimen/t_xxh_14"/>
@@ -89,7 +89,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:text="warning Count"
+                                android:text="@string/warning_count"
                                 android:layout_marginTop="@dimen/xxhdpi_5"
                                 android:textColor="@color/txt_black"
                                 android:textSize="@dimen/t_xxh_12"/>
@@ -101,7 +101,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
                             android:fontFamily="@font/ubuntu_strong"
-                            android:text="Hey!"
+                            android:text="@string/hey"
                             android:visibility="gone"
                             android:letterSpacing=".1"
                             android:textColor="#414040"
@@ -130,7 +130,7 @@
                             android:drawableLeft="@drawable/ic_user"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="User Name"
+                            android:hint="@string/user_name"
                             android:maxLines="1"
                             android:imeOptions="actionNext"
                             android:theme="@style/EditTextTheme_bgblue"
@@ -149,7 +149,7 @@
                             android:drawableLeft="@drawable/ic_key"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="Password"
+                            android:hint="@string/password"
                             android:maxLines="1"
                             android:inputType="textPassword"
                             android:textColor="@color/colorPrimary"
@@ -196,7 +196,7 @@
                                 android:paddingTop="@dimen/xxhdpi_10"
                                 android:paddingRight="@dimen/xxhdpi_30"
                                 android:paddingBottom="@dimen/xxhdpi_10"
-                                android:text="LOGIN"
+                                android:text="@string/login"
                                 android:textAllCaps="true"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -210,7 +210,7 @@
                                 android:layout_alignBaseline="@id/btn_sign_in"
                                 android:layout_alignParentBottom="true"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:text="Forget Password?"
+                                android:text="@string/forget_password"
                                 android:textColor="#005ea6"
                                 android:textSize="@dimen/t_xxh_12" />
 
@@ -234,7 +234,7 @@
                                 android:layout_centerHorizontal="true"
                                 android:background="@drawable/circle_white"
                                 android:gravity="center"
-                                android:text="or"
+                                android:text="@string/or"
                                 android:letterSpacing="0.08"
                                 android:textColor="@color/txt_grey" />
 
@@ -355,7 +355,7 @@
                             android:drawableLeft="@drawable/ic_user"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="User Name"
+                            android:hint="@string/user_name"
                             android:maxLines="1"
                             android:textColor="@color/colorPrimary"
                             android:textColorHint="#848484"
@@ -379,7 +379,7 @@
                             android:drawableLeft="@drawable/ic_otp"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="Please Enter OTP"
+                            android:hint="@string/please_enter_otp"
                             android:maxLines="1"
                             android:inputType="number"
                             android:textColor="@color/colorPrimary"
@@ -396,7 +396,7 @@
                                 android:drawableLeft="@drawable/ic_password"
                                 android:drawablePadding="@dimen/xxhdpi_10"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:hint="*Password"
+                                android:hint="@string/password"
                                 android:singleLine="true"
                                 android:maxLines="1"
                                 android:inputType="textPassword"
@@ -408,7 +408,7 @@
                                 android:id="@+id/strength_txt"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Password Strength: 0%"
+                                android:text="@string/password_strength_0"
                                 android:textColor="@color/txt_light"
                                 android:textStyle="normal"
                                 android:layout_marginStart="@dimen/xxhdpi_20"
@@ -439,7 +439,7 @@
                                 android:clickable="false"
                                 android:paddingStart="@dimen/xxhdpi_10"
                                 android:button="@drawable/validation_check_selector"
-                                android:text="At least 8 characters"/>
+                                android:text="@string/at_least_8_characters"/>
 
                             <androidx.appcompat.widget.AppCompatRadioButton
                                 android:id="@+id/two_rb"
@@ -454,7 +454,7 @@
                                 android:paddingStart="@dimen/xxhdpi_10"
                                 android:layout_marginTop="@dimen/xxhdpi_5"
                                 android:button="@drawable/validation_check_selector"
-                                android:text="At least one small letter"/>
+                                android:text="@string/at_least_one_small_letter"/>
 
                             <androidx.appcompat.widget.AppCompatRadioButton
                                 android:id="@+id/three_rb"
@@ -469,7 +469,7 @@
                                 android:gravity="center_vertical"
                                 android:paddingStart="@dimen/xxhdpi_10"
                                 android:button="@drawable/validation_check_selector"
-                                android:text="At least one capital letter"/>
+                                android:text="@string/at_least_one_capital_letter"/>
 
                             <androidx.appcompat.widget.AppCompatRadioButton
                                 android:id="@+id/four_rb"
@@ -484,7 +484,7 @@
                                 android:layout_marginTop="@dimen/xxhdpi_5"
                                 android:paddingStart="@dimen/xxhdpi_10"
                                 android:button="@drawable/validation_check_selector"
-                                android:text="At least one number and symbol"/>
+                                android:text="@string/at_least_one_number_and_symbol"/>
 
 
                             <androidx.appcompat.widget.AppCompatEditText
@@ -496,7 +496,7 @@
                                 android:drawablePadding="@dimen/xxhdpi_10"
                                 android:theme="@style/EditText_theme"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:hint="*Re-enter your Password"
+                                android:hint="@string/re_enter_your_password"
                                 android:singleLine="true"
                                 android:inputType="textPassword"
                                 android:maxLines="1"
@@ -518,7 +518,7 @@
                             android:drawableLeft="@drawable/ic_mail"
                             android:drawablePadding="@dimen/xxhdpi_10"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:hint="Email Address"
+                            android:hint="@string/email_address"
                             android:inputType="textEmailAddress"
                             android:textColor="@color/colorPrimary"
                             android:textColorHint="#848484"
@@ -536,7 +536,7 @@
                             android:paddingTop="@dimen/xxhdpi_10"
                             android:paddingRight="@dimen/xxhdpi_20"
                             android:paddingBottom="@dimen/xxhdpi_10"
-                            android:text="Send"
+                            android:text="@string/send"
                             android:layout_gravity="center"
                             android:drawableLeft="@drawable/ic_send"
                             android:drawablePadding="@dimen/xxhdpi_10"
@@ -554,7 +554,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu_normal"
-                                android:text="Remember Password?"
+                                android:text="@string/remember_password"
                                 android:textColor="@color/txt_clr"
                                 android:textSize="@dimen/t_xxh_16" />
 
@@ -564,7 +564,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/xxhdpi_5"
                                 android:fontFamily="@font/ubuntu_bold"
-                                android:text="Login"
+                                android:text="@string/login"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/t_xxh_16"
                                 android:textStyle="bold" />
@@ -593,7 +593,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ubuntu_normal"
-            android:text="New User?"
+            android:text="@string/new_user"
             android:textColor="@color/lite_text"
             android:textSize="@dimen/t_xxh_14" />
 
@@ -603,7 +603,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/xxhdpi_5"
             android:fontFamily="@font/ubuntu_bold"
-            android:text="SignUp"
+            android:text="@string/signup"
             android:textColor="#258ff9"
             android:textSize="@dimen/t_xxh_14" />
 
@@ -640,7 +640,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/ubuntu_normal"
-                android:text="TUTORIAL"
+                android:text="@string/tutorial"
                 android:textColor="@color/lite_text"
                 android:textSize="10sp" />
 
@@ -667,7 +667,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/ubuntu_normal"
-                android:text="MOBI CHAT"
+                android:text="@string/mobi_chat"
                 android:textColor="@color/lite_text"
                 android:textSize="10sp" />
 
@@ -692,7 +692,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/ubuntu_normal"
-                android:text="SUPPORT"
+                android:text="@string/support"
                 android:textColor="@color/lite_text"
                 android:textSize="10sp" />
 

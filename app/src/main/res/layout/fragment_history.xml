@@ -116,7 +116,7 @@
         android:id="@+id/textview_state_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Transactions available"
+        android:text="@string/no_transactions_available"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +135,8 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/button_settlement_history"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_ezylink_transaction_status_icon" />
+        app:srcCompat="@drawable/ic_ezylink_transaction_status_icon"
+        tools:ignore="VectorDrawableCompat" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

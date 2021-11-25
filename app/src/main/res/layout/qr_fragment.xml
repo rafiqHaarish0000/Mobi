@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     
-                    android:text="Amount"
+                    android:text="@string/amount"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_14" />
 
@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="RM 20"
+                    android:text="@string/rm_20"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_20"
                     android:textStyle="bold" />
@@ -96,7 +96,7 @@
                     android:layout_marginBottom="@dimen/xxhdpi_10"
                     android:textStyle="bold"
                     android:gravity="center"
-                    android:text="Scan QR Code to \nProceed Payment"
+                    android:text="@string/scan_qr_code_to_nproceed_payment"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_16" />
 

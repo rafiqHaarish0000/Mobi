@@ -63,7 +63,7 @@
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="EZYLINK"
+                            android:text="@string/ezylink"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="10sp"
                             android:visibility="gone" />
@@ -85,7 +85,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/ubuntu_normal"
-                            android:text="Amount"
+                            android:text="@string/amount"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/t_xxh_20"
                             android:textStyle="bold" />
@@ -96,7 +96,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_5"
                             android:fontFamily="@font/ubuntu_bold"
-                            android:text="Amount"
+                            android:text="@string/amount"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/t_xxh_26"
                             android:textStyle="bold" />
@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Date &amp; Time:"
+                        android:text="@string/date_amp_time"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -143,7 +143,7 @@
                                 android:layout_gravity="right"
                                 android:fontFamily="@font/ubuntu_normal"
                                 android:maxLines="1"
-                                android:text="21 july 2019"
+                                android:text="@string/_21_july_2019"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/t_xxh_18"
                                 android:textStyle="bold" />
@@ -157,7 +157,7 @@
                                 android:fontFamily="@font/ubuntu_normal"
                                 android:gravity="right"
                                 android:maxLines="1"
-                                android:text="3.53 pm"
+                                android:text="@string/_3_53_pm"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/t_xxh_18"
                                 android:visibility="gone" />
@@ -179,7 +179,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Payment Status:"
+                        android:text="@string/payment_status"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -192,7 +192,7 @@
                         android:layout_toLeftOf="@+id/date_linear"
                         android:layout_weight="3"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="Payment Completed"
+                        android:text="@string/payment_completed"
                         android:textColor="@color/green"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -210,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="RRN: "
+                        android:text="@string/rrn"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -221,7 +221,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="RRN"
+                        android:text="@string/rrn"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_18" />
 
@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="STAN :"
+                        android:text="@string/stan"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -266,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Authcode :"
+                        android:text="@string/authcode"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -295,7 +295,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Ref :"
+                        android:text="@string/ref"
                         android:textColor="@color/txt_clr"
                         android:textSize="@dimen/t_xxh_18"
                         android:textStyle="bold" />
@@ -306,7 +306,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Authcode"
+                        android:text="@string/authcode"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_18" />
 
@@ -360,7 +360,7 @@
             android:drawablePadding="@dimen/xxhdpi_10"
             android:paddingLeft="@dimen/xxhdpi_20"
             android:paddingRight="@dimen/xxhdpi_20"
-            android:text="Receipt"
+            android:text="@string/receipt"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/t_xxh_16"
@@ -376,7 +376,7 @@
             android:minWidth="@dimen/xxhdpi_100"
             android:paddingLeft="@dimen/xxhdpi_20"
             android:paddingRight="@dimen/xxhdpi_20"
-            android:text="Void"
+            android:text="@string/_void"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/t_xxh_16"

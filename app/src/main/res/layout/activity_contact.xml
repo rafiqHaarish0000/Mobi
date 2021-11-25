@@ -22,7 +22,7 @@
             android:fontFamily="@font/ubuntu_normal"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/t_xxh_20"
-            android:text="Need help? Get in touch with us."/>
+            android:text="@string/need_help_get_in_touch_with_us"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                         android:background="@drawable/circle_white"
                         android:backgroundTint="@color/colorPrimary"
                         android:layout_margin="@dimen/xxhdpi_5"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="@string/todo" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                         android:fontFamily="@font/ubuntu_bold"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_18"
-                        android:text="1300303060"/>
+                        android:text="@string/_1300303060"/>
 
                 </LinearLayout>
 
@@ -109,7 +109,7 @@
                         android:fontFamily="@font/ubuntu_bold"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_18"
-                        android:text="  1300 303 060   "/>
+                        android:text="@string/_1300_303_060"/>
 
                 </LinearLayout>
 
@@ -134,8 +134,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/xxhdpi_50"
                         android:layout_height="@dimen/xxhdpi_50"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
                         android:padding="@dimen/xxhdpi_10"
                         android:src="@drawable/ic_mail"
                         android:tint="@color/white"
@@ -153,7 +152,7 @@
                         android:fontFamily="@font/ubuntu_bold"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_18"
-                        android:text="csmobi@gomobi.io"/>
+                        android:text="@string/csmobi_gomobi_io"/>
 
                 </LinearLayout>
 

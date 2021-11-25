@@ -61,7 +61,7 @@ class NotificationsFragment : BaseFragment() {
             MarginItemDecoration(
                 resources.getDimension(R.dimen.xxhdpi_5).toInt())
         )
-        notificationListAdapter = NotificationListAdapter(notificationList, context!!, this)
+        notificationListAdapter = NotificationListAdapter(notificationList, requireContext(), this)
         notifyRecyclerView.adapter = notificationListAdapter
 
         val loginResponse = getLoginResponse()

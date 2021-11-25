@@ -39,7 +39,7 @@
                     android:layout_height="@dimen/xxhdpi_100"
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ezywire_blue_icon"
-                    android:contentDescription="TODO" />
+                    android:contentDescription="@string/todo" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_prod_name"

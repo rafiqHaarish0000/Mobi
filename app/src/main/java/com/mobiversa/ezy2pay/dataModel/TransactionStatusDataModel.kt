@@ -1,6 +1,6 @@
 package com.mobiversa.ezy2pay.dataModel
 
-import com.mobiversa.ezy2pay.base.AppFunctions
+import com.mobiversa.ezy2pay.utils.AppFunctions
 import com.mobiversa.ezy2pay.utils.Constants
 
 

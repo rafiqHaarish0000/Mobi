@@ -76,13 +76,13 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         viewModel = ViewModelProviders.of(this).get(PrintReceiptViewModel::class.java)
         motoViewModel = ViewModelProviders.of(this).get(EzyMotoViewModel::class.java)
 
-        service = arguments!!.getString(Fields.Service, "")
-        trxId = arguments!!.getString(Fields.trxId, "")
-        amount = arguments!!.getString(Fields.Amount, "")
-        activityName = arguments!!.getString(Constants.ActivityName, "")
-        redirectName = arguments!!.getString(Constants.Redirect, "")
+        service = requireArguments().getString(Fields.Service, "")
+        trxId = requireArguments().getString(Fields.trxId, "")
+        amount = requireArguments().getString(Fields.Amount, "")
+        activityName = requireArguments().getString(Constants.ActivityName, "")
+        redirectName = requireArguments().getString(Constants.Redirect, "")
         if (service.equals(Fields.TXN_REPRINT, true))
-            signatureStr = arguments!!.getString(Fields.Signature, "")
+            signatureStr = requireArguments().getString(Fields.Signature, "")
 
         rootView.amount_txt.text = amount
 
@@ -173,7 +173,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     private fun setUpCountrySpinner() {
 
         countryAdapter = ArrayAdapter(
-            context!!,
+            requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
             countryArray
         )
@@ -245,20 +245,20 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 if (PRINTReceipt){
                     val gson = Gson()
                     val json = gson.toJson(it)
-                    context!!.startActivity(Intent(getActivity(),PrinterActivity::class.java).putExtra("receiptData",json))
+                    requireContext().startActivity(Intent(getActivity(),PrinterActivity::class.java).putExtra("receiptData",json))
                 }else{
                     if (activityName.equals(Constants.MainAct, true)) {
                         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                         fragmentManager?.popBackStack()
                     } else {
-                        context!!.startActivity(Intent(getActivity(),MainActivity::class.java))
+                        requireContext().startActivity(Intent(getActivity(),MainActivity::class.java))
                     }
                 }
 
 
             }else{
                 shortToast(it.responseDescription)
-                context!!.startActivity(Intent(getActivity(),MainActivity::class.java))
+                requireContext().startActivity(Intent(getActivity(),MainActivity::class.java))
             }
         })
     }

@@ -33,7 +33,7 @@
                     android:gravity="center_vertical|end"
                     android:paddingLeft="@dimen/xxhdpi_5"
                     android:paddingRight="@dimen/xxhdpi_5"
-                    android:text="RM"
+                    android:text="@string/rm"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_30" />
@@ -53,7 +53,7 @@
                     android:maxLines="2"
                     android:paddingLeft="@dimen/xxhdpi_5"
                     android:paddingRight="@dimen/xxhdpi_5"
-                    android:text="0.00"
+                    android:text="@string/_0_00"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_30"
@@ -89,19 +89,19 @@
                     android:id="@+id/invoice_edt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rect_circle"
                     android:digits="aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyY _zZ0123456789"
+                    android:fontFamily="@font/ubuntu_normal"
                     android:hint="@string/invoice_reference"
                     android:imeOptions="actionDone"
                     android:inputType="textPersonName"
                     android:maxLines="1"
-                    android:paddingTop="@dimen/xxhdpi_10"
-                    android:paddingBottom="@dimen/xxhdpi_10"
-                    android:paddingLeft="@dimen/xxhdpi_10"
                     android:paddingStart="@dimen/xxhdpi_10"
+                    android:paddingLeft="@dimen/xxhdpi_10"
+                    android:paddingTop="@dimen/xxhdpi_10"
                     android:paddingEnd="@dimen/xxhdpi_10"
                     android:paddingRight="@dimen/xxhdpi_10"
-                    android:background="@drawable/rect_circle"
-                    android:fontFamily="@font/ubuntu_normal"
+                    android:paddingBottom="@dimen/xxhdpi_10"
                     android:singleLine="true"
                     android:textSize="@dimen/t_xxh_14" />
 
@@ -141,7 +141,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/lato_regular"
                             android:gravity="center"
-                            android:text="1"
+                            android:text="@string/_1"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="@dimen/t_xxh_26" />
 
@@ -173,7 +173,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/lato_regular"
                             android:gravity="center"
-                            android:text="2"
+                            android:text="@string/_2"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="@dimen/t_xxh_26" />
 
@@ -205,7 +205,7 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/lato_regular"
                             android:gravity="center"
-                            android:text="3"
+                            android:text="@string/_n3"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="@dimen/t_xxh_26" />
                     </RelativeLayout>
@@ -247,7 +247,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/lato_regular"
                         android:gravity="center"
-                        android:text="4"
+                        android:text="@string/_4"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/t_xxh_26" />
 
@@ -280,7 +280,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="5"
+                    android:text="@string/_5"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -312,7 +312,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="6"
+                    android:text="@string/_6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -356,7 +356,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="7"
+                    android:text="@string/_7"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -388,7 +388,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="8"
+                    android:text="@string/_8"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -420,7 +420,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="9"
+                    android:text="@string/_9"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -466,7 +466,7 @@
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
                     android:onClick="onClick"
-                    android:text="C"
+                    android:text="@string/c"
                     android:textColor="@color/void_red"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -498,7 +498,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lato_regular"
                     android:gravity="center"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/t_xxh_26" />
 
@@ -583,7 +583,7 @@
             android:layout_marginBottom="-8dp"
             android:layout_above="@+id/product_linear"
             android:fontFamily="@font/ubuntu_bold"
-            android:text="Payment Mode"
+            android:text="@string/payment_mode"
             android:textColor="#939393"
             android:textSize="@dimen/t_xxh_12" />
 

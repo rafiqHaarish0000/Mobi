@@ -25,7 +25,7 @@ class NotificationDetailFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_notification_detail, container, false)
-        val notificationData = arguments!!.getSerializable("Notification") as NotificationList.Response?
+        val notificationData = requireArguments().getSerializable("Notification") as NotificationList.Response?
 
         setTitle("Notification", false)
         setHasOptionsMenu(true)

@@ -71,7 +71,6 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     val requestData = HashMap<String, String>()
     private lateinit var customPrefs: SharedPreferences
 
-
     private lateinit var _binding: FragmentHistoryNewBinding
     private val binding: FragmentHistoryNewBinding get() = _binding
 
@@ -507,7 +506,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     private fun showPasswordPrompt(item: ForSettlement) {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_void_validate, null)
         val etUsername = alertLayout.findViewById<View>(R.id.username_edt_void) as EditText
         val etPassword = alertLayout.findViewById<View>(R.id.password_edt_void) as EditText
@@ -557,7 +556,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
 
     private fun showFingerAuthenticationDialog() {
         finger.showDialog(
-            this.getActivity()!!,
+            requireActivity(),
             Triple(
                 // title
                 getString(R.string.text_fingerprint),
@@ -922,7 +921,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     private fun showAuthPrompt() {
         lateinit var mAlertDialog: AlertDialog
 
-        val inflater = getActivity()!!.layoutInflater
+        val inflater = requireActivity().layoutInflater
         val alertLayout: View = inflater.inflate(R.layout.alert_ezyauth, null)
         val digitalImg = alertLayout.findViewById<View>(R.id.ezydigital_img) as ImageView
         val ezywireImg = alertLayout.findViewById<View>(R.id.ezywire_img) as ImageView

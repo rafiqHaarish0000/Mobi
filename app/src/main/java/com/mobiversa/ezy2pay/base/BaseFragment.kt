@@ -431,7 +431,7 @@ open class BaseFragment : Fragment() {
             textView.gravity = Gravity.CENTER
         else
             textView.gravity = Gravity.LEFT
-        textView.typeface = ResourcesCompat.getFont(context!!, R.font.ubuntu_bold)
+        textView.typeface = ResourcesCompat.getFont(requireContext(), R.font.ubuntu_bold)
         textView.setTextColor(resources.getColor(R.color.white))
         (getActivity() as AppCompatActivity).supportActionBar!!.displayOptions =
             ActionBar.DISPLAY_SHOW_CUSTOM
@@ -488,19 +488,19 @@ open class BaseFragment : Fragment() {
 
     fun checkAndRequestPermissions(): Boolean {
         val permissionSendMessage: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
         val locationPermission: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         )
         val cameraPermission: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.CAMERA
         )
         val contactPermission: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.READ_CONTACTS
         )
         val listPermissionsNeeded: MutableList<String> =
@@ -533,15 +533,15 @@ open class BaseFragment : Fragment() {
 
     fun requestPermissions(): Boolean {
         val permissionSendMessage: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
         val locationPermission: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         )
         val cameraPermission: Int = ContextCompat.checkSelfPermission(
-            this.context!!,
+            this.requireContext(),
             Manifest.permission.CAMERA
         )
 

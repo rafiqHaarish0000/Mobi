@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/xxhdpi_5"
-                        android:text="Edit personal Details"
+                        android:text="@string/edit_personal_details"
                         android:textColor="@color/txt_grey"
                         android:textStyle="bold" />
 
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_centerHorizontal="true"
-                        android:text="100%"
+                        android:text="@string/_100"
                         android:textSize="@dimen/t_xxh_12" />
 
                 </RelativeLayout>
@@ -125,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="TOTAL LIMIT"
+                        android:text="@string/total_limit"
                         android:textSize="12sp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -133,7 +133,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/xxhdpi_5"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="RM 500. 00"
+                        android:text="@string/rm_500_00"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_14"
                         android:textStyle="bold" />
@@ -143,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/xxhdpi_5"
                         android:fontFamily="@font/ubuntu_normal"
-                        android:text="AVAILABLE BALANCE"
+                        android:text="@string/available_balance"
                         android:textSize="@dimen/t_xxh_12" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -152,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/xxhdpi_5"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="RM 500. 00"
+                        android:text="@string/rm_500_00"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/t_xxh_14"
                         android:textStyle="bold" />
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorPrimary"
                         android:fontFamily="@font/ubuntu_bold"
-                        android:text="Upgrade"
+                        android:text="@string/upgrade"
                         android:textColor="@color/white"
                         android:textSize="10sp" />
                 </RelativeLayout>
@@ -236,7 +236,6 @@
                             android:padding="@dimen/xxhdpi_5"
                             android:text="@string/profile_update"
                             android:textColor="@color/colorPrimary"
-
                             android:textSize="@dimen/t_xxh_14" />
 
 
@@ -454,7 +453,7 @@
                             android:fontFamily="@font/ubuntu_bold"
                             android:gravity="center"
                             android:padding="@dimen/xxhdpi_5"
-                            android:text="Mobi Keyboard"
+                            android:text="@string/mobi_keyboard"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/t_xxh_14" />
 
@@ -484,7 +483,7 @@
                             android:fontFamily="@font/ubuntu_bold"
                             android:gravity="center"
                             android:padding="@dimen/xxhdpi_5"
-                            android:text="Mobi Keyboard"
+                            android:text="@string/mobi_keyboard"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/t_xxh_14" />
 

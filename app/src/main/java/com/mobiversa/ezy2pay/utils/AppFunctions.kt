@@ -1,4 +1,4 @@
-package com.mobiversa.ezy2pay.base
+package com.mobiversa.ezy2pay.utils
 
 import android.app.AlertDialog
 import android.content.Context
@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.mobiversa.ezy2pay.BuildConfig
+import androidx.multidex.BuildConfig
 import com.mobiversa.ezy2pay.R
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-internal  val TAG = AppFunctions::class.java.canonicalName
+
 object AppFunctions {
 
     private var loadingDialog: AlertDialog? = null

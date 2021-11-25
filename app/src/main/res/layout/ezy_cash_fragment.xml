@@ -38,7 +38,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/xxhdpi_5"
                     
-                    android:text="Amount"
+                    android:text="@string/amount"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_14" />
 
@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="RM 20"
+                    android:text="@string/rm_20"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/t_xxh_26"
                     android:textStyle="bold" />
@@ -136,7 +136,7 @@
                             android:checked="true"
                             android:fontFamily="@font/ubuntu_normal"
                             android:buttonTint="@color/colorPrimary"
-                            android:text="Send receipt through WhatsApp"/>
+                            android:text="@string/send_receipt_through_whatsapp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -155,7 +155,7 @@
                             android:layout_marginTop="@dimen/xxhdpi_10"
                             android:backgroundTint="@color/colorAccent"
                             
-                            android:hint="Email"
+                            android:hint="@string/email"
                             android:maxLines="1"
                             android:inputType="textEmailAddress"
                             android:textColor="@color/txt_clr"

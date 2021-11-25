@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="Customer Copy In-Progress ...."
+            android:text="@string/customer_copy_in_progress"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
@@ -38,7 +38,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@color/green"
                 android:onClick="PrintReceipt"
-                android:text="PRINT CUSTOMER COPY"
+                android:text="@string/print_customer_copy"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:visibility="visible" />
@@ -51,7 +51,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@color/green"
                 android:onClick="PrintReceipt"
-                android:text="PRINT MERCHANT COPY"
+                android:text="@string/print_merchant_copy"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:visibility="visible" />
@@ -93,7 +93,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Payment is\nSuccessful"
+                android:text="@string/payment_is_nsuccessful"
                 android:gravity="center"
                 android:layout_marginTop="@dimen/xxhdpi_50"
                 android:textStyle="bold"
@@ -109,7 +109,7 @@
                 android:layout_marginTop="@dimen/xxhdpi_50"
                 android:background="@drawable/round_rect"
                 android:backgroundTint="@color/green"
-                android:text="Send Receipt"
+                android:text="@string/send_receipt"
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textSize="@dimen/t_xxh_18"

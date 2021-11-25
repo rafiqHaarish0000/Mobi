@@ -92,8 +92,8 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
         rootView = inflater.inflate(R.layout.fragment_register_user_detail, container, false)
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
 
-        prefs = PreferenceHelper.defaultPrefs(context!!)
-        customPrefs = PreferenceHelper.customPrefs(context!!, "REMEMBER")
+        prefs = PreferenceHelper.defaultPrefs(requireContext())
+        customPrefs = PreferenceHelper.customPrefs(requireContext(), "REMEMBER")
 
         initializer(rootView)
 
@@ -432,7 +432,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
 
         when (v.id) {
             R.id.back_sign_up -> {
-                context!!.startActivity(Intent(context, LoginActivity::class.java))
+                requireContext().startActivity(Intent(context, LoginActivity::class.java))
             }
             R.id.button_next -> {
                 validateFields(false)

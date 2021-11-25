@@ -25,7 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.transactionHistory.TransactionHistoryAdapter
-import com.mobiversa.ezy2pay.base.AppFunctions
+import com.mobiversa.ezy2pay.utils.AppFunctions
 import com.mobiversa.ezy2pay.base.BaseFragment
 import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.network.ApiService

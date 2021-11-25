@@ -66,9 +66,9 @@ class QRFragment : BaseFragment() {
         boostQRImage = rootView.qr_scanner_img
         qrLogoImg = rootView.qr_logo_img
 
-        service = arguments!!.getString(Service) as String
-        val totalAmount = arguments!!.getString(Amount) as String
-        val invoiceId = arguments!!.getString(InvoiceId) as String
+        service = requireArguments().getString(Service) as String
+        val totalAmount = requireArguments().getString(Amount) as String
+        val invoiceId = requireArguments().getString(InvoiceId) as String
         val qrParams = HashMap<String, String>()
 
         when (service) {

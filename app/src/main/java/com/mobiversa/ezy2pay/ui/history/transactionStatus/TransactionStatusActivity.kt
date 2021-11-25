@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.RecyclerViewLoadStateAdapter
 import com.mobiversa.ezy2pay.adapter.transactionStatus.TransactionStatusAdapter
-import com.mobiversa.ezy2pay.base.AppFunctions
+import com.mobiversa.ezy2pay.utils.AppFunctions
 import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.databinding.ActivityTransactionStatusBinding
 import com.mobiversa.ezy2pay.dialogs.SearchFilterDialog

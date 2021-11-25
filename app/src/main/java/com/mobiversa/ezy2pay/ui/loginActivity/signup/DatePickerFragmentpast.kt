@@ -26,7 +26,7 @@ class DatePickerFragmentpast : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val mDate =
-            DatePickerDialog(context!!, R.style.DialogTheme, ondateSet, year, month, day)
+            DatePickerDialog(requireContext(), R.style.DialogTheme, ondateSet, year, month, day)
         mDate.datePicker.maxDate = System.currentTimeMillis()
         return mDate
     }

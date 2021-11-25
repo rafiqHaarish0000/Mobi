@@ -180,7 +180,7 @@ class SignupFragment : BaseFragment() , View.OnClickListener, AdapterView.OnItem
     private fun setUpCountrySpinner() {
 
         countryAdapter = ArrayAdapter(
-            context!!,
+            requireContext(),
             R.layout.spinner_item_country,
             countryArray
         )

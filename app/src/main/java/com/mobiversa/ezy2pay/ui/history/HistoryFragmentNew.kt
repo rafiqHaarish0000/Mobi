@@ -26,8 +26,8 @@ import com.mobiversa.ezy2pay.network.ApiService
 import com.mobiversa.ezy2pay.network.response.ForSettlement
 import com.mobiversa.ezy2pay.network.response.TransactionHistoryResponseData
 import com.mobiversa.ezy2pay.network.response.VoidHistoryModel
+import com.mobiversa.ezy2pay.ui.history.transactionHistory.TransactionHistoryViewModel
 import com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailFragment
-import com.mobiversa.ezy2pay.ui.history.transactionHistory.HistoryViewModel
 import com.mobiversa.ezy2pay.utils.*
 import com.mobiversa.ezy2pay.utils.Constants.Companion.UserName
 import com.mobiversa.ezy2pay.utils.Fields.Companion.PREAUTH
@@ -49,7 +49,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     private val TAG = HistoryFragmentNew::class.java.canonicalName
     private var position: Int? = null
 
-    private lateinit var historyViewModel: HistoryViewModel
+    private lateinit var transactionHistoryViewModel: TransactionHistoryViewModel
     var trxType = Fields.ALL
     val spinnerFlag = false
 
@@ -99,18 +99,18 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     }
 
     private fun setupViewBinding() {
-        historyViewModel =
+        transactionHistoryViewModel =
             ViewModelProvider(
                 this@HistoryFragmentNew,
                 AppViewModelFactory(AppRepository.getInstance())
-            ).get(HistoryViewModel::class.java)
+            ).get(TransactionHistoryViewModel::class.java)
 
         binding.apply {
-            viewModel = this@HistoryFragmentNew.historyViewModel
+            viewModel = this@HistoryFragmentNew.transactionHistoryViewModel
             lifecycleOwner = this@HistoryFragmentNew.viewLifecycleOwner
             executePendingBindings()
         }
-        historyViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
+        transactionHistoryViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
     }
 
 
@@ -130,7 +130,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
 //
 //        initialize(rootView)
 ////        val textView: TextView = root.findViewById(R.id.text_dashboard)
-////        historyViewModel.text.observe(this, Observer {
+////        transactionHistoryViewModel.text.observe(this, Observer {
 ////            textView.text = it
 ////        })
 //
@@ -318,8 +318,8 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
         showDialog("Loading History...")
 
         transactionType = historyParam[Fields.Service]!!
-        historyViewModel.getTransactionHistory(historyParam)
-        historyViewModel.transactionHistoryList.observe(
+        transactionHistoryViewModel.getTransactionHistory(historyParam)
+        transactionHistoryViewModel.transactionHistoryList.observe(
             viewLifecycleOwner,
             Observer {
                 cancelDialog()
@@ -442,7 +442,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     override fun onStop() {
         super.onStop()
         binding.spinnerTransactionType.adapter = null
-        historyViewModel.transactionHistoryList.removeObservers(viewLifecycleOwner)
+        transactionHistoryViewModel.transactionHistoryList.removeObservers(viewLifecycleOwner)
     }
 
     private fun getTrxList(): ArrayList<String> {
@@ -588,8 +588,8 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
         item: ForSettlement
     ) {
         showDialog("Validating...")
-        historyViewModel.getUserVerification(userValidateParam)
-        historyViewModel.userVerification.observe(
+        transactionHistoryViewModel.getUserVerification(userValidateParam)
+        transactionHistoryViewModel.userVerification.observe(
             this,
             Observer {
                 cancelDialog()
@@ -722,8 +722,8 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                 }
             })
 
-//        historyViewModel.setVoidHistory(pathStr, requestVal)
-//        historyViewModel.setVoidHistory.observe(this, Observer {
+//        transactionHistoryViewModel.setVoidHistory(pathStr, requestVal)
+//        transactionHistoryViewModel.setVoidHistory.observe(this, Observer {
 //            cancelDialog()
 //            if (it.responseCode.equals("0000", true)) {
 //                shortToast(it.responseDescription)
@@ -758,8 +758,8 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
                 reqParam[Fields.tid] = getLoginResponse().tid
             }
         }
-        historyViewModel.getSettlement(reqParam)
-        historyViewModel.settlementData.observe(
+        transactionHistoryViewModel.getSettlement(reqParam)
+        transactionHistoryViewModel.settlementData.observe(
             this,
             Observer {
                 cancelDialog()
@@ -893,7 +893,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
 
         lifecycleScope.launch {
             val pathStr = "grabpay"
-            historyViewModel.cancelPendingTransaction(pathStr, requestData).let {
+            transactionHistoryViewModel.cancelPendingTransaction(pathStr, requestData).let {
                 when (it) {
                     is NGrabPayResponse.Success -> {
                         // show success message

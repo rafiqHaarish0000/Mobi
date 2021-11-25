@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.mobiversa.ezy2pay.ui.history.transactionHistory.HistoryViewModel" />
+            type="com.mobiversa.ezy2pay.ui.history.transactionHistory.TransactionHistoryViewModel" />
 
     </data>
 

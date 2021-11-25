@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 abstract class SwipeToVoidCallback internal constructor(mContext: Context?) :
-        ItemTouchHelper.Callback() {
+    ItemTouchHelper.Callback() {
     private val mClearPaint: Paint = Paint()
     private val mBackground: ColorDrawable = ColorDrawable()
     private val deleteDrawable: Drawable?
@@ -23,25 +23,34 @@ abstract class SwipeToVoidCallback internal constructor(mContext: Context?) :
     init {
         mClearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
-        deleteDrawable = BitmapDrawable(mContext!!.resources, textAsBitmap("Void",40F))
+        deleteDrawable = BitmapDrawable(mContext!!.resources, textAsBitmap("Void", 40F))
         intrinsicWidth = deleteDrawable.intrinsicWidth
         intrinsicHeight = deleteDrawable.intrinsicHeight
 
     }
 
 
-    override fun getMovementFlags( recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
         val position: Int = viewHolder.adapterPosition
 
         return makeMovementFlags(0, ItemTouchHelper.LEFT)
     }
 
-    override fun onMove(recyclerView: RecyclerView,viewHolder: RecyclerView.ViewHolder,viewHolder1: RecyclerView.ViewHolder): Boolean {
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        viewHolder1: RecyclerView.ViewHolder
+    ): Boolean {
         return false
     }
 
-    override fun onChildDraw(c: Canvas,recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-        dX: Float,dY: Float,actionState: Int, isCurrentlyActive: Boolean ) {
+    override fun onChildDraw(
+        c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+        dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
+    ) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
         val itemView = viewHolder.itemView
@@ -50,7 +59,13 @@ abstract class SwipeToVoidCallback internal constructor(mContext: Context?) :
         val isCancelled = dX == 0f && !isCurrentlyActive
 
         if (isCancelled) {
-            clearCanvas(c,itemView.right + dX,itemView.top.toFloat(),itemView.right.toFloat(),itemView.bottom.toFloat())
+            clearCanvas(
+                c,
+                itemView.right + dX,
+                itemView.top.toFloat(),
+                itemView.right.toFloat(),
+                itemView.bottom.toFloat()
+            )
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
@@ -65,10 +80,11 @@ abstract class SwipeToVoidCallback internal constructor(mContext: Context?) :
             val iconRight = itemView.right - iconMargin
             deleteDrawable.setBounds(iconLeft, iconTop, iconRight, iconBottom)
             mBackground.color = Color.RED
-            mBackground.setBounds(itemView.right + dX.toInt() - backgroundCornerOffset,
-                    itemView.top, itemView.right, itemView.bottom)
-        }
-        else { // view is unSwiped
+            mBackground.setBounds(
+                itemView.right + dX.toInt() - backgroundCornerOffset,
+                itemView.top, itemView.right, itemView.bottom
+            )
+        } else { // view is unSwiped
             mBackground.setBounds(0, 0, 0, 0)
         }
 

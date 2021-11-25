@@ -314,11 +314,11 @@ class TransactionHistoryAdapterPaging(val callback: TransactionHistoryInterface)
                                         R.color.pending
                                     )
                                 )
-                                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
+                                binding.txtStatusHistory.text = Constants.TransactionHistoryStatus.PENDING
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                             }
                             "E" -> {
-                                binding.txtStatusHistory.text = Constants.TransactionHistory.COMPLETED
+                                binding.txtStatusHistory.text = Constants.TransactionHistoryStatus.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                             }
                             else -> {

@@ -57,7 +57,6 @@ import kotlin.collections.HashMap
 
 internal val TAG = HistoryDetailFragment::class.java.canonicalName
 
-@Suppress("DEPRECATION")
 class HistoryDetailFragment :
     BaseFragment(),
     View.OnClickListener,
@@ -341,7 +340,16 @@ class HistoryDetailFragment :
                     bundle.putString(Fields.Amount, amount)
                     bundle.putString(Constants.ActivityName, MainAct)
                     bundle.putString(Constants.Redirect, Constants.History)
-                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+
+                    // TODO: 23-11-2021
+                    /* Vignesh Selvam
+                    * Fragment Transaction Changes to navigation component
+                    * */
+//                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                    findNavController().navigate(
+                        R.id.action_historyDetailFragment_to_printReceiptFragment,
+                        bundle
+                    )
                 } else {
                     showConvertSaleAlert()
                 }
@@ -734,7 +742,17 @@ class HistoryDetailFragment :
                     bundle.putString(Fields.trxId, it.responseData.trxId)
                     bundle.putString(Fields.Amount, amount)
                     bundle.putString(Constants.ActivityName, MainAct)
-                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+
+                    // TODO: 23-11-2021
+                    /* Vignesh Selvam
+                    * Fragment Transaction Changes to navigation component
+                    * */
+
+//                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                    findNavController().navigate(
+                        R.id.action_historyDetailFragment_to_printReceiptFragment,
+                        bundle
+                    )
                 }
                 historyData?.txnType.equals(Fields.GRABPAY) -> {
                     startActivity(Intent(context, MainActivity::class.java))
@@ -747,7 +765,17 @@ class HistoryDetailFragment :
                     bundle.putString(Fields.trxId, it.responseData.trxId)
                     bundle.putString(Fields.Amount, amount)
                     bundle.putString(Constants.ActivityName, MainAct)
-                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+
+                    // TODO: 23-11-2021
+                    /* Vignesh Selvam
+                    * Fragment Transaction Changes to navigation component
+                    * */
+//                    addFragment(printReceiptFragment, bundle, "HistoryDetail")
+
+                    findNavController().navigate(
+                        R.id.action_historyDetailFragment_to_printReceiptFragment,
+                        bundle
+                    )
                 }
             }
         } else
@@ -779,13 +807,22 @@ class HistoryDetailFragment :
                 true
             }
             R.id.action_receipt -> {
-
                 val bundle = Bundle()
                 bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
                 bundle.putString(Fields.trxId, historyData!!.txnId)
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Constants.ActivityName, MainAct)
-                addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                // TODO: 23-11-2021
+                /* Vignesh Selvam
+                * Fragment Transaction Changes to navigation component
+                * */
+//                addFragment(printReceiptFragment, bundle, "HistoryDetail")
+
+                findNavController().navigate(
+                    R.id.action_historyDetailFragment_to_printReceiptFragment,
+                    bundle
+                )
+
                 true
             }
             else -> super.onOptionsItemSelected(item)

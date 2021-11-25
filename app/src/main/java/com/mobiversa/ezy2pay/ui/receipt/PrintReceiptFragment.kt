@@ -2,11 +2,11 @@ package com.mobiversa.ezy2pay.ui.receipt
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,7 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
@@ -28,7 +29,7 @@ import com.mobiversa.ezy2pay.utils.Constants
 import com.mobiversa.ezy2pay.utils.Fields
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import kotlinx.android.synthetic.main.print_receipt_fragment.view.*
-
+internal val TAG = PrintReceiptFragment::class.java.canonicalName
 class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     View.OnClickListener {
 
@@ -51,7 +52,8 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     private lateinit var edtPhoneNumReceipt: EditText
     private lateinit var edtCountryCodeReceipt: EditText
     private lateinit var PrintReceiptLayout: LinearLayout
-//    private lateinit var PrintReceipt: ImageView
+
+    //    private lateinit var PrintReceipt: ImageView
     private lateinit var printTVTxt: TextView
 
     private var spinnerPosition = 0
@@ -65,24 +67,25 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     private var activityName = ""
     private var redirectName = ""
     protected var PRINTReceipt = false
-    lateinit var rootView :View
+    lateinit var rootView: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.i(TAG, "onCreateView: PrintReceiptFragment")
         rootView = inflater.inflate(R.layout.print_receipt_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(PrintReceiptViewModel::class.java)
-        motoViewModel = ViewModelProviders.of(this).get(EzyMotoViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(PrintReceiptViewModel::class.java)
+        motoViewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
 
-        service = arguments!!.getString(Fields.Service, "")
-        trxId = arguments!!.getString(Fields.trxId, "")
-        amount = arguments!!.getString(Fields.Amount, "")
-        activityName = arguments!!.getString(Constants.ActivityName, "")
-        redirectName = arguments!!.getString(Constants.Redirect, "")
+        service = requireArguments().getString(Fields.Service, "")
+        trxId = requireArguments().getString(Fields.trxId, "")
+        amount = requireArguments().getString(Fields.Amount, "")
+        activityName = requireArguments().getString(Constants.ActivityName, "")
+        redirectName = requireArguments().getString(Constants.Redirect, "")
         if (service.equals(Fields.TXN_REPRINT, true))
-            signatureStr = arguments!!.getString(Fields.Signature, "")
+            signatureStr = requireArguments().getString(Fields.Signature, "")
 
         rootView.amount_txt.text = amount
 
@@ -111,7 +114,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
         PrintReceiptLayout.setBackgroundResource(R.color.white)
         printTVTxt.setTextColor(resources.getColor(R.color.grey))
-        printTVTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.print_grey,0,0,0)
+        printTVTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.print_grey, 0, 0, 0)
 
         setTitle("PrintReceipt", false)
         if (activityName.equals(Constants.MainAct, true)) {
@@ -125,14 +128,23 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
 
-
     private fun editTextWatcher() {
 
         edtEmailReceipt.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) { // TODO Auto-generated method stub
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { // TODO Auto-generated method stub
             }
 
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { // TODO Auto-generated method stub
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -149,10 +161,20 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         })
 
         edtPhoneNumReceipt.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) { // TODO Auto-generated method stub
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
             }
 
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { // TODO Auto-generated method stub
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -173,7 +195,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     private fun setUpCountrySpinner() {
 
         countryAdapter = ArrayAdapter(
-            context!!,
+            requireContext(),
             R.layout.support_simple_spinner_dropdown_item,
             countryArray
         )
@@ -210,7 +232,14 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 } else
                     (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-                fragmentManager?.popBackStack()
+                // TODO: 23-11-2021
+                /*  Vignesh Selvam
+                * Pop backstack removed
+                *  replaced with navigation component
+                *
+                * */
+//                fragmentManager?.popBackStack()
+                findNavController().navigateUp()
             }
             cancelDialog()
         })
@@ -242,23 +271,41 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             if (it.responseCode.equals("0000", true)) {
                 shortToast(it.responseDescription)
 
-                if (PRINTReceipt){
+                if (PRINTReceipt) {
                     val gson = Gson()
                     val json = gson.toJson(it)
-                    context!!.startActivity(Intent(getActivity(),PrinterActivity::class.java).putExtra("receiptData",json))
-                }else{
+                    requireContext().startActivity(
+                        Intent(
+                            getActivity(),
+                            PrinterActivity::class.java
+                        ).putExtra("receiptData", json)
+                    )
+                } else {
                     if (activityName.equals(Constants.MainAct, true)) {
                         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                        fragmentManager?.popBackStack()
+
+                        // TODO: 23-11-2021
+                        /*  Vignesh Selvam
+                        * Pop backstack removed
+                        *  replaced with navigation component
+                        *
+                        * */
+//                        fragmentManager?.popBackStack()
+                        findNavController().navigateUp()
                     } else {
-                        context!!.startActivity(Intent(getActivity(),MainActivity::class.java))
+                        requireContext().startActivity(
+                            Intent(
+                                getActivity(),
+                                MainActivity::class.java
+                            )
+                        )
                     }
                 }
 
 
-            }else{
+            } else {
                 shortToast(it.responseDescription)
-                context!!.startActivity(Intent(getActivity(),MainActivity::class.java))
+                requireContext().startActivity(Intent(getActivity(), MainActivity::class.java))
             }
         })
     }
@@ -269,7 +316,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(PrintReceiptViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(PrintReceiptViewModel::class.java)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -296,20 +343,30 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                     shortToast("Please enter Email id or Mobile Number")
                 } else if (phoneStr.isEmpty() && !isValidEmail(emailStr)) {
                     shortToast("Please enter Valid Email id")
-                }else
-                jsonSendReceipt()
+                } else
+                    jsonSendReceipt()
             }
             R.id.PrintReceiptLayout -> {
                 if (PRINTReceipt) {
                     PRINTReceipt = false
                     PrintReceiptLayout.setBackgroundResource(R.color.lit_grey)
                     printTVTxt.setTextColor(resources.getColor(R.color.grey))
-                    printTVTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.print_grey,0,0,0)
+                    printTVTxt.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.print_grey,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
                     PRINTReceipt = true
                     PrintReceiptLayout.setBackgroundResource(R.color.colorPrimary)
                     printTVTxt.setTextColor(resources.getColor(R.color.colorPrimary))
-                    printTVTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.print_blue,0,0,0)
+                    printTVTxt.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.print_blue,
+                        0,
+                        0,
+                        0
+                    )
                 }
             }
         }
@@ -326,7 +383,6 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setHasOptionsMenu(true)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -343,8 +399,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                     setTitle("Home", true)
                     (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
-
-                fragmentManager?.popBackStack()
+                findNavController().navigateUp()
                 true
             }
             else -> super.onOptionsItemSelected(item)

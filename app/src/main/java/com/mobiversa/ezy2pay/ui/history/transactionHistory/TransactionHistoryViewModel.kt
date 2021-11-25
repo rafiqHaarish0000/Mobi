@@ -18,7 +18,7 @@ import com.mobiversa.ezy2pay.ui.history.HistoryModel
 import com.mobiversa.ezy2pay.utils.AppRepository
 import kotlinx.coroutines.flow.Flow
 
-class HistoryViewModel(val appRepository: AppRepository) : ViewModel() {
+class TransactionHistoryViewModel(val appRepository: AppRepository) : ViewModel() {
 
     private val service = HistoryModel()
     var transactionHistoryList = MutableLiveData<TransactionHistoryResponseData>()

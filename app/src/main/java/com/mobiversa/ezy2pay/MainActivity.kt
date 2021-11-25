@@ -45,7 +45,8 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
 
     // TODO: 09-08-2021
     /**  Vignesh Selvam
-     * binding enabled */
+     * binding enabled
+     * */
     private lateinit var _binding: ActivityMainBinding
     private val binding: ActivityMainBinding get() = _binding
 

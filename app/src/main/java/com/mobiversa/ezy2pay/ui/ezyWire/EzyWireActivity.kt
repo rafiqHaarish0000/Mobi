@@ -65,6 +65,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
     lateinit var arrayAdapter: ArrayAdapter<String>
 
     private lateinit var ezyWireViewModel: EzyWireViewModel
+
     //Next KeyInjection
     private var encryptedPinSessionKey = ""
     private var pinKcv: String? = ""
@@ -78,9 +79,9 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
     private val printReceiptFragment = PrintReceiptFragment()
     private val deliverApiService = ApiService.serviceRequest()
 
-    var service : String? = ""
-    var amount : String? = ""
-    var invoiceId : String? = ""
+    var service: String? = ""
+    var amount: String? = ""
+    var invoiceId: String? = ""
 
     var isKeyInjected = false
 
@@ -96,7 +97,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        if(resources.getBoolean(R.bool.portrait_only)){
+        if (resources.getBoolean(R.bool.portrait_only)) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         }
 
@@ -147,9 +148,9 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
     private fun connectDevice() {
         if (deviceStatus.equals("ACTIVE", ignoreCase = true)) {
-            if (service.equals(Fields.START_PAY, true)){
+            if (service.equals(Fields.START_PAY, true)) {
                 preAuth = false
-            }else if (service.equals(Fields.PRE_AUTH, true)){
+            } else if (service.equals(Fields.PRE_AUTH, true)) {
                 preAuth = true
             }
 
@@ -158,7 +159,8 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 promptForConnection()
             } else {
                 device_name_txt.text = getSharedString(Fields.DeviceId, applicationContext)
-                enter_pin_device_name_txt.text = getSharedString(Fields.DeviceId, applicationContext)
+                enter_pin_device_name_txt.text =
+                    getSharedString(Fields.DeviceId, applicationContext)
                 swipeCard()
             }
         } else {
@@ -194,7 +196,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         listView2.adapter = arrayAdapter
         listView2.onItemClickListener =
             OnItemClickListener { parent, view, position, id ->
-                if (Constants.foundDevices!!.size>position){
+                if (Constants.foundDevices!!.size > position) {
                     wisePadController.connectBT(Constants.foundDevices?.get(position))
                     dialog.dismiss()
                     showDialog("Loading")
@@ -207,7 +209,8 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 if (isEzyrecSale) {
                     startActivity(
                         Intent(
-                            applicationContext, MainActivity::class.java)
+                            applicationContext, MainActivity::class.java
+                        )
                     )
                 } else {
                     dialog.dismiss()
@@ -236,7 +239,8 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 Log.e("Device Connected", "Success")
                 wisePadController.getDeviceInfo()
                 device_name_txt.text = getSharedString(Fields.DeviceId, applicationContext)
-                enter_pin_device_name_txt.text = getSharedString(Fields.DeviceId, applicationContext)
+                enter_pin_device_name_txt.text =
+                    getSharedString(Fields.DeviceId, applicationContext)
                 jsonKeyInjection()//KeyInjection --> For Live
             }
             Constants.InjectSessionSuccess -> {
@@ -260,18 +264,18 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 shortToast(status)
             }
             Constants.CardSwiped -> {
-                Log.e("Test ","Card Swiped")
+                Log.e("Test ", "Card Swiped")
                 showHideLayout(Constants.EnterPin, status)
             }
             Constants.PinScreen -> {
                 showHideLayout(Constants.EnterPin, status)
             }
             Constants.StartEMV -> {
-                Log.e("Test ","Start EMV")
+                Log.e("Test ", "Start EMV")
                 showHideLayout(Constants.EnterPin, status)
                 startEMVProcess()
             }
-            Constants.SwipeProcess ->{
+            Constants.SwipeProcess -> {
                 showServiceCharge()
             }
             Constants.EnterPIN -> {
@@ -301,7 +305,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             }
             Constants.CardCompleted -> {
                 Log.d("EZYWIRE", " CardCompleted")
-                Log.e("IsPin", ""+Constants.isPinVerified)
+                Log.e("IsPin", "" + Constants.isPinVerified)
                 if (Constants.isICC.isEmpty()) {
                     if (Constants.isPinVerified) {
                         Constants.Signature = ""
@@ -335,9 +339,9 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             }
             Constants.TERMINATED -> {
                 callAcknowledgementAPI(Constants.TRANS_ID)
-                if (Constants.TRANS_ID.isNotEmpty()){
+                if (Constants.TRANS_ID.isNotEmpty()) {
                     callAcknowledgementAPI(Constants.TRANS_ID)
-                }else{
+                } else {
                     transactionFailed("Transaction Terminated")
                 }
 //                transactionFailed("Transaction Terminated")
@@ -412,7 +416,10 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
         showDialog("KeyInjection")
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        );
 
         val keyParams: HashMap<String, String> = HashMap()
         keyParams[Fields.Service] = Fields.KeyInjection
@@ -427,7 +434,11 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 override fun onFailure(call: Call<KeyInjectModel>, t: Throwable) {
                     Log.e("EzywireModel ", t.message!!)
                 }
-                override fun onResponse(call: Call<KeyInjectModel>,response: Response<KeyInjectModel>) {
+
+                override fun onResponse(
+                    call: Call<KeyInjectModel>,
+                    response: Response<KeyInjectModel>
+                ) {
                     if (response.isSuccessful) {
                         val it = response.body()!!
                         if (it.responseCode.equals("0000", true)) {
@@ -443,7 +454,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
                             nextKeyInjection()
 
-                        }else{
+                        } else {
                             cancelDialog()
                             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                             showDialog("EZYWIRE WARNING", it.responseDescription)
@@ -608,7 +619,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun getSignature(extra: String?) {
-        Log.e("Signature", ""+extra)
+        Log.e("Signature", "" + extra)
         showHideLayout(Constants.Signature, "Signature")
     }
 
@@ -640,7 +651,8 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         requestVal[Fields.MerchantId] = getLoginResponse(applicationContext).merchantId
         requestVal[Fields.DeviceId] = getSharedString(Fields.DeviceId, applicationContext)
         requestVal[Fields.HostType] = getLoginResponse(applicationContext).hostType
-        requestVal[Fields.PayId] = amtHex!! // 12 digit price (zero padded in front of original number)
+        requestVal[Fields.PayId] =
+            amtHex!! // 12 digit price (zero padded in front of original number)
 
         requestVal[Fields.AdditionAmount] = getAmount("00")
         requestVal[Fields.CardDetails] = Constants.TLV // card tlv data
@@ -655,7 +667,11 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         requestVal[Fields.Latitude] = Constants.latitudeStr
         requestVal[Fields.Longitude] = Constants.longitudeStr
         //Remove special characters in Country name
-        requestVal[Fields.Location] = if(Pattern.matches(".*[a-zA-Z]+.*[a-zA-Z]", Constants.countryStr)) Constants.countryStr else ""
+        requestVal[Fields.Location] = if (Pattern.matches(
+                ".*[a-zA-Z]+.*[a-zA-Z]",
+                Constants.countryStr
+            )
+        ) Constants.countryStr else ""
         requestVal[Fields.PanSequenceNum] =
             if (Constants.PAN.isEmpty()) "02" else Constants.PAN // if PAN is empty then 02 sent as default
 
@@ -671,6 +687,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                     cancelDialog()
                     Log.e("PaymentInfoModel ", "" + t.message)
                 }
+
                 override fun onResponse(
                     call: Call<PaymentInfoModel>,
                     response: Response<PaymentInfoModel>
@@ -684,7 +701,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                             if (Constants.isICC.isEmpty()) {
                                 if (it.responseData.pinEntry != null) {
                                     pinEntry = it.responseData.pinEntry
-                                    if (it.responseData.pinEntry.equals("NO",true))
+                                    if (it.responseData.pinEntry.equals("NO", true))
                                         Constants.isICC = "N"
                                 }
                             } else {
@@ -707,7 +724,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                             //Have to include Dialog Interface
                             cancelTrackingData()
 
-                            showHideLayout(Constants.FailureTransaction,it.responseDescription)
+                            showHideLayout(Constants.FailureTransaction, it.responseDescription)
                         }
                     } else {
                         Log.e("PaymentInfoModel ", "" + response.message())
@@ -788,7 +805,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                     }
                 }
                 cancelTracking = 0
-            }else{
+            } else {
                 transactionFailed("Transaction Terminated")
             }
         })
@@ -904,7 +921,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             R.id.failure_try_again_btn -> {
                 startActivity(Intent(this, MainActivity::class.java))
             }
-            R.id.success_print_btn ->{
+            R.id.success_print_btn -> {
                 val bundle = Bundle()
                 if (preAuth)
                     bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
@@ -914,7 +931,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Fields.Signature, "")
                 bundle.putString(Constants.ActivityName, Constants.EzywireAct)
-                addFragment(printReceiptFragment,bundle,R.id.coordinatorLayout)
+                addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
             }
             R.id.btn_sign_clear -> {
                 signature_view.clearSignature()
@@ -926,15 +943,18 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 bitMap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
                 val byteArray = byteArrayOutputStream.toByteArray()
 
-                if (signature_view.isSignatureDrawn){
+                if (signature_view.isSignatureDrawn) {
                     val bundle = Bundle()
                     bundle.putString(Fields.Service, Fields.TXN_REPRINT)
                     bundle.putString(Fields.trxId, Constants.TRANS_ID)
                     bundle.putString(Constants.Redirect, Constants.Home)
                     bundle.putString(Constants.ActivityName, Constants.EzywireAct)
-                    bundle.putString(Fields.Signature, Base64.encodeToString(byteArray,Base64.DEFAULT))
-                    addFragment(printReceiptFragment,bundle,R.id.coordinatorLayout)
-                }else{
+                    bundle.putString(
+                        Fields.Signature,
+                        Base64.encodeToString(byteArray, Base64.DEFAULT)
+                    )
+                    addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
+                } else {
                     shortToast("Signature is mandatory.")
                 }
 

@@ -123,11 +123,11 @@
     <string name="login_title">You can use your <font color='#005BAA'>fingerprint</font> to access to the app.</string>
     <string name="welcome_to_mobi">Welcome to <font color='#005baa'>mobi</font></string>
     <string name="yo_forget">Forget your Password</string>
-    <string name="didn_receive_code">Didn’t receive code?</string>
+    <string name="didn_receive_code">Did’t receive code?</string>
     <string name="foreign_card">*Foreign Card</string>
     <string name="domestic_card">*Domestic Card</string>
     <string name="owner_partner_name">* Owner / Partner Name</string>
-    <string name="owner_partnet_contact">* Owner / Partnet Contact</string>
+    <string name="owner_partnet_contact">* Owner / Partner Contact</string>
     <string name="nric_passport">* NRIC / Passport</string>
     <string name="forget_dec">No worries, Just Enter your Username</string>
     <string name="days_remaining">AUTO VOIDS IN: </string>
@@ -164,8 +164,11 @@
     <string name="retry">Retry</string>
     <string name="failure">Failure</string>
     <string name="clear_search">clear search</string>
-    <string name="search_strart_typing_something">Search (Strart typing something)</string>
+    <string name="search_strart_typing_something">Search (Start typing something)</string>
     <string name="filter_product">filter product</string>
     <string name="no_data_available">No data available</string>
     <string name="filter">Filter</string>
+    <string name="receipt_email_note">Receipt will be sent through email only</string>
+    <string name="email_hint">sample@domain.com</string>
+    <string name="print_receipt">Print Receipt</string>
 </resources>

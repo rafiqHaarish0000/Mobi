@@ -150,9 +150,9 @@ class TransactionHistoryAdapter(
             ) {
                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                 binding.timelineView.setBackgroundColor(Color.parseColor("#faa107"))
-                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
+                binding.txtStatusHistory.text = Constants.TransactionHistoryStatus.PENDING
             } else {
-                binding.txtStatusHistory.text = Constants.TransactionHistory.COMPLETED
+                binding.txtStatusHistory.text = Constants.TransactionHistoryStatus.COMPLETED
                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                 binding.timelineView.setBackgroundColor(Color.parseColor("#52de97"))
             }
@@ -239,7 +239,7 @@ class TransactionHistoryAdapter(
                             }
                             historyData.status.equals("COMPLETED", true) -> {
                                 binding.txtStatusHistory.text =
-                                    Constants.TransactionHistory.COMPLETED
+                                    Constants.TransactionHistoryStatus.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.completed))
                             }
@@ -249,7 +249,8 @@ class TransactionHistoryAdapter(
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.completed))
                             }
                             historyData.status.equals("PENDING", true) -> {
-                                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
+                                binding.txtStatusHistory.text =
+                                    Constants.TransactionHistoryStatus.PENDING
                                 binding.txtRrnHistory.visibility = View.GONE
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.pending))
@@ -263,13 +264,14 @@ class TransactionHistoryAdapter(
                         when (historyData.status) {
                             "D" -> {
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.pending))
-                                binding.txtStatusHistory.text = Constants.TransactionHistory.PENDING
+                                binding.txtStatusHistory.text =
+                                    Constants.TransactionHistoryStatus.PENDING
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                             }
                             "E" -> {
                                 Log.i(TAG, "bind: ${historyData.status}")
                                 binding.txtStatusHistory.text =
-                                    Constants.TransactionHistory.COMPLETED
+                                    Constants.TransactionHistoryStatus.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                             }
                             else -> {
@@ -375,15 +377,9 @@ class TransactionHistoryAdapter(
     }
 
     fun clearDataset() {
-        if (historyList.isNotEmpty()) {
-            this.historyList.clear()
-            notifyItemChanged(0)
-        }
-        if (filterHistoryList.isNotEmpty()) {
-            this.filterHistoryList.clear()
-            notifyItemChanged(0)
-        }
-
+        this.historyList.clear()
+        this.filterHistoryList.clear()
+        notifyDataSetChanged()
     }
 
     fun setServiceType(trxHistory: String) {

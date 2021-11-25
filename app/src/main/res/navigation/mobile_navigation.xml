@@ -46,10 +46,19 @@
         android:id="@+id/historyDetailFragment"
         android:name="com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailFragment"
         android:label="history_detail_fragment_copy"
-        tools:layout="@layout/history_detail_fragment_new" />
+        tools:layout="@layout/history_detail_fragment_new">
+        <action
+            android:id="@+id/action_historyDetailFragment_to_printReceiptFragment"
+            app:destination="@id/printReceiptFragment" />
+    </fragment>
     <fragment
         android:id="@+id/transactionStatusFragment"
         android:name="com.mobiversa.ezy2pay.ui.history.transactionStatus.TransactionStatusActivity"
         android:label="TransactionStatusFragment" />
+    <fragment
+        android:id="@+id/printReceiptFragment"
+        android:name="com.mobiversa.ezy2pay.ui.receipt.PrintReceiptFragment"
+        android:label="print_receipt_fragment"
+        tools:layout="@layout/print_receipt_fragment" />
 
 </navigation>

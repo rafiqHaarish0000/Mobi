@@ -323,7 +323,8 @@ open class BaseActivity : AppCompatActivity() {
         productList.add(
             ProductList(
                 Constants.GrabPay,
-                R.drawable.ic_grabpay, R.drawable.grab_disabled_icon,
+                R.drawable.ic_grabpay,
+                R.drawable.grab_disabled_icon,
                 loginResponse.gpayMid,
                 loginResponse.gpayTid,
                 loginResponse.enableGrabPay.equals("Yes", false),

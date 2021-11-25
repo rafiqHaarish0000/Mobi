@@ -68,7 +68,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private var position: Int? = null
 
     private var selectedProductFilter = ""
-    private lateinit var historyViewModel: HistoryViewModel
+    private lateinit var transactionHistoryViewModel: TransactionHistoryViewModel
     var transactionType = Fields.ALL
     private lateinit var imageButtonProductFilter: ImageButton
     private lateinit var trxTypeAdapter: ArrayAdapter<String>
@@ -182,16 +182,16 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        historyViewModel =
+        transactionHistoryViewModel =
             ViewModelProvider(
                 this@HistoryFragment,
                 AppViewModelFactory(AppRepository.getInstance())
-            ).get(HistoryViewModel::class.java)
+            ).get(TransactionHistoryViewModel::class.java)
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
 
         initialize(rootView)
 //        val textView: TextView = root.findViewById(R.id.text_dashboard)
-//        historyViewModel.text.observe(this, Observer {
+//        transactionHistoryViewModel.text.observe(this, Observer {
 //            textView.text = it
 //        })
 
@@ -237,7 +237,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         )
         historyRecyclerView.apply {
             layoutManager =
-                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             addItemDecoration(
                 MarginItemDecoration(
                     resources.getDimension(R.dimen.xxhdpi_10).toInt()
@@ -246,7 +246,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             adapter = transactionHistoryAdapter
             addOnScrollListener(transactionHistoryRecyclerViewOnScrollListener)
         }
-
         enableVoidOption()
 
 //        trxTypeAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, getTrxList())
@@ -301,8 +300,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             .build()
 
 
-//        historyViewModel.transactionHistoryList.removeObserver(dataObserver)
-//        historyViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
+//        transactionHistoryViewModel.transactionHistoryList.removeObserver(dataObserver)
+//        transactionHistoryViewModel.transactionHistoryList.observe(viewLifecycleOwner, dataObserver)
     }
 
     override fun onResume() {
@@ -311,7 +310,6 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         setTitle("Transactions", true)
 
 //        transactionType = Fields.ALL
-
 
         currentTransactionHistoryPageNumber = 1
         transactionType = Fields.ALL
@@ -637,7 +635,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             transactionHistoryRequestData.pageNo = currentTransactionHistoryPageNumber.toString()
 
             when (val response =
-                historyViewModel.getTransactionHistoryData(transactionHistoryRequestData)) {
+                transactionHistoryViewModel.getTransactionHistoryData(transactionHistoryRequestData)) {
                 is TransactionHistoryResponse.Response -> {
                     historyList = response.data
                     listTransactionHistoryData(response.data)
@@ -1052,8 +1050,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //        showDialog("Loading History...")
 
         transactionType = historyParam[Fields.Service]!!
-//        historyViewModel.getTransactionHistory(historyParam)
-//        historyViewModel.transactionHistoryList.observe(
+//        transactionHistoryViewModel.getTransactionHistory(historyParam)
+//        transactionHistoryViewModel.transactionHistoryList.observe(
 //            viewLifecycleOwner,
 //            Observer {
 //                cancelDialog()
@@ -1072,7 +1070,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     override fun onStop() {
         super.onStop()
-//        historyViewModel.transactionHistoryList.removeObservers(this)
+//        transactionHistoryViewModel.transactionHistoryList.removeObservers(this)
     }
 
     private fun getTrxList(): ArrayList<String> {
@@ -1235,8 +1233,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         item: ForSettlement
     ) {
         showDialog("Validating...")
-        historyViewModel.getUserVerification(userValidateParam)
-        historyViewModel.userVerification.observe(
+        transactionHistoryViewModel.getUserVerification(userValidateParam)
+        transactionHistoryViewModel.userVerification.observe(
             this,
             Observer {
                 cancelDialog()
@@ -1396,8 +1394,8 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 }
             })
 
-//        historyViewModel.setVoidHistory(pathStr, requestVal)
-//        historyViewModel.setVoidHistory.observe(this, Observer {
+//        transactionHistoryViewModel.setVoidHistory(pathStr, requestVal)
+//        transactionHistoryViewModel.setVoidHistory.observe(this, Observer {
 //            cancelDialog()
 //            if (it.responseCode.equals("0000", true)) {
 //                shortToast(it.responseDescription)
@@ -1461,7 +1459,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         lifecycleScope.launch {
             AppFunctions.Dialogs.showLoadingDialog("Procession...", requireContext())
-            when (val response = historyViewModel.makeSettlement(requestData)) {
+            when (val response = transactionHistoryViewModel.makeSettlement(requestData)) {
                 is SettlementsResponse.Response -> {
                     shortToast(response.message)
                     AppFunctions.Dialogs.closeLoadingDialog()
@@ -1477,9 +1475,9 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         }
 
 
-//        historyViewModel.getSettlement(reqParam)
+//        transactionHistoryViewModel.getSettlement(reqParam)
 
-//        historyViewModel.settlementData.observe(
+//        transactionHistoryViewModel.settlementData.observe(
 //            this,
 //            {
 //                cancelDialog()
@@ -1507,6 +1505,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         })
     }
 
+    @Deprecated("Will be removed in future update")
     fun addFragment(data: ForSettlement, bundle: Bundle) {
         bundle.putSerializable("History", data)
         bundle.putString(Fields.TRX_TYPE, transactionType)
@@ -1516,7 +1515,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 //            bundle
 //        )
 
-        addFragment(historyDetailFragment, bundle, "History")
+//        addFragment(historyDetailFragment, bundle, "History")
     }
 
     @Deprecated("Cancel option for pending transaction is removed")
@@ -1622,7 +1621,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
         lifecycleScope.launch {
             val pathStr = "grabpay"
-            historyViewModel.cancelPendingTransaction(pathStr, requestData).let {
+            transactionHistoryViewModel.cancelPendingTransaction(pathStr, requestData).let {
                 when (it) {
                     is NGrabPayResponse.Success -> {
                         // show success message

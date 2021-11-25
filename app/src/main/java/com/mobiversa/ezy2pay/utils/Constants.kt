@@ -37,9 +37,10 @@ class Constants {
     }
 
 
-    object TransactionHistory {
+    object TransactionHistoryStatus {
         const val PENDING = "PENDING"
         const val REFUND = "REFUND"
+        const val VOID = "VOID"
         const val SUCCESS = "SUCCESS"
         const val Settled = "SETTLED"
         const val COMPLETED = "COMPLETED"

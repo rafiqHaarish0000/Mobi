@@ -83,21 +83,6 @@ interface ApiService {
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun getUserValidation(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
-    @POST("payment/mobilite/jsonservice/")
-    fun geMobiLiteBalance(@Body postParam: HashMap<String, String>): Call<SuccessModel>
-
-    @POST("payment/{linkValue}/mobi_jsonservice/")
-    fun setVoidTransaction(
-        @Path("linkValue", encoded = true) linkValue: String,
-        @Body postParam: HashMap<String, String>
-    ): Call<VoidHistoryModel>
-
-    @POST("payment/{linkValue}/mobi_jsonservice")
-    suspend fun voidOnlineGrabPayTransaction(
-        @Path("linkValue", encoded = true) linkValue: String,
-        @Body requestData: NGrabPayRequestData
-    ): Response<NGrabPayResponseData>
-
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun setMobiCash(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
@@ -113,27 +98,6 @@ interface ApiService {
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun registerUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
-    @POST("externalapi/merchantservice/")
-    fun registerLiteUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
-
-    @POST("externalapi/merchantservice/")
-    fun upgradeUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
-
-    @POST("payment/mobiapr19/mobi_jsonservice")
-    fun logoutUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
-
-    @POST("payment/mobiapr19/mobi_jsonservice/")
-    fun updateMerchant(@Body postParam: HashMap<String, String>): Call<SuccessModel>
-
-    @POST("payment/mobiapr19/mobi_jsonservice/")
-    fun getMerchantDetails(@Body postParam: HashMap<String, String>): Call<MerchantDetailModel>
-
-    @POST("api/fpx")
-    fun getBankList(@Body postParam: HashMap<String, String>): Call<BankListModel>
-
-    @POST("api/CountryAndState")
-    fun getStateList(@Body postParam: HashMap<String, String>): Call<StateModel>
-
     @POST("payment/mobiapr19/mobi_jsonservice")
     suspend fun getTransactionStatus(@Body transactionStatusRequestDataModel: TransactionStatusRequestDataModel): Response<ResponseTransactionStatusDataModel>
 
@@ -146,6 +110,48 @@ interface ApiService {
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
     suspend fun makeSettlements(@Body requestData: SettlementsDataRequestData): Response<SuccessModel>
+
+    @POST("payment/mobiapr19/mobi_jsonservice")
+    fun logoutUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
+
+    @POST("payment/mobiapr19/mobi_jsonservice/")
+    fun updateMerchant(@Body postParam: HashMap<String, String>): Call<SuccessModel>
+
+    @POST("payment/mobiapr19/mobi_jsonservice/")
+    fun getMerchantDetails(@Body postParam: HashMap<String, String>): Call<MerchantDetailModel>
+
+    @POST("payment/mobilite/jsonservice/")
+    fun geMobiLiteBalance(@Body postParam: HashMap<String, String>): Call<SuccessModel>
+
+    @POST("payment/{linkValue}/mobi_jsonservice/")
+    fun setVoidTransaction(
+        @Path("linkValue", encoded = true) linkValue: String,
+        @Body postParam: HashMap<String, String>
+    ): Call<VoidHistoryModel>
+
+    @POST("payment/{linkValue}/mobi_jsonservice")
+    suspend fun voidOnlineGrabPayTransaction(
+        @Path("linkValue", encoded = true) linkValue: String,
+        @Body requestData: NGrabPayRequestData
+    ): Response<NGrabPayResponseData>
+
+
+
+    @POST("externalapi/merchantservice/")
+    fun registerLiteUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
+
+    @POST("externalapi/merchantservice/")
+    fun upgradeUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
+
+
+
+    @POST("api/fpx")
+    fun getBankList(@Body postParam: HashMap<String, String>): Call<BankListModel>
+
+    @POST("api/CountryAndState")
+    fun getStateList(@Body postParam: HashMap<String, String>): Call<StateModel>
+
+
 
     // TODO: 03-11-2021
     /* Vignesh Selvam

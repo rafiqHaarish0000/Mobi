@@ -120,7 +120,7 @@ class TransactionStatusActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar!!.hide();
+        supportActionBar?.hide()
         _binding = DataBindingUtil.setContentView(
             this@TransactionStatusActivity,
             R.layout.activity_transaction_status
@@ -128,7 +128,6 @@ class TransactionStatusActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupViewModel()
 
-//        setSupportActionBar(binding.toolbar)
         transactionStatusAdapter = TransactionStatusAdapter(callBack = transactionStatusInterface)
 
         binding.imageButtonBack.setOnClickListener {
@@ -268,45 +267,8 @@ class TransactionStatusActivity : AppCompatActivity() {
         return true
     }
 
-    private fun getTransactionStatus(tid: String) {
-        lifecycleScope.launch {
-            try {
-                AppFunctions.Dialogs.showLoadingDialog("Loading", this@TransactionStatusActivity)
-                when (val result = viewModel.getTransactionStatus(tid)) {
-                    is TransactionStatusResponse.Success -> {
-
-                        if (result.data.responseData.motoTxndetails.isNotEmpty()) {
-                            displayTransactionStatusList(result.data)
-                        } else {
-                            showErrorCondition("No Transaction Available")
-                        }
-                    }
-
-                    is TransactionStatusResponse.Error -> {
-                        showErrorCondition(result.errorMessage)
-                    }
-
-                    is TransactionStatusResponse.Exception -> {
-                        showErrorCondition(result.exceptionMessage)
-                    }
-                }
-            } catch (e: Exception) {
-                // exception
-                showErrorCondition(e.message!!)
-            } finally {
-                AppFunctions.Dialogs.closeLoadingDialog()
-            }
-
-        }
-    }
-
     private fun showErrorCondition(errorMessage: String) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-    }
-
-    private fun displayTransactionStatusList(data: ResponseTransactionStatusDataModel) {
-        val arrayList = data.responseData.motoTxndetails
-//        transactionStatusAdapter.updateDataSet(arrayList)
     }
 
     private fun setupViewModel() {

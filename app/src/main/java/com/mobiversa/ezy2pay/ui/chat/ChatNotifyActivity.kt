@@ -78,9 +78,9 @@ class ChatNotifyActivity : BaseActivity() {
         var to_encrypt: String = getLoginResponse(applicationContext).merchantName + "#" + mid + "#" + tid
 
         val value_encrypted = Encryptor.encrypt(date_today, date_today, to_encrypt)
-        Log.v("--encrypt--", ""+value_encrypted)
+       // Log.v("--encrypt--", ""+value_encrypted)
         hex_to_asci_name = Encryptor.encodeHexString(value_encrypted!!)
-        Log.v("--hex--", hex_to_asci_name)
+       // Log.v("--hex--", hex_to_asci_name)
 
         startWebView(
             Constants.LOGGED_CHAT_URL

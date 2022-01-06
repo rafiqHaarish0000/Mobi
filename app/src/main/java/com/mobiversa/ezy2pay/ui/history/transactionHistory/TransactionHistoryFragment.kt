@@ -25,7 +25,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.adapter.transactionHistory.TransactionHistoryAdapter
-import com.mobiversa.ezy2pay.utils.AppFunctions
 import com.mobiversa.ezy2pay.base.BaseFragment
 import com.mobiversa.ezy2pay.dataModel.*
 import com.mobiversa.ezy2pay.network.ApiService
@@ -113,9 +112,10 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     private val transactionHistoryCallback =
         object : TransactionHistoryAdapter.TransactionHistoryInterface {
             override fun onTransactionClicked(historyData: ForSettlement, bundle: Bundle) {
-                Log.i(TAG, "onTransactionClicked: $historyData")
+//               // Log.i(TAG, "onTransactionClicked: $historyData")
                 bundle.putSerializable(Constants.NavigationKey.TRANSACTION_HISTORY_KEY, historyData)
                 bundle.putString(Fields.TRX_TYPE, transactionType)
+
                 findNavController().navigate(
                     R.id.action_navigation_history_to_historyDetailFragment2,
                     bundle
@@ -318,7 +318,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
     private fun transactionHistory(s: String) {
-        Log.i(TAG, "transactionHistory: $s")
+       // Log.i(TAG, "transactionHistory: $s")
         serviceType = 1
 //        val historyParam = HashMap<String, String>()
 //
@@ -392,7 +392,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     private fun preAuthTransHistory(historyType: String) {
         serviceType = 2
-        Log.i(TAG, "preAuthTransHistory: historyType $historyType")
+       // Log.i(TAG, "preAuthTransHistory: historyType $historyType")
 
 
 //        val historyParam = HashMap<String, String>()
@@ -628,7 +628,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         lifecycleScope.launch {
 
             if (currentTransactionHistoryPageNumber == 1) {
-                Log.i(TAG, "requestTransactionHistoryData: show loading")
+               // Log.i(TAG, "requestTransactionHistoryData: show loading")
                 AppFunctions.Dialogs.showLoadingDialog("Loading History...", requireContext())
             }
 
@@ -675,7 +675,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 fabTransactionStatus.visibility = View.GONE
             }
 //            Fields.Moto -> {
-//                Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
+//               // Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
 //                btnSettlementHistory.visibility = View.VISIBLE
 //                Glide
 //                    .with(requireContext())
@@ -728,7 +728,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     @Deprecated("Will be removed in future update")
     private fun historyObserveData(it: TransactionHistoryResponseData?) {
 
-        Log.e(TAG, "historyObserveData: trxType --> $transactionType")
+       // Log.e(TAG, "historyObserveData: trxType --> $transactionType")
         closeLoadingDialog()
         if (it != null) {
             var count = 0
@@ -737,7 +737,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
                 showLog("Auth", transactionType)
 
-                Log.i(TAG, "historyObserveData: before filter -> $it")
+               // Log.i(TAG, "historyObserveData: before filter -> $it")
 
                 val forSettlementsFilteredData = it.responseData.forSettlement?.filter {
                     !it.status.equals(
@@ -755,7 +755,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 it.responseData.forSettlement = forSettlementsFilteredData
                 it.responseData.preAuthorization = preAuthFilteredData
 
-                Log.i(TAG, "historyObserveData: after filter $it")
+               // Log.i(TAG, "historyObserveData: after filter $it")
 
                 if (transactionType.equals(PREAUTH, true)) {
                     val authSize = it.responseData.preAuthorization?.size ?: 0
@@ -830,7 +830,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
             showLog("Auth", transactionType)
 
-            Log.i(TAG, "historyObserveData: before filter -> $it")
+           // Log.i(TAG, "historyObserveData: before filter -> $it")
 
             val forSettlementsFilteredData = it.forSettlement?.filter { forSettlement ->
                 !forSettlement.status.equals(
@@ -849,7 +849,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             it.forSettlement = forSettlementsFilteredData
             it.preAuthorization = preAuthFilteredData
 
-            Log.i(TAG, "historyObserveData: after filter $it")
+           // Log.i(TAG, "historyObserveData: after filter $it")
 
             if (transactionType.equals(PREAUTH, true)) {
                 val authSize = it.preAuthorization?.size ?: 0
@@ -938,7 +938,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             }
         }
 
-        Log.i(TAG, "listTransactionHistoryData: count -> $count / completed -> $completedCount")
+       // Log.i(TAG, "listTransactionHistoryData: count -> $count / completed -> $completedCount")
 
 //        btnSettlementVisibility(transactionType, count, completedCount, transactionHistoryDataSet)
         btnSettlementVisibility(transactionType)
@@ -977,7 +977,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 fabTransactionStatus.visibility = View.GONE
             }
 //            Fields.Moto -> {
-//                Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
+//               // Log.i(TAG, "btnSettlementVisibility: trxType -> $trxType")
 //                btnSettlementHistory.visibility = View.VISIBLE
 //                Glide
 //                    .with(requireContext())
@@ -1061,7 +1061,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
 //    private val dataObserver = Observer<TransactionHistoryResponseData> { data ->
-//        Log.i(TAG, "Observer Data -> $data ")
+//       // Log.i(TAG, "Observer Data -> $data ")
 //        if (data != null) {
 //            historyObserveData(data)
 //        }
@@ -1075,7 +1075,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     private fun getTrxList(): ArrayList<String> {
 
-        Log.i(TAG, "getTrxList: ${getProductList()}")
+       // Log.i(TAG, "getTrxList: ${getProductList()}")
 
         val histList = ArrayList<String>()
         histList.add(Fields.ALL_TRANSACTION)
@@ -1190,7 +1190,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
     }
 
     private fun showFingerAuthenticationDialog() {
-        Log.i(TAG, "showFingerAuthenticationDialog: ")
+       // Log.i(TAG, "showFingerAuthenticationDialog: ")
         biometricPrompt.authenticate(promptInfo)
         /*  Vignesh Selvam
         * Old method will be removed in the future update
@@ -1211,7 +1211,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     @Deprecated("Will be removed in future update")
     override fun onFingerprintAuthenticationFailure(errorMessage: String, errorCode: Int) {
-        Log.i(TAG, "onFingerprintAuthenticationFailure: ")
+       // Log.i(TAG, "onFingerprintAuthenticationFailure: ")
         showLog("Finger", " Failure")
         shortToast(errorMessage)
         finger.subscribe(this)
@@ -1219,7 +1219,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
 
     @Deprecated("Will be removed in future update")
     override fun onFingerprintAuthenticationSuccess() {
-        Log.i(TAG, "onFingerprintAuthenticationSuccess: ")
+       // Log.i(TAG, "onFingerprintAuthenticationSuccess: ")
         finger.subscribe(this)
         requestData.clear()
         requestData[Fields.biomerticKey] = Fields.Success
@@ -1254,7 +1254,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
         var pathStr = "mobiapr19"
         val requestVal = requestData
 
-        Log.e(TAG, "jsonVoidTransaction: txnType -> ${historyData.txnType}")
+       // Log.e(TAG, "jsonVoidTransaction: txnType -> ${historyData.txnType}")
 
         when (historyData.txnType) {
             (Fields.CASH) -> {
@@ -1364,7 +1364,7 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
             }
         }
 
-        Log.e(TAG, "jsonVoidTransaction: request value $requestData")
+       // Log.e(TAG, "jsonVoidTransaction: request value $requestData")
 
 //        showDialog("Processing...")
         AppFunctions.Dialogs.showLoadingDialog("Processing...", requireContext())
@@ -1748,18 +1748,18 @@ class HistoryFragment : BaseFragment(), View.OnClickListener, FingerListener {
                 else -> getTrxList()[position]
             }
 
-            Log.i(TAG, "showProductFilterDialog: $transactionType")
+           // Log.i(TAG, "showProductFilterDialog: $transactionType")
 
             if (getTrxList()[position].equals(PREAUTH, ignoreCase = true)) {
                 if (getProductList()[1].isEnable) {
-                    Log.i(TAG, "showProductFilterDialog: 2 ${Fields.CARD}")
+                   // Log.i(TAG, "showProductFilterDialog: 2 ${Fields.CARD}")
                     preAuthTransHistory(Fields.CARD)
                 } else {
-                    Log.i(TAG, "showProductFilterDialog: 3 ${Fields.EZYMOTO}")
+                   // Log.i(TAG, "showProductFilterDialog: 3 ${Fields.EZYMOTO}")
                     preAuthTransHistory(Fields.EZYMOTO)
                 }
             } else {
-                Log.i(TAG, "showProductFilterDialog: 4 Transaction History")
+               // Log.i(TAG, "showProductFilterDialog: 4 Transaction History")
 //                    reset page number to load from first
                 transactionHistory("on Transaction Type Change")
             }

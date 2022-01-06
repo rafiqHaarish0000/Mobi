@@ -152,7 +152,7 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
         }
         prefs[Constants.LastLogin] = currentLogin
 
-        Log.e("ProductName", Constants.EzyMoto)
+       // Log.e("ProductName", Constants.EzyMoto)
 
         binding.navigationView.itemIconTintList = null
 
@@ -197,7 +197,7 @@ class MainActivity : BaseActivity(), ConnectivityReceiver.ConnectivityReceiverLi
     }
 
     private fun showPromotionAlert() {
-        Log.i(TAG, "showPromotionAlert: show")
+       // Log.i(TAG, "showPromotionAlert: show")
 
         val inflater = this.layoutInflater
         val layout: View = inflater.inflate(R.layout.alert_referel_new, null)

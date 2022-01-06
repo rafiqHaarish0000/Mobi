@@ -27,7 +27,7 @@ class ChatFcmActivity : BaseActivity() {
         if (startingIntent != null) {
             url_test = ""+startingIntent.getStringExtra("url")
             if (!url_test.equals("no_url")) {
-                Log.v("--chat--", url_test)
+               // Log.v("--chat--", url_test)
                 startWebView(url_test)
             }else{
                 finish()

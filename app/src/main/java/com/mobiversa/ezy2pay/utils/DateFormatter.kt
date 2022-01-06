@@ -98,7 +98,7 @@ class DateFormatter {
             var days: Long = 0
             try {
                 val diff = date2.time - date1.time
-                Log.e("Days: ", "" + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
+               // Log.e("Days: ", "" + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
                 days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
             } catch (e: ParseException) {
                 e.printStackTrace()

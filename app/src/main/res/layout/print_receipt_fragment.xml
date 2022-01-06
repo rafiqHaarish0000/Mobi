@@ -176,11 +176,12 @@
                             android:visibility="gone" />
 
                         <RelativeLayout
+                            android:id="@+id/relative_layout_or_divider"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_10"
                             android:layout_marginBottom="@dimen/xxhdpi_5"
-                            android:visibility="gone">
+                            android:visibility="visible">
 
                             <View
                                 android:layout_width="match_parent"
@@ -194,9 +195,8 @@
                                 android:layout_centerHorizontal="true"
                                 android:background="@drawable/circle_white"
                                 android:gravity="center"
-                                android:letterSpacing="0.08"
-                                android:text="or"
-                                android:textColor="@color/txt_grey" />
+                                android:text="@string/or"
+                                android:textColor="@color/white" />
 
                         </RelativeLayout>
 
@@ -218,7 +218,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/xxhdpi_10"
                             android:background="@drawable/rect_bor"
-                            android:hint="@string/email_hint"
+                            android:hint="@string/sample_domail_com"
                             android:inputType="textEmailAddress"
                             android:lines="1"
                             android:maxLines="1"
@@ -229,13 +229,14 @@
 
 
                         <TextView
+                            android:id="@+id/text_view_email_only_note"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:drawablePadding="10dp"
                             android:gravity="center|start"
-                            android:text="@string/receipt_email_note"
-                            android:textColor="@color/black"
+                            android:text="@string/receipt_will_be_only_sent_through_email"
+                            android:textColor="@color/colorPrimary"
                             app:drawableStartCompat="@drawable/ic_baseline_error_outline_24" />
 
 

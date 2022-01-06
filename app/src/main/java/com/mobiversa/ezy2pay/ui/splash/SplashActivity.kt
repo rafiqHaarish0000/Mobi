@@ -70,7 +70,7 @@ class SplashActivity : BaseActivity() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                Log.v("--callFromSplash--", "intent")
+               // Log.v("--callFromSplash--", "intent")
                 // Intent intent = new Intent(getApplicationContext(), login ? EzywireLogin.class : EzywireHome.class).putExtra("fromlogin", "Yes");
                 val intent = Intent(
                     applicationContext, /*login ? EzywireLogin.class : */

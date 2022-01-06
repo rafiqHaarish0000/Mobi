@@ -186,7 +186,7 @@ class BankDetailFragment : BaseFragment(), View.OnClickListener,
 
 
 //        val hex_to_asci = Encryptor.hexaToAscii(getUserString(Fields.password), true)
-//        Log.v("--hex_to Asci--", hex_to_asci)
+//       // Log.v("--hex_to Asci--", hex_to_asci)
 //        val data_encrypted = Encryptor.decrypt(getUserString(Fields.date), getUserString(Fields.date), hex_to_asci).toString()
 
 //        params["password"] = data_encrypted

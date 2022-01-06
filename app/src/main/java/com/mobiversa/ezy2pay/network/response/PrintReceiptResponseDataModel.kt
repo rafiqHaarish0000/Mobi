@@ -1,6 +1,6 @@
 package com.mobiversa.ezy2pay.network.response
 
-data class ReceiptModel(
+data class PrintReceiptResponseDataModel(
     val responseCode: String,
     val responseData: ReceiptResponseData,
     val responseDescription: String,

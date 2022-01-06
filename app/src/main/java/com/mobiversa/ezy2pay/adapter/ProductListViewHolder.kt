@@ -24,7 +24,7 @@ class ProductListViewHolder(private val binding: ProductListDataItemBinding) :
         }
 
 //        binding.listProdImg.setOnClickListener {
-//            Log.e("List ", productList.productName)
+//           // Log.e("List ", productList.productName)
 //            if (productList.isEnable)
 //                homeFragment.productDetails(productList.productName)
 //            else
@@ -32,7 +32,7 @@ class ProductListViewHolder(private val binding: ProductListDataItemBinding) :
 //        }
 //
 //        binding.listProdName.setOnClickListener {
-//            Log.e("List ", productList.productName)
+//           // Log.e("List ", productList.productName)
 //            if (productList.isEnable)
 //                homeFragment.productDetails(productList.productName)
 //            else

@@ -32,7 +32,7 @@ class TransactionHistoryDataSource(
             if (response.isSuccessful) {
                 val data = response.body()!!
                 return if (data.responseCode == Constants.Network.RESPONSE_SUCCESS) {
-                    Log.e(TAG, "load: Success")
+                   // Log.e(TAG, "load: Success")
                     nextPageNumber++
                     LoadResult.Page(
                         data = data.responseData.forSettlement!!,
@@ -40,7 +40,7 @@ class TransactionHistoryDataSource(
                         nextKey = nextPageNumber
                     )
                 } else {
-                    Log.e(TAG, "load: Failure")
+                   // Log.e(TAG, "load: Failure")
                     LoadResult.Page(
                         data = emptyList(),
                         nextKey = null,
@@ -48,7 +48,7 @@ class TransactionHistoryDataSource(
                     )
                 }
             } else {
-                Log.e(TAG, "load: Unsuccessful")
+               // Log.e(TAG, "load: Unsuccessful")
                 return LoadResult.Page(
                     data = emptyList(),
                     nextKey = null,

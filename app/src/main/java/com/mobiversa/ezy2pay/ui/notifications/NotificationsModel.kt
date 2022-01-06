@@ -52,6 +52,6 @@ class NotificationsModel {
     }
 
     private fun notificationFailureResponse(data: MutableLiveData<NotificationList>) {
-        Log.e("NotificationVM ", ""+data)
+       // Log.e("NotificationVM ", ""+data)
     }
 }

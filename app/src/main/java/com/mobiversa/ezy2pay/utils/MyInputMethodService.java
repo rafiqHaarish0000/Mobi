@@ -179,7 +179,7 @@ public class MyInputMethodService extends InputMethodService
                 }
                 break;
             case Keyboard.KEYCODE_DONE:
-                Log.e("DONE", "Success");
+               // Log.e("DONE", "Success");
 //                ic.commitText(amount_edt.getText().toString(), 1);
                 break;
             case Keyboard.KEYCODE_SHIFT :
@@ -189,7 +189,7 @@ public class MyInputMethodService extends InputMethodService
                 break;
             default:
                 char code = (char) primaryCode;
-                Log.e("CODE", String.valueOf(code));
+               // Log.e("CODE", String.valueOf(code));
                 if (isAmount) {
                     if (isStringInt(String.valueOf(code)))
                     pressData(String.valueOf(code));
@@ -302,7 +302,7 @@ public class MyInputMethodService extends InputMethodService
             SharedPreferences customPrefs = PreferenceHelper.INSTANCE.customPrefs(getApplicationContext(), "REMEMBER");
             String value_encrypted = Encryptor.Encrypt.encrypt(Constants.mobiApi.substring(0, 16),
                     Constants.mobiApi.substring(16, 32), getAmount(amount_edt.getText().toString()));
-            Log.v("--encrypt--", "" + value_encrypted);
+           // Log.v("--encrypt--", "" + value_encrypted);
             String hex_to_asci_name = Encryptor.Encrypt.encodeHexString(value_encrypted);
 
             HashMap<String, String> data = new HashMap();

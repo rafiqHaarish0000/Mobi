@@ -187,16 +187,16 @@ class LoginModel {
     }
 
     fun loginFailedResponse(data: MutableLiveData<LoginResponse>) {
-        Log.e("LoginModel Fail", "" + data)
+       // Log.e("LoginModel Fail", "" + data)
     }
     fun otpFailedResponse(data: MutableLiveData<OTPResponse>) {
-        Log.e("LoginModel Fail", "" + data)
+       // Log.e("LoginModel Fail", "" + data)
     }
     fun userDetailFailedResponse(data: String) {
-        Log.e("LoginModel Fail", "" + data)
+       // Log.e("LoginModel Fail", "" + data)
     }
     fun userRegisterFailedResponse(data: MutableLiveData<SuccessModel>) {
-        Log.e("LoginModel Fail", "" + data)
+       // Log.e("LoginModel Fail", "" + data)
     }
 
 }

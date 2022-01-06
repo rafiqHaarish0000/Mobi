@@ -34,6 +34,6 @@ class EzyCashModel {
         return callAckData
     }
     fun CallAckFailedResponse(data: MutableLiveData<CallAckModel>) {
-        Log.e("CallAckModel ", "" + data)
+       // Log.e("CallAckModel ", "" + data)
     }
 }

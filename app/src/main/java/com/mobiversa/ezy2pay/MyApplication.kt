@@ -12,7 +12,7 @@ class MyApplication : Application() {
         // Obtain the FirebaseAnalytics instance.
         FirebaseAnalytics.getInstance(this)
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
-        Log.e(TAG, "onCreate: Build Type -> ${BuildConfig.BUILD_TYPE}")
+       // Log.e(TAG, "onCreate: Build Type -> ${BuildConfig.BUILD_TYPE}")
     }
 
 }

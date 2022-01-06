@@ -123,7 +123,7 @@ class HistoryDetailFragment :
             histTrxType = it.getString(Fields.TRX_TYPE).toString()
         }
 
-        Log.e(TAG, "initialize: historyData -> $historyData")
+       // Log.e(TAG, "initialize: historyData -> $historyData")
         amount = requireArguments().getString(Constants.Amount).toString()
         val date = requireArguments().getString(Constants.Date)
 //        histTrxType = requireArguments().getString(Fields.TRX_TYPE).toString()
@@ -289,7 +289,7 @@ class HistoryDetailFragment :
 
         rootView.btn_history_detail_receipt.visibility = View.VISIBLE
 
-        Log.i(TAG, "initialize: $histTrxType")
+       // Log.i(TAG, "initialize: $histTrxType")
         when {
             histTrxType.equals(Fields.PREAUTH, true) -> {
                 rootView.btn_history_detail_receipt.text = "Convert to Sale"
@@ -340,6 +340,10 @@ class HistoryDetailFragment :
                     bundle.putString(Fields.Amount, amount)
                     bundle.putString(Constants.ActivityName, MainAct)
                     bundle.putString(Constants.Redirect, Constants.History)
+
+                   // Log.i(TAG, "onClick: ${historyData?.txnType}")
+                    if (historyData?.txnType.equals(Constants.EZYWIRE, ignoreCase = true))
+                        bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
 
                     // TODO: 23-11-2021
                     /* Vignesh Selvam
@@ -719,7 +723,7 @@ class HistoryDetailFragment :
 
     private fun transactionVoid(pathStr: String, requestVal: HashMap<String, String>) {
 
-        Log.e(TAG, "transactionVoid: requestdata $requestVal")
+       // Log.e(TAG, "transactionVoid: requestdata $requestVal")
 
         showDialog("Processing...")
         viewModel.setVoidHistory(pathStr, requestVal)
@@ -812,6 +816,11 @@ class HistoryDetailFragment :
                 bundle.putString(Fields.trxId, historyData!!.txnId)
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Constants.ActivityName, MainAct)
+
+               // Log.i(TAG, "onOptionsItemSelected: ${historyData?.txnType}")
+                if (historyData?.txnType.equals(Constants.EZYWIRE, ignoreCase = true))
+                    bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
+                
                 // TODO: 23-11-2021
                 /* Vignesh Selvam
                 * Fragment Transaction Changes to navigation component

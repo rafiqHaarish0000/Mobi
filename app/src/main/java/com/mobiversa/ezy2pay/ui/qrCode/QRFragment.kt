@@ -215,7 +215,7 @@ class QRFragment : BaseFragment() {
         val countDownTimer = object : CountDownTimer(120000, 1000) {
             @SuppressLint("SetTextI18n")
             override fun onTick(millisUntilFinished: Long) {
-                Log.d("tekloon", "millisUntilFinished $millisUntilFinished")
+               // Log.d("tekloon", "millisUntilFinished $millisUntilFinished")
                 val hms = String.format(
                     "%02d:%02d",
                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
@@ -229,7 +229,7 @@ class QRFragment : BaseFragment() {
             }
 
             override fun onFinish() {
-                Log.d("tekloon", "onFinish")
+               // Log.d("tekloon", "onFinish")
                 boostTimerTxt.text = "TIME'S UP!!"
             }
         }

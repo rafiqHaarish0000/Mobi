@@ -2,7 +2,6 @@ package com.mobiversa.ezy2pay.dialogs
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -143,12 +142,12 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
             { view, year, monthOfYear, dayOfMonth ->
                 val newDate: Calendar = Calendar.getInstance()
                 newDate.set(year, monthOfYear, dayOfMonth)
-                Log.i(
+                /*Log.i(
                     TAG,
                     "openToDate: from date --> ${newDate.get(Calendar.DATE)}/${newDate.get(Calendar.MONTH)}/${
                         newDate.get(Calendar.YEAR)
                     }"
-                )
+                )*/
                 toDate = newDate.timeInMillis
                 try {
                     rootView.findViewById<TextView>(R.id.textView_to_date).text = SimpleDateFormat(
@@ -183,12 +182,12 @@ class SearchFilterDialog(val callback: SearchFilterCallBack) : DialogFragment(),
             { view, year, monthOfYear, dayOfMonth ->
                 val newDate: Calendar = Calendar.getInstance()
                 newDate.set(year, monthOfYear, dayOfMonth)
-                Log.i(
+              /* Log.i(
                     TAG,
                     "openToDate: from date --> ${newDate.get(Calendar.DATE)}/${newDate.get(Calendar.MONTH)}/${
                         newDate.get(Calendar.YEAR)
                     }"
-                )
+                )*/
 
                 fromDate = newDate.timeInMillis
 

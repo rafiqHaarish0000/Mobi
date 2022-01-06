@@ -84,7 +84,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         prefs = PreferenceHelper.defaultPrefs(requireContext())
         customPrefs = PreferenceHelper.customPrefs(requireContext(), "REMEMBER")
 
-//        Log.e("REG_DATA",  ""+getRegisterUserDetail())
+//       // Log.e("REG_DATA",  ""+getRegisterUserDetail())
 
         setTitle("Home", true)
 

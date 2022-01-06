@@ -171,7 +171,6 @@
             android:orientation="vertical"
             android:padding="@dimen/xxhdpi_10">
 
-
             <Button
                 android:id="@+id/btn_history_detail_receipt"
                 android:layout_width="match_parent"
@@ -183,7 +182,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/t_xxh_16" />
 
-
             <Button
                 android:id="@+id/btn_history_detail_void"
                 android:layout_width="match_parent"
@@ -194,9 +192,6 @@
                 android:text="Void"
                 android:textColor="@color/white"
                 android:textSize="@dimen/t_xxh_16" />
-
         </LinearLayout>
     </RelativeLayout>
-
-
 </FrameLayout>

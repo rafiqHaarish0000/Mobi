@@ -103,7 +103,7 @@ class NotificationsFragment : BaseFragment() {
                         if (it.responseList.count() > 0) {
                             notificationList.clear()
                             notificationList.addAll(it.responseList)
-                            Log.e("NotifyList", "" + it.responseList.count())
+                           // Log.e("NotifyList", "" + it.responseList.count())
                             notificationListAdapter.notifyDataSetChanged()
 
                         } else {
@@ -113,7 +113,7 @@ class NotificationsFragment : BaseFragment() {
                 }
             }
 
-            Log.e("Notification List ", it.responseDescription)
+           // Log.e("Notification List ", it.responseDescription)
         })
     }
 
@@ -148,7 +148,7 @@ class NotificationsFragment : BaseFragment() {
                 }
             }
 
-            Log.e("Notification List ", it.responseDescription)
+           // Log.e("Notification List ", it.responseDescription)
         })
     }
 
@@ -157,7 +157,7 @@ class NotificationsFragment : BaseFragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
                 // i = 4 = delete
                 //i = 8 =  mark read
-                Log.e("Direction", " $i")
+               // Log.e("Direction", " $i")
                 if (i == 4) {
                     val position = viewHolder.adapterPosition
                     val item = notificationListAdapter.getData()[position]

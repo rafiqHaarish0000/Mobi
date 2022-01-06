@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.view.isVisible
@@ -84,14 +83,14 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
             container,
             false
         )
-        Log.i(TAG, "onCreateView: ")
+       // Log.i(TAG, "onCreateView: ")
         initialize(binding.root)
         return _binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "onViewCreated: ")
+       // Log.i(TAG, "onViewCreated: ")
 
         setupViewBinding()
         showLog("TId ", getLoginResponse().tid)
@@ -219,7 +218,7 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     }
 
     fun getTransactionHistory(s: String) {
-        Log.i(TAG, "transactionHistory: $s")
+       // Log.i(TAG, "transactionHistory: $s")
 
         val historyParam = HashMap<String, String>()
         historyParam[Fields.username] = customPrefs[UserName]!!
@@ -334,8 +333,8 @@ class HistoryFragmentNew : BaseFragment(), View.OnClickListener, FingerListener 
     private fun historyObserveData(it: TransactionHistoryResponseData) {
         var count = 0
         var completedCount = 0
-        Log.i(TAG, "historyObserveData: item Count ${it.responseData.forSettlement?.size}")
-        Log.i(TAG, "historyObserveData: item Count ${it.responseData.preAuthorization?.size}")
+       // Log.i(TAG, "historyObserveData: item Count ${it.responseData.forSettlement?.size}")
+       // Log.i(TAG, "historyObserveData: item Count ${it.responseData.preAuthorization?.size}")
         if (it.responseCode.equals(Constants.Network.RESPONSE_SUCCESS, true)) {
             showLog("Auth", trxType)
             if (trxType.equals(PREAUTH, true)) {

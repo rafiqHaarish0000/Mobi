@@ -287,6 +287,8 @@
     <string name="_1300303060">1300303060</string>
     <string name="_1300_303_060">1300 303 060</string>
     <string name="csmobi_gomobi_io">csmobi@gomobi.io</string>
+    <string name="receipt_will_be_only_sent_through_email">Receipt will be sent via email only.</string>
+    <string name="sample_domail_com">sample@domail.com</string>
 
 
 </resources>

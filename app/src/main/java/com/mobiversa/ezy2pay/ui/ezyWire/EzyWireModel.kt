@@ -110,18 +110,18 @@ class EzyWireModel {
     }
 
     fun keyInjectFailedResponse(data: MutableLiveData<KeyInjectModel>) {
-        Log.e("EzywireModel ", "" + data)
+       // Log.e("EzywireModel ", "" + data)
     }
 
     fun PaymentInfoFailedResponse(data: MutableLiveData<PaymentInfoModel>) {
-        Log.e("PaymentInfoModel ", "" + data)
+       // Log.e("PaymentInfoModel ", "" + data)
     }
 
     fun CallAckFailedResponse(data: MutableLiveData<CallAckModel>) {
-        Log.e("CallAckModel ", "" + data)
+       // Log.e("CallAckModel ", "" + data)
     }
 
     fun sendNotifyDeclineFailedResponse(data: MutableLiveData<SendDeclineNotifyModel>) {
-        Log.e("NotifyDeclineModel ", "" + data)
+       // Log.e("NotifyDeclineModel ", "" + data)
     }
 }

@@ -34,19 +34,19 @@ class AppRepository {
 
                         // on api call with response data
                         Constants.Network.RESPONSE_SUCCESS -> {
-                            Log.i(TAG, "voidNGPayTransaction: Response Success")
+                           // Log.i(TAG, "voidNGPayTransaction: Response Success")
                             return NGrabPayResponse.Success(data = it)
                         }
 
                         // on api call with no response data
                         Constants.Network.RESPONSE_FAILURE -> {
-                            Log.i(TAG, "voidNGPayTransaction: Response Error")
+                           // Log.i(TAG, "voidNGPayTransaction: Response Error")
                             return NGrabPayResponse.Error(errorMessage = it.responseDescription)
                         }
 
                         // default generic error condition
                         else -> {
-                            Log.i(TAG, "voidNGPayTransaction: Response Else")
+                           // Log.i(TAG, "voidNGPayTransaction: Response Else")
                             return NGrabPayResponse.Error(errorMessage = "Something went wrong")
                         }
                     }
@@ -74,19 +74,19 @@ class AppRepository {
             data?.let {
                 when (it.responseCode) {
                     Constants.Network.RESPONSE_SUCCESS -> {
-                        Log.i(TAG, "voidNGPayTransaction: Response Success")
+                       // Log.i(TAG, "voidNGPayTransaction: Response Success")
                         return TransactionStatusResponse.Success(data = it)
                     }
 
                     // on api call with no response data
                     Constants.Network.RESPONSE_FAILURE -> {
-                        Log.i(TAG, "voidNGPayTransaction: Response Error")
+                       // Log.i(TAG, "voidNGPayTransaction: Response Error")
                         return TransactionStatusResponse.Error(errorMessage = it.responseDescription)
                     }
 
                     // default generic error condition
                     else -> {
-                        Log.i(TAG, "voidNGPayTransaction: Response Else")
+                       // Log.i(TAG, "voidNGPayTransaction: Response Else")
                         return TransactionStatusResponse.Error(errorMessage = "Something went wrong")
                     }
                 }
@@ -201,6 +201,24 @@ class AppRepository {
             SettlementsResponse.Exception(
                 exceptionMessage = AppExceptions.NoConnectivityException().message
             )
+        }
+    }
+
+    suspend fun sendReceipt(requestDataPrint: PrintReceiptRequestData): PrintReceiptResponse {
+        return try {
+            val request = apiService.sendReceipt(requestDataPrint)
+            if (request.isSuccessful) {
+                val data = request.body()!!
+                if (data.responseCode == Constants.Network.RESPONSE_SUCCESS) {
+                    PrintReceiptResponse.Success(data = data)
+                } else {
+                    PrintReceiptResponse.Error(errorMessage = data.responseMessage)
+                }
+            } else {
+                PrintReceiptResponse.Error(errorMessage = request.message())
+            }
+        } catch (e: Exception) {
+            PrintReceiptResponse.Exception(exceptionMessage = e.message!!)
         }
     }
 

@@ -257,10 +257,10 @@ class TransactionHistoryNewBinding(private val binding: HistoryListItemBinding) 
                             binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                         }
                         else -> {
-                            Log.i(
+                           /*Log.i(
                                 TAG_TRANSACTION_NEW,
                                 "bind: unknown transaction status : '${historyData.status}' "
-                            )
+                            )*/
                         }
                     }
 
@@ -288,7 +288,7 @@ class TransactionHistoryNewBinding(private val binding: HistoryListItemBinding) 
 
         binding.root.list_history_relative.setOnClickListener {
 
-            Log.i(TAG_TRANSACTION_NEW, "bind: list_history_relative --> Clicked")
+           // Log.i(TAG_TRANSACTION_NEW, "bind: list_history_relative --> Clicked")
 
             val bundle = Bundle()
             bundle.putString(Constants.Amount, cost)

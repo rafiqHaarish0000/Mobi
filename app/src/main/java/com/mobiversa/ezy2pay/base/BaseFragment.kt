@@ -236,7 +236,7 @@ open class BaseFragment : Fragment() {
 
     fun showLog(title: String, content: String) {
         if (BuildConfig.DEBUG) {
-            Log.e(title, content)
+           // Log.e(title, content)
         }
     }
 
@@ -580,13 +580,13 @@ open class BaseFragment : Fragment() {
         LocationService.getLocation(
             activity,
             { location ->
-                Log.e("Location ", location.latitude.toString())
+               // Log.e("Location ", location.latitude.toString())
                 Constants.latitudeStr = location.latitude.toString()
                 Constants.longitudeStr = location.longitude.toString()
                 getCountryName(location.latitude, location.longitude)
             },
             {
-                Log.e("Location ", "Error")
+               // Log.e("Location ", "Error")
             }
         )
     }
@@ -634,13 +634,13 @@ open class BaseFragment : Fragment() {
                     if (!inetAddress.isLoopbackAddress) {
                         val ip =
                             Formatter.formatIpAddress(inetAddress.hashCode())
-                        Log.i("IP", "***** IP=$ip")
+                       // Log.i("IP", "***** IP=$ip")
                         return ip
                     }
                 }
             }
         } catch (ex: Exception) {
-            Log.e("IP Address", ex.toString())
+           // Log.e("IP Address", ex.toString())
         }
         return ""
     }
@@ -703,7 +703,7 @@ open class BaseFragment : Fragment() {
     }
 
     fun closeLoadingDialog() {
-        Log.i(TAG, "closeLoadingDialog: $loadingDialog")
+       // Log.i(TAG, "closeLoadingDialog: $loadingDialog")
         if (loadingDialog != null) {
             loadingDialog!!.dismiss()
         }

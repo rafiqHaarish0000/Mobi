@@ -110,13 +110,13 @@ class HistoryModel {
     }
 
     private fun notificationFailureResponse(data: MutableLiveData<TransactionHistoryResponseData>) {
-        Log.e("Transaction History ", "" + data)
+       // Log.e("Transaction History ", "" + data)
     }
     private fun dataFailureResponse(data: MutableLiveData<SuccessModel>) {
-        Log.e("Transaction History ", "" + data)
+       // Log.e("Transaction History ", "" + data)
     }
     private fun voidFailureResponse(data: MutableLiveData<VoidHistoryModel>) {
-        Log.e("Transaction History ", "" + data)
+       // Log.e("Transaction History ", "" + data)
     }
 }
 

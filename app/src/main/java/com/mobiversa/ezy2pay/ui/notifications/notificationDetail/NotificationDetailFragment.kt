@@ -46,7 +46,7 @@ class NotificationDetailFragment : BaseFragment() {
         val timeStr = dateFormat.format(date)
         rootView.notify_time_txt.text = timeStr
 
-        Log.e("Notification", " "+notificationData?.msgTitle)
+       // Log.e("Notification", " "+notificationData?.msgTitle)
         return rootView
     }
 

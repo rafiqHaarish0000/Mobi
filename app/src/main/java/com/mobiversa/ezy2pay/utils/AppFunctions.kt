@@ -3,7 +3,6 @@ package com.mobiversa.ezy2pay.utils
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -35,8 +34,7 @@ object AppFunctions {
             )
         }catch (e: Exception){
             e.printStackTrace()
-            Log.e(TAG, "parseAmount: $amount" )
-
+           // Log.e(TAG, "parseAmount: $amount" )
             return "RM 0.00"
         }
     }
@@ -68,6 +66,18 @@ object AppFunctions {
         }
     }
 
+    object LogEvent {
+        fun log(title: String, content: String) {
+            if (BuildConfig.DEBUG) {
+                android.util.Log.i(
+                    title, String.format(
+                        "Event Time >> ${Calendar.getInstance().time}\n" +
+                                "Event Content >> $content"
+                    )
+                )
+            }
+        }
+    }
 
     object Dialogs {
         fun showLoadingDialog(message: String, context: Context) {

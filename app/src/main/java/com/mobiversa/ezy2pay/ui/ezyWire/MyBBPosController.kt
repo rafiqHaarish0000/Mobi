@@ -35,25 +35,25 @@ class MyBBPosController : BBDeviceControllerListener {
     override fun onWaitingForCard(checkCardMode: CheckCardMode) {
         when (checkCardMode) {
             CheckCardMode.INSERT -> {
-                Log.e("TEST ", "INSERT")
+               // Log.e("TEST ", "INSERT")
             }
             CheckCardMode.SWIPE -> {
-                Log.e("TEST ", "SWIPE")
+               // Log.e("TEST ", "SWIPE")
             }
             CheckCardMode.SWIPE_OR_INSERT -> {
-                Log.e("TEST ", "SWIPE_OR_INSERT")
+               // Log.e("TEST ", "SWIPE_OR_INSERT")
             }
             CheckCardMode.TAP -> {
-                Log.e("TEST ", "TAP")
+               // Log.e("TEST ", "TAP")
             }
             CheckCardMode.SWIPE_OR_TAP -> {
-                Log.e("TEST ", "SWIPE_OR_TAP")
+               // Log.e("TEST ", "SWIPE_OR_TAP")
             }
             CheckCardMode.INSERT_OR_TAP -> {
-                Log.e("TEST ", "INSERT_OR_TAP")
+               // Log.e("TEST ", "INSERT_OR_TAP")
             }
             CheckCardMode.SWIPE_OR_INSERT_OR_TAP -> {
-                Log.e("TEST ", "SWIPE_OR_INSERT_OR_TAP")
+               // Log.e("TEST ", "SWIPE_OR_INSERT_OR_TAP")
             }
             else -> {
             }
@@ -68,7 +68,7 @@ class MyBBPosController : BBDeviceControllerListener {
             for (i in Constants.foundDevices!!.indices) {
                 arrayAdapter!!.add(Constants.foundDevices!![i].name)
 
-                Log.e("Found Device", Constants.foundDevices!![i].name)
+               // Log.e("Found Device", Constants.foundDevices!![i].name)
             }
             arrayAdapter!!.notifyDataSetChanged()
         }
@@ -108,18 +108,18 @@ class MyBBPosController : BBDeviceControllerListener {
     override fun onReturnCheckCardResult(checkCardResult: CheckCardResult,decodeData: Hashtable<String, String>?) {
         Toast.makeText(activity,checkCardResult.toString() + "",Toast.LENGTH_SHORT).show()
 //                SendNotification("Card Swiped");
-// Log.v("swipe card tlv", decodeData.toString());
+//// Log.v("swipe card tlv", decodeData.toString());
         Constants.isICC = "N"
         if (checkCardResult == CheckCardResult.NO_CARD) {
-            Log.e("wisepad", "No card interseted")
+           // Log.e("wisepad", "No card interseted")
         } else if (checkCardResult == CheckCardResult.INSERTED_CARD) {
             Constants.isICC = ""
             SendNotification(Constants.StartEMV)
         } else if (checkCardResult == CheckCardResult.NOT_ICC) {
-            Log.e("wisepad", "Non ICC card inserted")
+           // Log.e("wisepad", "Non ICC card inserted")
             SendNotification("Not ICC Card")
         } else if (checkCardResult == CheckCardResult.BAD_SWIPE) {
-            Log.e("wisepad", "Bad swipe")
+           // Log.e("wisepad", "Bad swipe")
             SendNotification("Bad Swipe")
         } else if (checkCardResult == CheckCardResult.MSR) { // magstripe card is swiped
             val maskedPAN = decodeData?.get("maskedPAN")
@@ -129,11 +129,11 @@ class MyBBPosController : BBDeviceControllerListener {
             Constants.cardholderName = decodeData?.get("cardholderName").toString()
             val ksn = decodeData?.get("ksn")
             val serviceCode = decodeData?.get("serviceCode")
-            Log.v("--serviceCode--", ""+serviceCode)
+           // Log.v("--serviceCode--", ""+serviceCode)
             val encTrack1 = decodeData?.get("encTrack1")
             val encTrack2 = decodeData?.get("encTrack2")
             Constants.TLV = "$encTrack1#$encTrack2"
-            Log.v("--serviceCode", ""+serviceCode)
+           // Log.v("--serviceCode", ""+serviceCode)
             if (serviceCode != null) {
                 Constants.isSwipe = true
                 SendNotification(Constants.EnterPIN)
@@ -158,8 +158,8 @@ class MyBBPosController : BBDeviceControllerListener {
             val encTrack1 = decodeData?.get("encTrack1")
             val encTrack2 = decodeData?.get("encTrack2")
 
-            Log.e("Track1 ", ""+encTrack1)
-            Log.e("Track2 ", ""+encTrack2)
+           // Log.e("Track1 ", ""+encTrack1)
+           // Log.e("Track2 ", ""+encTrack2)
 
             Constants.TLV = "$encTrack1#$encTrack2"
             if (serviceCode!!.endsWith("0") || serviceCode.endsWith("6")) {
@@ -175,7 +175,7 @@ class MyBBPosController : BBDeviceControllerListener {
 
     @SuppressLint("LongLogTag")
     override fun onReturnCancelCheckCardResult(b: Boolean) {
-        Log.v("onReturnCancelCheckCardResult", "")
+       // Log.v("onReturnCancelCheckCardResult", "")
         val cancelResult = b.toString()
         if (cancelResult.equals("true", ignoreCase = true)) {
             SendNotification("Payment Cancelled")
@@ -231,7 +231,7 @@ class MyBBPosController : BBDeviceControllerListener {
     }
 
     override fun onReturnTransactionResult(transactionResult: TransactionResult) {
-        Log.v("transactionResult", transactionResult.toString())
+       // Log.v("transactionResult", transactionResult.toString())
         val approved = false
         /*if (transactionResult == BBDeviceController.TransactionResult.APPROVED) {
             //Log.v("result!!", transactionResult.toString());
@@ -245,7 +245,7 @@ class MyBBPosController : BBDeviceControllerListener {
             SendNotification(transactionResult.toString());
         }*/
         SendNotification(transactionResult.toString())
-        Log.v("result_traxn", transactionResult.toString())
+       // Log.v("result_traxn", transactionResult.toString())
         //SendNotification(!isAmountAccpted ? "Amount Declined" : (approved ? Constants.CardCompleted : "Card Declined"));
     }
 
@@ -256,11 +256,11 @@ class MyBBPosController : BBDeviceControllerListener {
 
     override fun onReturnAmountConfirmResult(b: Boolean) {}
     override fun onReturnPinEntryResult(pinEntryResult: PinEntryResult,data: Hashtable<String, String>?) {
-        Log.v("pinenter", pinEntryResult.toString())
+       // Log.v("pinenter", pinEntryResult.toString())
         Constants.isPinVerified = false
-        //        Log.e("Constants.PIN_DATA", data.toString() + "");
+        //       // Log.e("Constants.PIN_DATA", data.toString() + "");
         if (pinEntryResult == PinEntryResult.ENTERED) {
-            Log.v("pin", pinEntryResult.toString())
+           // Log.v("pin", pinEntryResult.toString())
             Constants.isPinVerified = true
             if (data != null) {
                 if (data.isNotEmpty()) {
@@ -275,7 +275,7 @@ class MyBBPosController : BBDeviceControllerListener {
         } else if (pinEntryResult == PinEntryResult.INCORRECT_PIN) {
             SendNotification(Constants.IncorrectPin)
         } else {
-            Log.v("pin", pinEntryResult.toString())
+           // Log.v("pin", pinEntryResult.toString())
             Constants.PIN_DATA = ""
             /*if (Constants.isICC.equalsIgnoreCase("n")) {
                 SendNotification(Constants.CardCompleted);
@@ -284,21 +284,21 @@ class MyBBPosController : BBDeviceControllerListener {
     }
 
     override fun onReturnPrintResult(printResult: PrintResult) {
-        Log.v("--onReturnPrintResult--", "")
+       // Log.v("--onReturnPrintResult--", "")
     }
 
     @SuppressLint("LongLogTag")
     override fun onReturnAccountSelectionResult(accountSelectionResult: AccountSelectionResult,i: Int) {
-        Log.v("--onReturnAccountSelectionResult--", "")
+       // Log.v("--onReturnAccountSelectionResult--", "")
     }
 
     override fun onReturnAmount(hashtable: Hashtable<String, String>) {
-        Log.v("--onReturnAmount--", "")
+       // Log.v("--onReturnAmount--", "")
     }
 
     @SuppressLint("LongLogTag")
     override fun onReturnUpdateAIDResult(hashtable: Hashtable<String, TerminalSettingStatus>) {
-        Log.v("--onReturnUpdateAIDResult--", "")
+       // Log.v("--onReturnUpdateAIDResult--", "")
     }
 
     override fun onReturnUpdateGprsSettingsResult(b: Boolean,hashtable: Hashtable<String, TerminalSettingStatus>) {
@@ -328,7 +328,7 @@ class MyBBPosController : BBDeviceControllerListener {
     override fun onReturnRemoveCAPKResult(b: Boolean) {}
     override fun onReturnEmvReportList(hashtable: Hashtable<String, String>) {}
     override fun onReturnEmvReport(s: String) {
-        Log.v("--onReturnEmvReport--", s)
+       // Log.v("--onReturnEmvReport--", s)
     }
 
     override fun onReturnDisableAccountSelectionResult(b: Boolean) {}
@@ -337,7 +337,7 @@ class MyBBPosController : BBDeviceControllerListener {
     }
 
     override fun onReturnEmvCardDataResult(b: Boolean,s: String) {
-        Log.v("tlv", s)
+       // Log.v("tlv", s)
     }
 
     override fun onReturnEmvCardNumber(b: Boolean, cardNumber: String) {
@@ -372,7 +372,7 @@ class MyBBPosController : BBDeviceControllerListener {
     }
 
     override fun onRequestPinEntry(pinEntrySource: PinEntrySource) {
-        Log.v("wisepad Request", pinEntrySource.toString())
+       // Log.v("wisepad Request", pinEntrySource.toString())
     }
 
     override fun onRequestOnlineProcess(tlv: String) {
@@ -382,7 +382,7 @@ class MyBBPosController : BBDeviceControllerListener {
 
     override fun onRequestTerminalTime() {}
     override fun onRequestDisplayText(displayText: DisplayText) {
-        Log.v("pinverify", displayText.toString())
+       // Log.v("pinverify", displayText.toString())
 
         if (displayText.toString().equals(Constants.EnterPIN, false)){
             SendNotification(Constants.PinScreen)
@@ -404,7 +404,7 @@ class MyBBPosController : BBDeviceControllerListener {
     override fun onAudioDevicePlugged() {}
     override fun onAudioDeviceUnplugged() {}
     override fun onError(errorState: Error,errorMessage: String) {
-        Log.e("wisepad errorMessage",errorMessage + "::" + errorState + ":: " + errorState.name)
+       // Log.e("wisepad errorMessage",errorMessage + "::" + errorState + ":: " + errorState.name)
         SendNotification("Error::$errorMessage")
     }
 
@@ -442,7 +442,7 @@ class MyBBPosController : BBDeviceControllerListener {
     override fun onReturnBarcode(s: String) {} //    @Override
 
     //    public void onBTRequestPairing() {
-//        Log.e("BlueTooth","Request Pairing");
+//       // Log.e("BlueTooth","Request Pairing");
 //    }
 //
 //    @Override
@@ -452,7 +452,7 @@ class MyBBPosController : BBDeviceControllerListener {
 //
 //    @Override
 //    public void onReturnFunctionKey(BBDeviceController.FunctionKey funcKey) {
-//        Log.e("BlueTooth","Function Key "+ funcKey);
+//       // Log.e("BlueTooth","Function Key "+ funcKey);
 ////        setStatus(getString(R.string.function_key) + " : " + funcKey);
 ////        dismissDialog();
 //    }

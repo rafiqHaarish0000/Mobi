@@ -299,7 +299,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
 //                val today = formatter.format(date)
 //
 //                val value_encrypted = Encryptor.encrypt(today+today, today+today, editPassword.text.toString())
-//                Log.v("--encrypt--", ""+value_encrypted)
+//               // Log.v("--encrypt--", ""+value_encrypted)
 //                val hex_to_asci_name = Encryptor.encodeHexString(value_encrypted!!)
 //
 //                putUserString(Fields.date,today+today)
@@ -480,7 +480,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
                 fireBaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
+               // Log.w(TAG, "Google sign in failed", e)
                 shortToast("Google sign in failed")
             }
         } else {
@@ -493,7 +493,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun fireBaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+       // Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         (activity as LoginActivity).auth.signInWithCredential(credential)
@@ -511,18 +511,18 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
         login_button.registerCallback((activity as LoginActivity).callbackManager, object :
             FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
-                Log.d(TAG, "facebook:onSuccess:$loginResult")
+               // Log.d(TAG, "facebook:onSuccess:$loginResult")
                 handleFacebookAccessToken(loginResult.accessToken)
             }
 
             override fun onCancel() {
-                Log.d(TAG, "facebook:onCancel")
+               // Log.d(TAG, "facebook:onCancel")
                 // [START_EXCLUDE]
                 // [END_EXCLUDE]
             }
 
             override fun onError(error: FacebookException) {
-                Log.d(TAG, "facebook:onError", error)
+               // Log.d(TAG, "facebook:onError", error)
                 // [START_EXCLUDE]
                 // [END_EXCLUDE]
             }
@@ -530,7 +530,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun handleFacebookAccessToken(token: AccessToken) {
-        Log.d(TAG, "handleFacebookAccessToken:$token")
+       // Log.d(TAG, "handleFacebookAccessToken:$token")
         // [START_EXCLUDE silent]
         showDialog("Loading")
         // [END_EXCLUDE]
@@ -542,7 +542,7 @@ class RegisterUserDetailFragment : BaseFragment(), View.OnClickListener,
                 facebookMail = user?.email.toString()
                 putUserString(Constants.fbname, facebookMail)
             } else {
-                Log.w(TAG, "signInWithCredential:failure", it.exception)
+               // Log.w(TAG, "signInWithCredential:failure", it.exception)
                 shortToast("Authentication failed.")
             }
         }

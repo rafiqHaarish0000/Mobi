@@ -93,14 +93,13 @@ interface ApiService {
     fun setSale(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
-    fun getReceiptData(@Body postParam: HashMap<String, String>): Call<ReceiptModel>
+    fun getReceiptData(@Body postParam: HashMap<String, String>): Call<PrintReceiptResponseDataModel>
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
     fun registerUser(@Body postParam: HashMap<String, String>): Call<SuccessModel>
 
     @POST("payment/mobiapr19/mobi_jsonservice")
     suspend fun getTransactionStatus(@Body transactionStatusRequestDataModel: TransactionStatusRequestDataModel): Response<ResponseTransactionStatusDataModel>
-
 
     @POST("payment/mobiapr19/mobi_jsonservice/")
     suspend fun getTransactionHistoryNew(@Body postParam: TransactionHistoryRequestData): Response<TransactionHistoryResponseData>
@@ -135,6 +134,8 @@ interface ApiService {
         @Body requestData: NGrabPayRequestData
     ): Response<NGrabPayResponseData>
 
+    @POST("payment/mobiapr19/mobi_jsonservice/")
+    suspend fun sendReceipt(@Body requestDataPrint: PrintReceiptRequestData): Response<PrintReceiptResponseDataModel>
 
 
     @POST("externalapi/merchantservice/")
@@ -152,7 +153,6 @@ interface ApiService {
     fun getStateList(@Body postParam: HashMap<String, String>): Call<StateModel>
 
 
-
     // TODO: 03-11-2021
     /* Vignesh Selvam
     *
@@ -161,7 +161,6 @@ interface ApiService {
     companion object RetrofitClient {
 //        private const val BANK_URL = "https://fpx.mobiversa.com/"
 //        private const val CITY_URL = "https://ocsservices.mobiversa.com/"
-
 
 //        private const val BASE_URL = "https://paydee.gomobi.io/"
 //        private const val REGISTER_URL = "https://paydee.gomobi.io/"

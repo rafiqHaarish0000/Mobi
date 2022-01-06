@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -33,29 +32,28 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // ...
-
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: " + remoteMessage.from!!)
+       // Log.d(TAG, "From: " + remoteMessage.from!!)
 
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+           // Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
         }
         // Check if message contains a notification payload.
         if (remoteMessage.notification != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.notification!!.body!!)
+           // Log.d(TAG, "Message Notification Body: " + remoteMessage.notification!!.body!!)
         }
 
         /*// Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+           // Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             Map<String, String> data = remoteMessage.getData();
             handleData(data);
 
         } else if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+           // Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 //            handleNotification(remoteMessage.getNotification());
             handleNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
         }// Check if message contains a notification payload.*/
@@ -64,10 +62,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         // Check if message contains a notification payload.
         if (remoteMessage.notification != null) {
-            Log.e(
+           /* Log.e(
                 TAG,
                 "Notification Body: " + remoteMessage.notification!!.body
-            )
+            )*/
             handleNotification(
                 remoteMessage.notification!!.body.toString(),
                 remoteMessage.notification!!.title.toString(),
@@ -78,16 +76,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
-            Log.e(
+           /*Log.e(
                 TAG,
                 "Data Payload: " + remoteMessage.data.toString()
-            )
+            )*/
             try {
                 val data =
                     remoteMessage.data
                 handleData(data)
             } catch (e: Exception) {
-                Log.e(TAG, "Exception: " + e.message)
+               // Log.e(TAG, "Exception: " + e.message)
             }
         }
     }
@@ -116,10 +114,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         val taskInfo =
                             am.getRunningTasks(1)
                         val componentInfo = taskInfo[0].topActivity
-                        Log.d(
+                       /*Log.d(
                             TAG,
                             "CURRENT Activity ::" + taskInfo[0].topActivity!!.className + "   Package Name :  " + componentInfo!!.packageName
-                        )
+                        )*/
                         if (!taskInfo[0].topActivity!!.className.equals(
                                 "com.mobiversa.ezy2pay.Chat.ChatWebview",
                                 ignoreCase = true
@@ -135,7 +133,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
             }
         } else { // If the app is in background, firebase itself handles the notification
-            Log.e("Firebase","Working in BackGround")
+           // Log.e("Firebase","Working in BackGround")
         }
         // play notification sound
         val notificationUtils =
@@ -194,7 +192,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationVO.url = iconUrl
         notificationVO.action = action
         notificationVO.actionDestination = actionDestination
-        Log.v("--handleData--", ""+title)
+       // Log.v("--handleData--", ""+title)
         if (actionDestination.equals("SplashScreen", ignoreCase = true)) {
             val resultIntent = Intent(applicationContext, SplashActivity::class.java)
             val notificationUtils =
@@ -212,7 +210,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "Refreshed token: " + token)
+       // Log.d(TAG, "Refreshed token: " + token)
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the

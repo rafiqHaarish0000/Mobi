@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mobiversa.ezy2pay.ui.history.transactionHistory.TransactionHistoryViewModel
 import com.mobiversa.ezy2pay.ui.history.transactionHistoryDetails.HistoryDetailViewModel
 import com.mobiversa.ezy2pay.ui.history.transactionStatus.TransactionStatusViewModel
+import com.mobiversa.ezy2pay.ui.receipt.PrintReceiptViewModel
 
 class AppViewModelFactory internal constructor(private val appRepository: AppRepository) :
     ViewModelProvider.Factory {
@@ -20,6 +21,9 @@ class AppViewModelFactory internal constructor(private val appRepository: AppRep
             }
             TransactionStatusViewModel::class.java.canonicalName->{
                 TransactionStatusViewModel(appRepository) as T
+            }
+            PrintReceiptViewModel::class.java.canonicalName->{
+                PrintReceiptViewModel(appRepository) as T
             }
             else -> {
                 throw Exception("Provided view model does not match")

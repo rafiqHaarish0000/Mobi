@@ -33,7 +33,7 @@ object CommonStartStop {
             ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager //get instance of alarm manager
         manager[AlarmManager.RTC_WAKEUP, cal.timeInMillis] =
             pendingIntent //set alarm manager with entered timer by converting into milliseconds
-        Log.v("<---TimerStarted--->", "started")
+       // Log.v("<---TimerStarted--->", "started")
     }
 
     //Stop/Cancel alarm manager
@@ -43,6 +43,6 @@ object CommonStartStop {
         manager.cancel(pendingIntent) //cancel the alarm manager of the pending intent
         //Stop the Media Player Service to stop sound
         ctx.stopService(Intent(ctx, AlarmSoundService::class.java))
-        Log.v("<---TimerStopped--->", "stopped")
+       // Log.v("<---TimerStopped--->", "stopped")
     }
 }

@@ -92,6 +92,6 @@ class EzyMotoModel {
     }
 
     private fun notificationFailureResponse(data: MutableLiveData<CountryList>) {
-        Log.e("NotificationVM ", ""+data)
+       // Log.e("NotificationVM ", ""+data)
     }
 }

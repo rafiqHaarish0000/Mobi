@@ -21,7 +21,7 @@ class AlarmSoundService : Service() {
     public void onCreate() {
         super.onCreate();
 
-        Log.v("startAlarm","started");
+       // Log.v("startAlarm","started");
         //Start media player
         */
 /*mediaPlayer = MediaPlayer.create(this, R.raw.alarm_sound);
@@ -34,7 +34,7 @@ class AlarmSoundService : Service() {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.v("AlarmDestroyed","stopped");
+       // Log.v("AlarmDestroyed","stopped");
         //On destory stop and release the media player
        */
 /* if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -53,21 +53,21 @@ class AlarmSoundService : Service() {
     }
 
     override fun onCreate() { // TODO Auto-generated method stub
-        Log.v("<---AlarmService--->", "onCreate()")
+       // Log.v("<---AlarmService--->", "onCreate()")
     }
 
     override fun onBind(intent: Intent): IBinder? { // TODO Auto-generated method stub
-        Log.v("<---AlarmService--->", "onBind()")
+       // Log.v("<---AlarmService--->", "onBind()")
         return null
     }
 
     override fun onDestroy() { // TODO Auto-generated method stub
         super.onDestroy()
-        Log.v("<---AlarmService--->", "onDestroy()")
+       // Log.v("<---AlarmService--->", "onDestroy()")
     }
 
     override fun onUnbind(intent: Intent): Boolean { // TODO Auto-generated method stub
-        Log.v("<---AlarmService--->", "onUnbind()")
+       // Log.v("<---AlarmService--->", "onUnbind()")
         return super.onUnbind(intent)
     }
 }

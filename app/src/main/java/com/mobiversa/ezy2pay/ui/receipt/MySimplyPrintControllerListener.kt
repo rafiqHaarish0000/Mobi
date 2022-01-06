@@ -40,13 +40,13 @@ class MySimplyPrintControllerListener : SimplyPrintControllerListener {
     }
 
     override fun onBTv2Connected(bluetoothDevice: BluetoothDevice) {
-        Log.e("wisepad printer", "printer connected")
+       // Log.e("wisepad printer", "printer connected")
         isPrinterConnected = true
         SendNotification("printer connected")
     }
 
     override fun onBTv2Disconnected() {
-        Log.e("wisepad printer", "printer dis-connected")
+       // Log.e("wisepad printer", "printer dis-connected")
         isPrinterConnected = false
     }
 
@@ -87,7 +87,7 @@ class MySimplyPrintControllerListener : SimplyPrintControllerListener {
         val isUsbConnected = deviceInfoTable["isUsbConnected"]
         val isCharging = deviceInfoTable["isCharging"]
         val batteryLevel = deviceInfoTable["batteryLevel"]
-        Log.e("Wisepad Printer", deviceInfoTable.toString() + "")
+       // Log.e("Wisepad Printer", deviceInfoTable.toString() + "")
     }
 
     override fun onReturnPrinterResult(printerResult: PrinterResult) {
@@ -106,11 +106,11 @@ class MySimplyPrintControllerListener : SimplyPrintControllerListener {
     }
 
     override fun onReturnGetDarknessResult(value: Int) { // darkness result
-        Log.e("wisepad printer", "darkness  $value")
+       // Log.e("wisepad printer", "darkness  $value")
     }
 
     override fun onReturnSetDarknessResult(isSuccess: Boolean) {
-        Log.e("wisepad printer", "darkness result $isSuccess")
+       // Log.e("wisepad printer", "darkness result $isSuccess")
         SendNotification("darkness done")
     }
 
@@ -133,7 +133,7 @@ class MySimplyPrintControllerListener : SimplyPrintControllerListener {
     }
 
     override fun onError(errorState: SimplyPrintController.Error) {
-        Log.e("wisepad printer", "error$errorState")
+       // Log.e("wisepad printer", "error$errorState")
         if (!noPaper) {
             if (errorState == SimplyPrintController.Error.UNKNOWN) {
                 SendNotification("Kindly check printer and try again.")

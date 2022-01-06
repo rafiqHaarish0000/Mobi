@@ -3,7 +3,6 @@ package com.mobiversa.ezy2pay.adapter.transactionHistory
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -260,7 +259,7 @@ class TransactionHistoryAdapter(
                     }
                     Fields.PREAUTH -> {
 
-                        Log.i(TAG, "bind: ${Fields.PREAUTH}")
+                       // Log.i(TAG, "bind: ${Fields.PREAUTH}")
                         when (historyData.status) {
                             "D" -> {
                                 binding.timelineView.setBackgroundColor(context.resources.getColor(R.color.pending))
@@ -269,7 +268,7 @@ class TransactionHistoryAdapter(
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_pending)
                             }
                             "E" -> {
-                                Log.i(TAG, "bind: ${historyData.status}")
+                               // Log.i(TAG, "bind: ${historyData.status}")
                                 binding.txtStatusHistory.text =
                                     Constants.TransactionHistoryStatus.COMPLETED
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
@@ -337,7 +336,7 @@ class TransactionHistoryAdapter(
 
 
 //    fun updateDataset(data: List<ForSettlement>?, flag: Int) {
-//        Log.e(TAG, "updateDataset: $data")
+//       // Log.e(TAG, "updateDataset: $data")
 //        if (this.flag != flag) {
 //            val lastPosition = if (this.historyList.size > 0) {
 //                this.historyList.size - 1

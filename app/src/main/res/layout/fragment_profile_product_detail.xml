@@ -42,7 +42,7 @@
                     android:contentDescription="@string/todo" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txt_prod_name"
+                        android:id="@+id/txt_prod_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/xxhdpi_5"

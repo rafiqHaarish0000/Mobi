@@ -231,12 +231,12 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
     fun checkStatus(status: String) {
 
-        Log.v("Status ", status)
+       // Log.v("Status ", status)
 
         when (status) {
             Constants.DeviceConnected -> {
                 cancelDialog()
-                Log.e("Device Connected", "Success")
+               // Log.e("Device Connected", "Success")
                 wisePadController.getDeviceInfo()
                 device_name_txt.text = getSharedString(Fields.DeviceId, applicationContext)
                 enter_pin_device_name_txt.text =
@@ -264,14 +264,14 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 shortToast(status)
             }
             Constants.CardSwiped -> {
-                Log.e("Test ", "Card Swiped")
+               // Log.e("Test ", "Card Swiped")
                 showHideLayout(Constants.EnterPin, status)
             }
             Constants.PinScreen -> {
                 showHideLayout(Constants.EnterPin, status)
             }
             Constants.StartEMV -> {
-                Log.e("Test ", "Start EMV")
+               // Log.e("Test ", "Start EMV")
                 showHideLayout(Constants.EnterPin, status)
                 startEMVProcess()
             }
@@ -295,7 +295,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 wisePadController.sendFinalConfirmResult(true)
             }
             Constants.OnlineProcess -> {
-                Log.e("TEST", Constants.OnlineProcess)
+               // Log.e("TEST", Constants.OnlineProcess)
                 // Status Online Process
                 if (isOnline(applicationContext)) {
                     sendPaymentInformation()
@@ -304,8 +304,8 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 }
             }
             Constants.CardCompleted -> {
-                Log.d("EZYWIRE", " CardCompleted")
-                Log.e("IsPin", "" + Constants.isPinVerified)
+               // Log.d("EZYWIRE", " CardCompleted")
+               // Log.e("IsPin", "" + Constants.isPinVerified)
                 if (Constants.isICC.isEmpty()) {
                     if (Constants.isPinVerified) {
                         Constants.Signature = ""
@@ -317,7 +317,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 } else {
                     // Status Online Process
                     if (isOnline(applicationContext)) {
-                        Log.e("TEST", Constants.CardCompleted)
+                       // Log.e("TEST", Constants.CardCompleted)
                         if (Constants.isSwipe)
                             showServiceCharge()
                         else
@@ -349,7 +349,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             Constants.DECLINED -> {
                 transactionFailed("Transaction Declined")
                 if (Constants.TRANS_ID.isNotEmpty()) {
-                    Log.v("test", "inside cond")
+                   // Log.v("test", "inside cond")
                     sendDeclinedNotification()
                 }
             }
@@ -368,7 +368,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             Constants.ICC_CARD_REMOVED -> {
                 transactionFailed("Unexpected card removal during transaction")
                 if (Constants.TRANS_ID.isNotEmpty()) {
-                    Log.v("test", "inside cond")
+                   // Log.v("test", "inside cond")
                     sendDeclinedNotification()
                 }
             }
@@ -380,7 +380,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 transactionFailed("Transaction Declined")
             }
             Constants.IncorrectPin -> {
-                Log.v("wrong pin", "")
+               // Log.v("wrong pin", "")
             }
             Constants.CardDeclined -> {
                 transactionFailed("Transaction declined by card")
@@ -398,7 +398,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 }
             }
             Constants.Error -> {
-                Log.e("EZYWIRE", Constants.Error)
+               // Log.e("EZYWIRE", Constants.Error)
             }
             Constants.NotICCCard, Constants.BadSwipe, Constants.InvalidCard -> {
                 val message = "$status, please try again with valid Card."
@@ -432,7 +432,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         deliverApiService.run {
             getKeyInjection(keyParams).enqueue(object : retrofit2.Callback<KeyInjectModel> {
                 override fun onFailure(call: Call<KeyInjectModel>, t: Throwable) {
-                    Log.e("EzywireModel ", t.message!!)
+                   // Log.e("EzywireModel ", t.message!!)
                 }
 
                 override fun onResponse(
@@ -462,7 +462,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                             wisePadController.disconnectBT()
                         }
                     } else {
-                        Log.e("EzywireModel ", response.message())
+                       // Log.e("EzywireModel ", response.message())
                     }
                 }
             })
@@ -526,12 +526,12 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         if (device_id.startsWith("WPC")) {
             val data = Hashtable<String, Any>()
             data["checkCardMode"] = BBDeviceController.CheckCardMode.SWIPE_OR_INSERT_OR_TAP
-            Log.v("--wisepad2--", "--startEmv--")
+           // Log.v("--wisepad2--", "--startEmv--")
             wisePadController.startEmv(data)
         } else {
             val data = Hashtable<String, Any>()
             data["checkCardMode"] = BBDeviceController.CheckCardMode.SWIPE_OR_INSERT
-            Log.v("--wisepad1--", "--checkcard--")
+           // Log.v("--wisepad1--", "--checkcard--")
             wisePadController.checkCard(data)
         }
 
@@ -576,14 +576,14 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
 
         cancelTracking = 2
 
-        Log.e("wisepad", "promptForAmount success  $price")
+       // Log.e("wisepad", "promptForAmount success  $price")
         val currencyCharacters = arrayOf(CurrencyCharacter.R, CurrencyCharacter.M)
         if (wisePadController.setAmount(
                 price, "0.00", "458",
                 BBDeviceController.TransactionType.GOODS, currencyCharacters
             )
         ) {
-            Log.e("wisepad", "promptForAmount success$price")
+           // Log.e("wisepad", "promptForAmount success$price")
         }
     }
 
@@ -614,12 +614,12 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun transactionFailed(status: String) {
-        Log.e("Failed", status)
+       // Log.e("Failed", status)
         showHideLayout(Constants.FailureTransaction, status)
     }
 
     private fun getSignature(extra: String?) {
-        Log.e("Signature", "" + extra)
+       // Log.e("Signature", "" + extra)
         showHideLayout(Constants.Signature, "Signature")
     }
 
@@ -685,7 +685,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
             getPaymentInfo(requestVal).enqueue(object : retrofit2.Callback<PaymentInfoModel> {
                 override fun onFailure(call: Call<PaymentInfoModel>, t: Throwable) {
                     cancelDialog()
-                    Log.e("PaymentInfoModel ", "" + t.message)
+                   // Log.e("PaymentInfoModel ", "" + t.message)
                 }
 
                 override fun onResponse(
@@ -727,7 +727,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                             showHideLayout(Constants.FailureTransaction, it.responseDescription)
                         }
                     } else {
-                        Log.e("PaymentInfoModel ", "" + response.message())
+                       // Log.e("PaymentInfoModel ", "" + response.message())
                     }
                 }
             })
@@ -871,10 +871,10 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
         var final_key = key_to_encrypt.replace("-LE".toRegex(), "")
         if (final_key.length < 16) { //Log.v("keyy1", final_key);
             final_key = final_key + "0"
-            //            Log.v("keyy11", final_key);
+            //           // Log.v("keyy11", final_key);
             val keyValue = final_key.toByteArray()
             key = SecretKeySpec(keyValue, ALGO)
-        } else { //            Log.v("keyy2", final_key);
+        } else { //           // Log.v("keyy2", final_key);
             val keyValue = final_key.toByteArray()
             key = SecretKeySpec(keyValue, ALGO)
         }
@@ -930,6 +930,7 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                 bundle.putString(Fields.trxId, Constants.TRANS_ID)
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Fields.Signature, "")
+                bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
                 bundle.putString(Constants.ActivityName, Constants.EzywireAct)
                 addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
             }

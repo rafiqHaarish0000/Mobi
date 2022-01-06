@@ -39,7 +39,7 @@ class ProductListAdapter(
             (holder as ProductListViewHolder).bind(item, context, homeFragment)
             holder.itemView.setOnClickListener {
 
-                Log.e(TAG, "onBindViewHolder: Clicked", )
+               // Log.e(TAG, "onBindViewHolder: Clicked", )
                 if (product.isEnable)
                     homeFragment.productDetails(product.productName)
                 else

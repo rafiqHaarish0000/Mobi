@@ -13,23 +13,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
 import com.mobiversa.ezy2pay.base.BaseFragment
+import com.mobiversa.ezy2pay.dataModel.PrintReceiptRequestData
+import com.mobiversa.ezy2pay.dataModel.PrintReceiptResponse
 import com.mobiversa.ezy2pay.network.response.Country
 import com.mobiversa.ezy2pay.ui.ezyMoto.EzyMotoViewModel
 import com.mobiversa.ezy2pay.ui.ezyWire.EzyWireActivity
-import com.mobiversa.ezy2pay.utils.Constants
-import com.mobiversa.ezy2pay.utils.Fields
+import com.mobiversa.ezy2pay.utils.*
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import kotlinx.android.synthetic.main.print_receipt_fragment.view.*
+import kotlinx.coroutines.launch
+
 internal val TAG = PrintReceiptFragment::class.java.canonicalName
+
 class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     View.OnClickListener {
 
@@ -37,6 +44,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         fun newInstance() = PrintReceiptFragment()
     }
 
+    private var isEzyWire: Boolean = false
     private lateinit var chkWhatsapp: AppCompatCheckBox
     private lateinit var viewModel: PrintReceiptViewModel
     private lateinit var motoViewModel: EzyMotoViewModel
@@ -74,9 +82,13 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i(TAG, "onCreateView: PrintReceiptFragment")
+       // Log.i(TAG, "onCreateView: PrintReceiptFragment")
+
         rootView = inflater.inflate(R.layout.print_receipt_fragment, container, false)
-        viewModel = ViewModelProvider(this).get(PrintReceiptViewModel::class.java)
+
+        val repository = AppRepository.getInstance()
+        val viewModelFactory = AppViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PrintReceiptViewModel::class.java)
         motoViewModel = ViewModelProvider(this).get(EzyMotoViewModel::class.java)
 
         service = requireArguments().getString(Fields.Service, "")
@@ -87,16 +99,35 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         if (service.equals(Fields.TXN_REPRINT, true))
             signatureStr = requireArguments().getString(Fields.Signature, "")
 
-        rootView.amount_txt.text = amount
 
-        initialize(rootView)
+        /* Vignesh Selvam
+        * if isEzyWire is false allow email or phone only from ezy wire transaction
+        * show both phone and email if isEzyWire is false
+        * */
+        isEzyWire = requireArguments().getBoolean(Constants.NavigationKey.IS_EZY_WIRE, false)
+       // Log.i(TAG, "onCreateView: $isEzyWire")
+        if (isEzyWire) {
+            rootView.chk_whatsapp_receipt.isVisible = true
+            rootView.relative_layout_or_divider.isVisible = true
+            rootView.text_view_email_only_note.isVisible = false
+        } else {
+            rootView.chk_whatsapp_receipt.isVisible = false
+            rootView.relative_layout_or_divider.isVisible = false
+            rootView.text_view_email_only_note.isVisible = true
+        }
+
+        rootView.amount_txt.text = amount
+        return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initialize(view)
 //        editTextWatcher()
 
         val productParams = HashMap<String, String>()
         productParams[Fields.Service] = Fields.CountryList
         jsonCountryList(productParams)
-
-        return rootView
     }
 
     private fun initialize(rootView: View) {
@@ -247,49 +278,130 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     private fun jsonSendReceipt() {
-        showDialog("Loading")
-        val paymentParams = HashMap<String, String>()
-        paymentParams[Fields.Service] = service
-        paymentParams[Fields.username] = getSharedString(Constants.UserName)
-        paymentParams[Fields.sessionId] = getLoginResponse().sessionId
-        paymentParams[Fields.HostType] = getLoginResponse().hostType
-        paymentParams[Fields.trxId] = trxId
-        if (edtPhoneNumReceipt.text.isEmpty()) {
-            paymentParams[Fields.MobileNo] = ""
-            paymentParams[Fields.email] = edtEmailReceipt.text.toString()
-            paymentParams[Fields.WhatsApp] = getIsWhatsapp(false)
-        } else {
-            paymentParams[Fields.WhatsApp] = getIsWhatsapp(chkWhatsapp.isChecked)
-            paymentParams[Fields.MobileNo] =
-                edtCountryCodeReceipt.text.toString() + edtPhoneNumReceipt.text.toString()
-            paymentParams[Fields.email] = edtEmailReceipt.text.toString()
+//        showDialog("Loading")
+
+
+        lifecycleScope.launch {
+
+            AppFunctions.Dialogs.showLoadingDialog("Processing...", requireContext())
+
+
+            val requestData = PrintReceiptRequestData(
+                service = service,
+                username = getSharedString(Constants.UserName),
+                sessionId = getLoginResponse().sessionId,
+                hostType = getLoginResponse().hostType,
+                trxId = trxId
+            )
+
+            if (isEzyWire) {
+                if (edtPhoneNumReceipt.text.isEmpty()) {
+                    requestData.mobileNo = ""
+                    requestData.email = edtEmailReceipt.text.toString()
+                    requestData.whatsApp = getIsWhatsapp(false)
+                } else {
+                    requestData.whatsApp = getIsWhatsapp(chkWhatsapp.isChecked)
+                    requestData.mobileNo =
+                        edtCountryCodeReceipt.text.toString() + edtPhoneNumReceipt.text.toString()
+                    requestData.email = edtEmailReceipt.text.toString()
+                }
+            } else {
+                requestData.mobileNo =
+                    edtCountryCodeReceipt.text.toString() + edtPhoneNumReceipt.text.toString()
+                requestData.email = edtEmailReceipt.text.toString()
+                requestData.whatsApp = getIsWhatsapp(false)
+            }
+
+            when (val response = viewModel.sendReceipt(requestData)) {
+                is PrintReceiptResponse.Success -> {
+                    shortToast(response.data.responseDescription)
+                    if (PRINTReceipt) {
+                        val gson = Gson()
+                        val json = gson.toJson(response.data)
+                        AppFunctions.Dialogs.closeLoadingDialog()
+                        requireContext().startActivity(
+                            Intent(
+                                getActivity(),
+                                PrinterActivity::class.java
+                            ).putExtra("receiptData", json)
+                        )
+                    } else {
+                        if (activityName.equals(Constants.MainAct, true)) {
+                            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
+                                false
+                            )
+
+                            // TODO: 23-11-2021
+                            /*  Vignesh Selvam
+                            * Pop backstack removed
+                            * replaced with navigation component
+                            *
+                            * */
+//                        fragmentManager?.popBackStack()
+                            AppFunctions.Dialogs.closeLoadingDialog()
+                            findNavController().navigateUp()
+                        } else {
+                            AppFunctions.Dialogs.closeLoadingDialog()
+                            findNavController().navigateUp()
+                        }
+                    }
+                }
+                is PrintReceiptResponse.Error -> {
+                    AppFunctions.Dialogs.closeLoadingDialog()
+                    shortToast(response.errorMessage)
+                    findNavController().navigateUp()
+                }
+                is PrintReceiptResponse.Exception -> {
+                    AppFunctions.Dialogs.closeLoadingDialog()
+                    shortToast(response.exceptionMessage)
+                    findNavController().navigateUp()
+                }
+            }
         }
 
-        viewModel.getReceipt(paymentParams)
-        viewModel.printReceiptData.observe(this, androidx.lifecycle.Observer {
-            cancelDialog()
-            if (it.responseCode.equals("0000", true)) {
-                shortToast(it.responseDescription)
+        /* val paymentParams = HashMap<String, String>()
+         paymentParams[Fields.Service] = service
+         paymentParams[Fields.username] = getSharedString(Constants.UserName)
+         paymentParams[Fields.sessionId] = getLoginResponse().sessionId
+         paymentParams[Fields.HostType] = getLoginResponse().hostType
+         paymentParams[Fields.trxId] = trxId
 
-                if (PRINTReceipt) {
-                    val gson = Gson()
-                    val json = gson.toJson(it)
-                    requireContext().startActivity(
-                        Intent(
-                            getActivity(),
-                            PrinterActivity::class.java
-                        ).putExtra("receiptData", json)
-                    )
-                } else {
-                    if (activityName.equals(Constants.MainAct, true)) {
-                        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+         if (edtPhoneNumReceipt.text.isEmpty()) {
+             paymentParams[Fields.MobileNo] = ""
+             paymentParams[Fields.email] = edtEmailReceipt.text.toString()
+             paymentParams[Fields.WhatsApp] = getIsWhatsapp(false)
+         } else {
+             paymentParams[Fields.WhatsApp] = getIsWhatsapp(chkWhatsapp.isChecked)
+             paymentParams[Fields.MobileNo] =
+                 edtCountryCodeReceipt.text.toString() + edtPhoneNumReceipt.text.toString()
+             paymentParams[Fields.email] = edtEmailReceipt.text.toString()
+         }
 
-                        // TODO: 23-11-2021
-                        /*  Vignesh Selvam
+         viewModel.getReceipt(paymentParams)
+         viewModel.printReceiptData.observe(this, {
+             cancelDialog()
+             if (it.responseCode.equals("0000", true)) {
+                 shortToast(it.responseDescription)
+
+                 if (PRINTReceipt) {
+                     val gson = Gson()
+                     val json = gson.toJson(it)
+                     requireContext().startActivity(
+                         Intent(
+                             getActivity(),
+                             PrinterActivity::class.java
+                         ).putExtra("receiptData", json)
+                     )
+                 } else {
+                     if (activityName.equals(Constants.MainAct, true)) {
+                         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+                         // TODO: 23-11-2021
+                         *//*  Vignesh Selvam
                         * Pop backstack removed
                         *  replaced with navigation component
                         *
-                        * */
+                        * *//*
 //                        fragmentManager?.popBackStack()
                         findNavController().navigateUp()
                     } else {
@@ -307,17 +419,13 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 shortToast(it.responseDescription)
                 requireContext().startActivity(Intent(getActivity(), MainActivity::class.java))
             }
-        })
+        })*/
     }
 
     private fun getIsWhatsapp(whatsApp: Boolean): String {
         return if (whatsApp) "Yes" else "No"
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PrintReceiptViewModel::class.java)
-    }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
 
@@ -339,12 +447,23 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             R.id.btn_receipt_slip -> {
                 val emailStr = edtEmailReceipt.text.toString()
                 val phoneStr = edtPhoneNumReceipt.text.toString()
-                if (emailStr.isEmpty() && phoneStr.isEmpty()) {
-                    shortToast("Please enter Email id or Mobile Number")
-                } else if (phoneStr.isEmpty() && !isValidEmail(emailStr)) {
-                    shortToast("Please enter Valid Email id")
-                } else
-                    jsonSendReceipt()
+
+                if (isEzyWire) {
+                    if (emailStr.isEmpty() && phoneStr.isEmpty()) {
+                        shortToast("Please enter Email id or Mobile Number")
+                    } else if (phoneStr.isEmpty() && !isValidEmail(emailStr)) {
+                        shortToast("Please enter Valid Email id")
+                    } else
+                        jsonSendReceipt()
+                } else {
+                    if (emailStr.isEmpty() || phoneStr.isEmpty()) {
+                        shortToast("Please enter both Email id and Mobile Number")
+                    } else if (!isValidEmail(emailStr)) {
+                        shortToast("Please enter Valid Email id")
+                    } else {
+                        jsonSendReceipt()
+                    }
+                }
             }
             R.id.PrintReceiptLayout -> {
                 if (PRINTReceipt) {

@@ -151,7 +151,7 @@ class SignupFragment : BaseFragment() , View.OnClickListener, AdapterView.OnItem
         val countDownTimer = object : CountDownTimer(120000, 1000) {
             @SuppressLint("SetTextI18n")
             override fun onTick(millisUntilFinished: Long) {
-                Log.d("tekloon", "millisUntilFinished $millisUntilFinished")
+               // Log.d("tekloon", "millisUntilFinished $millisUntilFinished")
                 val hms = String.format(
                     "%02d:%02d",
                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
@@ -165,7 +165,7 @@ class SignupFragment : BaseFragment() , View.OnClickListener, AdapterView.OnItem
             }
 
             override fun onFinish() {
-                Log.d("tekloon", "onFinish")
+               // Log.d("tekloon", "onFinish")
                 signup_timer_txt.visibility = View.GONE
                 if (timer_count<2)
                 resend_linear.visibility = View.VISIBLE
@@ -296,7 +296,7 @@ class SignupFragment : BaseFragment() , View.OnClickListener, AdapterView.OnItem
                 putUserString(Constants.currencyCode, it.responseData.countryCurPhone.currencyCode)
 
                 hex_to_asci = Encryptor.hexaToAscii(str_trace, true)
-                Log.v("--hex_to Asci--", hex_to_asci)
+               // Log.v("--hex_to Asci--", hex_to_asci)
                 data_encrypted = Encryptor.decrypt(str_date, str_date, hex_to_asci).toString()
                 sign_up_contact_linear.visibility = View.GONE
                 signUpOtpLinear.visibility = View.VISIBLE

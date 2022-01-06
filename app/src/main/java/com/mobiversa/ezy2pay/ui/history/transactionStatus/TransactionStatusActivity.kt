@@ -154,7 +154,7 @@ class TransactionStatusActivity : AppCompatActivity() {
         }
 
         intent.getStringExtra(Constants.NavigationKey.TID)?.let { tid ->
-            Log.i(TAG, "onViewCreated: tid -> $tid")
+           // Log.i(TAG, "onViewCreated: tid -> $tid")
 //            getTransactionStatus(tid)
             this.tid = tid
             getTransactionStatusPaging(tid, "", transactionStatus)
@@ -196,7 +196,7 @@ class TransactionStatusActivity : AppCompatActivity() {
     }
 
     private fun handleError(loadState: CombinedLoadStates) {
-        Log.i(TAG, "handleError: $loadState")
+       // Log.i(TAG, "handleError: $loadState")
         val errorState = loadState.source.append as? LoadState.Error
             ?: loadState.source.prepend as? LoadState.Error
             ?: loadState.mediator?.refresh as? LoadState.Error

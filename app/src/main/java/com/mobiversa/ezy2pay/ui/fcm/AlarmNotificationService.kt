@@ -18,7 +18,7 @@ class AlarmNotificationService : IntentService("AlarmNotificationService") {
     //handle notification
     private fun sendNotification(msg: String) {
 //        EzywireUtils.SignOut(this)
-        Log.v("<---LogoutHere--->", "LogoutDone")
+       // Log.v("<---LogoutHere--->", "LogoutDone")
     }
 
     companion object {

@@ -8,7 +8,6 @@ import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -80,9 +79,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.regex.Pattern
-import android.app.Activity
-import android.os.IBinder
-import android.view.inputmethod.InputMethodManager
 
 
 // TODO: 02-09-2021
@@ -258,18 +254,18 @@ class LoginActivity :
             object :
                 FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d(TAG, "facebook:onSuccess:$loginResult")
+                   // Log.d(TAG, "facebook:onSuccess:$loginResult")
                     handleFacebookAccessToken(loginResult.accessToken)
                 }
 
                 override fun onCancel() {
-                    Log.d(TAG, "facebook:onCancel")
+                   // Log.d(TAG, "facebook:onCancel")
                     // [START_EXCLUDE]
                     // [END_EXCLUDE]
                 }
 
                 override fun onError(error: FacebookException) {
-                    Log.d(TAG, "facebook:onError", error)
+                   // Log.d(TAG, "facebook:onError", error)
                     // [START_EXCLUDE]
                     // [END_EXCLUDE]
                 }
@@ -354,7 +350,7 @@ class LoginActivity :
     }
 
     private fun handleFacebookAccessToken(token: AccessToken) {
-        Log.d(TAG, "handleFacebookAccessToken:$token")
+       // Log.d(TAG, "handleFacebookAccessToken:$token")
         // [START_EXCLUDE silent]
         showDialog("Loading")
         // [END_EXCLUDE]
@@ -364,7 +360,7 @@ class LoginActivity :
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
+                   // Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
 
                     val loginMap = HashMap<String, String>()
@@ -378,7 +374,7 @@ class LoginActivity :
                     jsonLogin(loginMap)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                   // Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Toast.makeText(
                         baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT
@@ -500,7 +496,7 @@ class LoginActivity :
                 fireBaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
+               // Log.w(TAG, "Google sign in failed", e)
                 shortToast("Google sign in failed")
             }
         } else {
@@ -509,14 +505,14 @@ class LoginActivity :
     }
 
     private fun fireBaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+       // Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id!!)
 
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
+                   // Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
 
                     if (user != null) {
@@ -531,7 +527,7 @@ class LoginActivity :
                     }
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                   // Log.w(TAG, "signInWithCredential:failure", task.exception)
                 }
             }
     }
@@ -609,7 +605,7 @@ class LoginActivity :
         if (it.responseCode == "0000") {
             warning_rel.visibility = View.GONE
 
-            Log.e(TAG, "loginResponse: -> ${it.responseData}")
+           // Log.e(TAG, "loginResponse: -> ${it.responseData}")
             when {
                 it.responseData.type.equals("LITE", true) -> {
                     Toast.makeText(

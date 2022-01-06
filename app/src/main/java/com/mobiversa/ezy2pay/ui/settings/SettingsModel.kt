@@ -51,10 +51,10 @@ class SettingsModel {
     }
 
     private fun productFailureResponse(data: MutableLiveData<ProfileProductList>) {
-        Log.e("ProfileProductList Fail", ""+data)
+       // Log.e("ProfileProductList Fail", ""+data)
     }
 
     private fun merchantFailureResponse(data: MutableLiveData<MerchantDetailModel>) {
-        Log.e("MerchantDetail Fail", ""+data)
+       // Log.e("MerchantDetail Fail", ""+data)
     }
 }

@@ -2,7 +2,6 @@ package com.mobiversa.ezy2pay.adapter.transactionHistory
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -322,10 +321,7 @@ class TransactionHistoryAdapterPaging(val callback: TransactionHistoryInterface)
                                 binding.statusBg.setBackgroundResource(R.drawable.rect_complete)
                             }
                             else -> {
-                                Log.i(
-                                    TAG,
-                                    "bind: unknown transaction status : '${historyData.status}' "
-                                )
+                               // Log.i(TAG,"bind: unknown transaction status : '${historyData.status}' ")
                             }
                         }
                     }
@@ -351,7 +347,7 @@ class TransactionHistoryAdapterPaging(val callback: TransactionHistoryInterface)
 
             binding.root.list_history_relative.setOnClickListener {
 
-                Log.i(TAG, "bind: list_history_relative --> Clicked")
+                // Log.i(TAG, "bind: list_history_relative --> Clicked")
                 val bundle = Bundle()
                 bundle.putString(Constants.Amount, cost)
                 bundle.putString(Constants.Date, binding.txtDate.text.toString())

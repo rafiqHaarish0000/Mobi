@@ -42,9 +42,9 @@ class PrinterActivity : BaseActivity() {
 
         val data = intent.getStringExtra("receiptData")
 
-        receiptData = JSONObject(data)
+        receiptData = JSONObject(data!!)
 
-        Log.e("Test", "" + receiptData)
+       // Log.e("Test", "" + receiptData)
 
         cancelPrint.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
@@ -71,12 +71,12 @@ class PrinterActivity : BaseActivity() {
         override fun handleMessage(msg: Message) {
             val status = msg.obj.toString()
             if (status.equals("printer connected", ignoreCase = false)) {
-                Log.e("Printer Connected", "Success")
+               // Log.e("Printer Connected", "Success")
                 printerController!!.setDarkness(0)
                 showDialog("Loading")
             } else if (status.equals("darkness done", ignoreCase = false)) {
                 cancelDialog()
-                PrintReceiptData(false)
+                printReceiptData(false)
             } else if (status.contains("Printdata")) {
                 val index = status.replace("Printdata", "").toInt()
                 printerController!!.sendPrinterData(printerReceipts[index])
@@ -93,23 +93,23 @@ class PrinterActivity : BaseActivity() {
             } else if (status.equals("no paper", ignoreCase = true)) {
                 (printerstatus as TextView).text =
                     "Kindly feed paper and try again."
-                printerButtons.setVisibility(View.VISIBLE)
+                printerButtons.visibility = View.VISIBLE
             } else {
                 (printerstatus as TextView).text = status
-                printerButtons.setVisibility(View.VISIBLE)
+                printerButtons.visibility = View.VISIBLE
             }
         }
     }
 
-    fun PrintReceipt(button: View) {
+    fun printReceipt(button: View) {
         if (isPrinterConnected) {
-            PrintReceiptData(button.id == R.id.printMerchant)
+            printReceiptData(button.id == R.id.printMerchant)
         } else {
             promptForPrinterConnection()
         }
     }
 
-    fun PrintReceiptData(isMerchantCopy: Boolean) {
+    fun printReceiptData(isMerchantCopy: Boolean) {
         try {
             printerReceipts = java.util.ArrayList()
             printerReceipts.add(ReceiptUtility.genReceipt(this, receiptData, isMerchantCopy))

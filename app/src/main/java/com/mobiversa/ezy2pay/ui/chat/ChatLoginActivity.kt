@@ -59,7 +59,7 @@ class ChatLoginActivity : AppCompatActivity() {
 
         if (company != "") {
 
-            Log.v("--company--", "beforeLogin")
+           // Log.v("--company--", "beforeLogin")
             println("--Today : $today")
 
             date_today = today + today
@@ -68,13 +68,13 @@ class ChatLoginActivity : AppCompatActivity() {
 
             val value_encrypted = Encryptor.encrypt(date_today, date_today, to_encrypt)
             hex_to_asci_name = Encryptor.encodeHexString(value_encrypted!!)
-            Log.v("--hex--", hex_to_asci_name)
+           // Log.v("--hex--", hex_to_asci_name)
 
             /*var to_encry_fcm = fcm_id
             val fcm_encrypted = Encryptor.encrypt(date_today, date_today, to_encry_fcm)
-            Log.v("--fcm_encrypted--", fcm_encrypted)
+           // Log.v("--fcm_encrypted--", fcm_encrypted)
             hex_to_asci_fcm = Encryptor.encodeHexString(fcm_encrypted)
-            Log.v("--hex--", hex_to_asci_fcm)*/
+           // Log.v("--hex--", hex_to_asci_fcm)*/
 
 //            var fcm_data: String = encrypt_fcm(fcm_id)
 
@@ -83,7 +83,7 @@ class ChatLoginActivity : AppCompatActivity() {
 
         } else {
 
-            Log.v("--nocompany--", "beforeLogin")
+           // Log.v("--nocompany--", "beforeLogin")
             println("--Today : $today")
 
             date_today = today + today
@@ -92,7 +92,7 @@ class ChatLoginActivity : AppCompatActivity() {
 
             val value_encrypted = Encryptor.encrypt(date_today, date_today, to_encrypt)
             hex_to_asci_name = Encryptor.encodeHexString(value_encrypted!!)
-            Log.v("--hex--", hex_to_asci_name)
+           // Log.v("--hex--", hex_to_asci_name)
 
             startWebView(Constants.CHAT_URL
                     + hex_to_asci_name + "&dt=" + date_today + "&d=a" + "&token=" + fcm_id)

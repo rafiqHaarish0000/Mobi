@@ -32,6 +32,6 @@ class QRModel {
     }
 
     private fun qrFailureResponse(data: MutableLiveData<QRModel>) {
-        Log.e("QRModel Failure ", ""+data)
+       // Log.e("QRModel Failure ", ""+data)
     }
 }

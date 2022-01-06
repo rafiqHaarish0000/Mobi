@@ -19,7 +19,6 @@ import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.EditText
@@ -71,7 +70,7 @@ open class BaseActivity : AppCompatActivity() {
 
     fun showLog(title: String, content: String) {
         if (BuildConfig.DEBUG) {
-            Log.e(title, content)
+//            Log.e(title, content)
         }
     }
 
@@ -215,12 +214,12 @@ open class BaseActivity : AppCompatActivity() {
     fun getLocation() {
 
         LocationService.getLocation(this, { location ->
-            Log.e("Location ", location.latitude.toString())
+           // Log.e("Location ", location.latitude.toString())
             latitudeStr = location.latitude.toString()
             longitudeStr = location.longitude.toString()
             getCountryName(location.latitude, location.longitude)
         }, {
-            Log.e("Location ", "Error")
+           // Log.e("Location ", "Error")
         })
 
     }

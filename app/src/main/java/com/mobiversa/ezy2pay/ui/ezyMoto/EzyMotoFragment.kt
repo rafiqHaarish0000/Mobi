@@ -96,7 +96,7 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
         }
 
 
-        Log.e(TAG, "onCreateView: $service")
+       // Log.e(TAG, "onCreateView: $service")
 
         rootView.amount_txt.text = String.format("RM %s", totalAmount)
         rootView.edt_reference_ezymoto.setText(invoiceId)
@@ -345,10 +345,10 @@ class EzyMotoFragment : BaseFragment(), AdapterView.OnItemSelectedListener, View
             paymentParams[Fields.email] = ""
         }
 
-        Log.e(TAG, "applicationSubmit: $service")
+       // Log.e(TAG, "applicationSubmit: $service")
         when (service) {
             Fields.EzyMoto, Fields.PreAuthMoto -> {
-                Log.e(TAG, "Service selection ->: $service")
+               // Log.e(TAG, "Service selection ->: $service")
 
                 // TODO: 23-08-2021
                 /*  Vignesh Selvam

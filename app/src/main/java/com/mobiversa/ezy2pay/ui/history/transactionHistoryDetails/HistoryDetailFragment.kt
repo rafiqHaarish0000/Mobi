@@ -329,6 +329,7 @@ class HistoryDetailFragment :
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_history_detail_receipt -> {
+//                Log.i(TAG, "onClick: $historyData")
                 if (btn_history_detail_receipt.text.toString().equals("Receipt", true)) {
                     val bundle = Bundle()
                     if (historyData?.txnType.equals(CASH))
@@ -341,7 +342,7 @@ class HistoryDetailFragment :
                     bundle.putString(Constants.ActivityName, MainAct)
                     bundle.putString(Constants.Redirect, Constants.History)
 
-                   // Log.i(TAG, "onClick: ${historyData?.txnType}")
+//                    Log.i(TAG, "onClickTransaction: ${historyData?.txnType}")
                     if (historyData?.txnType.equals(Constants.EZYWIRE, ignoreCase = true))
                         bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
 
@@ -817,7 +818,7 @@ class HistoryDetailFragment :
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Constants.ActivityName, MainAct)
 
-               // Log.i(TAG, "onOptionsItemSelected: ${historyData?.txnType}")
+//                Log.i(TAG, "onOptionsItemSelected: ${historyData?.txnType}")
                 if (historyData?.txnType.equals(Constants.EZYWIRE, ignoreCase = true))
                     bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
                 

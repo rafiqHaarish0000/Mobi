@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -102,18 +101,25 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
         /* Vignesh Selvam
         * if isEzyWire is false allow email or phone only from ezy wire transaction
-        * show both phone and email if isEzyWire is false
+        * show both phone and email if isEzyWire is true
         * */
-        isEzyWire = requireArguments().getBoolean(Constants.NavigationKey.IS_EZY_WIRE, false)
-       // Log.i(TAG, "onCreateView: $isEzyWire")
+
+        // TODO: 1/11/2022
+        /* Mohammed Rafiq
+        * For all transaction in print receipt screen email and phone number is mandatory
+        * */
+
+//        isEzyWire = requireArguments().getBoolean(Constants.NavigationKey.IS_EZY_WIRE, false)
+//        Log.i(TAG, "onCreateView: $isEzyWire")
+
         if (isEzyWire) {
             rootView.chk_whatsapp_receipt.isVisible = true
-            rootView.relative_layout_or_divider.isVisible = true
-            rootView.text_view_email_only_note.isVisible = false
+            rootView.relative_layout_or_divider.isVisible = false
+            rootView.text_view_email_only_note.isVisible = true
         } else {
             rootView.chk_whatsapp_receipt.isVisible = false
             rootView.relative_layout_or_divider.isVisible = false
-            rootView.text_view_email_only_note.isVisible = true
+            rootView.text_view_email_only_note.isVisible = false
         }
 
         rootView.amount_txt.text = amount

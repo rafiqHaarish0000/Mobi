@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.mobiversa.ezy2pay.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_printReceiptFragment"
+            app:destination="@id/printReceiptFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_history"
@@ -49,7 +53,8 @@
         tools:layout="@layout/history_detail_fragment_new">
         <action
             android:id="@+id/action_historyDetailFragment_to_printReceiptFragment"
-            app:destination="@id/printReceiptFragment" />
+            app:destination="@id/printReceiptFragment"
+            app:popUpTo="@id/navigation_home" />
     </fragment>
     <fragment
         android:id="@+id/transactionStatusFragment"
@@ -60,5 +65,15 @@
         android:name="com.mobiversa.ezy2pay.ui.receipt.PrintReceiptFragment"
         android:label="print_receipt_fragment"
         tools:layout="@layout/print_receipt_fragment" />
+    <fragment
+        android:id="@+id/ezyCashFragment"
+        android:name="com.mobiversa.ezy2pay.ui.ezyCash.EzyCashFragment"
+        android:label="ezy_cash_fragment"
+        tools:layout="@layout/ezy_cash_fragment" >
+        <action
+            android:id="@+id/action_ezyCashFragment_to_printReceiptFragment"
+            app:destination="@id/printReceiptFragment"
+            app:popUpTo="@id/navigation_home" />
+    </fragment>
 
 </navigation>

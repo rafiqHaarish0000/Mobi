@@ -28,7 +28,6 @@ import com.mobiversa.ezy2pay.dataModel.PrintReceiptRequestData
 import com.mobiversa.ezy2pay.dataModel.PrintReceiptResponse
 import com.mobiversa.ezy2pay.network.response.Country
 import com.mobiversa.ezy2pay.ui.ezyMoto.EzyMotoViewModel
-import com.mobiversa.ezy2pay.ui.ezyWire.EzyWireActivity
 import com.mobiversa.ezy2pay.utils.*
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
 import kotlinx.android.synthetic.main.print_receipt_fragment.view.*
@@ -43,7 +42,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         fun newInstance() = PrintReceiptFragment()
     }
 
-    private var isEzyWire: Boolean = false
+    private var isAllFieldsMandatory: Boolean = true
     private lateinit var chkWhatsapp: AppCompatCheckBox
     private lateinit var viewModel: PrintReceiptViewModel
     private lateinit var motoViewModel: EzyMotoViewModel
@@ -112,14 +111,16 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 //        isEzyWire = requireArguments().getBoolean(Constants.NavigationKey.IS_EZY_WIRE, false)
 //        Log.i(TAG, "onCreateView: $isEzyWire")
 
-        if (isEzyWire) {
+        isAllFieldsMandatory =
+            requireArguments().getBoolean(Constants.NavigationKey.ALL_FIELDS_MANDATORY, true)
+        if (!isAllFieldsMandatory) {
             rootView.chk_whatsapp_receipt.isVisible = true
-            rootView.relative_layout_or_divider.isVisible = false
-            rootView.text_view_email_only_note.isVisible = true
+            rootView.relative_layout_or_divider.isVisible = true
+            rootView.text_view_email_only_note.isVisible = false
         } else {
             rootView.chk_whatsapp_receipt.isVisible = false
             rootView.relative_layout_or_divider.isVisible = false
-            rootView.text_view_email_only_note.isVisible = false
+            rootView.text_view_email_only_note.isVisible = true
         }
 
         rootView.amount_txt.text = amount
@@ -155,11 +156,11 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
         setTitle("PrintReceipt", false)
         if (activityName.equals(Constants.MainAct, true)) {
-            (activity as MainActivity).supportActionBar?.title = "PrintReceipt"
-            (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (requireActivity() as MainActivity).supportActionBar?.title = "PrintReceipt"
+            (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
-            (activity as EzyWireActivity).supportActionBar?.title = "PrintReceipt"
-            (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (requireActivity() as MainActivity).supportActionBar?.title = "PrintReceipt"
+            (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setHasOptionsMenu(true)
     }
@@ -267,7 +268,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 if (activityName.equals(Constants.MainAct, true)) {
                     (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 } else
-                    (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
                 // TODO: 23-11-2021
                 /*  Vignesh Selvam
@@ -276,7 +277,11 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 *
                 * */
 //                fragmentManager?.popBackStack()
-                findNavController().navigateUp()
+                if (!isAllFieldsMandatory) {
+                    fragmentManager?.popBackStack()
+                } else {
+                    findNavController().navigateUp()
+                }
             }
             cancelDialog()
         })
@@ -290,8 +295,6 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         lifecycleScope.launch {
 
             AppFunctions.Dialogs.showLoadingDialog("Processing...", requireContext())
-
-
             val requestData = PrintReceiptRequestData(
                 service = service,
                 username = getSharedString(Constants.UserName),
@@ -300,7 +303,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 trxId = trxId
             )
 
-            if (isEzyWire) {
+            if (!isAllFieldsMandatory) {
                 if (edtPhoneNumReceipt.text.isEmpty()) {
                     requestData.mobileNo = ""
                     requestData.email = edtEmailReceipt.text.toString()
@@ -343,24 +346,42 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                             * replaced with navigation component
                             *
                             * */
-//                        fragmentManager?.popBackStack()
+
                             AppFunctions.Dialogs.closeLoadingDialog()
-                            findNavController().navigateUp()
+                            if (!isAllFieldsMandatory) {
+                                fragmentManager?.popBackStack()
+                            } else {
+                                findNavController().navigateUp()
+                            }
+
+
                         } else {
                             AppFunctions.Dialogs.closeLoadingDialog()
-                            findNavController().navigateUp()
+                            if (!isAllFieldsMandatory) {
+                                fragmentManager?.popBackStack()
+                            } else {
+                                findNavController().navigateUp()
+                            }
                         }
                     }
                 }
                 is PrintReceiptResponse.Error -> {
                     AppFunctions.Dialogs.closeLoadingDialog()
                     shortToast(response.errorMessage)
-                    findNavController().navigateUp()
+                    if (!isAllFieldsMandatory) {
+                        fragmentManager?.popBackStack()
+                    } else {
+                        findNavController().navigateUp()
+                    }
                 }
                 is PrintReceiptResponse.Exception -> {
                     AppFunctions.Dialogs.closeLoadingDialog()
                     shortToast(response.exceptionMessage)
-                    findNavController().navigateUp()
+                    if (!isAllFieldsMandatory) {
+                        fragmentManager?.popBackStack()
+                    } else {
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }
@@ -454,7 +475,7 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 val emailStr = edtEmailReceipt.text.toString()
                 val phoneStr = edtPhoneNumReceipt.text.toString()
 
-                if (isEzyWire) {
+                if (!isAllFieldsMandatory) {
                     if (emailStr.isEmpty() && phoneStr.isEmpty()) {
                         shortToast("Please enter Email id or Mobile Number")
                     } else if (phoneStr.isEmpty() && !isValidEmail(emailStr)) {
@@ -501,11 +522,11 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         super.onResume()
         setTitle("PrintReceipt", false)
         if (activityName.equals(Constants.MainAct, true)) {
-            (activity as MainActivity).supportActionBar?.title = "PrintReceipt"
-            (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (requireActivity() as MainActivity).supportActionBar?.title = "PrintReceipt"
+            (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
-            (activity as EzyWireActivity).supportActionBar?.title = "PrintReceipt"
-            (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (requireActivity() as MainActivity).supportActionBar?.title = "PrintReceipt"
+            (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setHasOptionsMenu(true)
     }
@@ -522,9 +543,13 @@ class PrintReceiptFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                         setTitle("Home", true)
                 } else {
                     setTitle("Home", true)
-                    (activity as EzyWireActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
-                findNavController().navigateUp()
+                if (!isAllFieldsMandatory) {
+                    fragmentManager?.popBackStack()
+                } else {
+                    findNavController().navigateUp()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
@@ -265,7 +266,11 @@ class EzyCashFragment : BaseFragment(), View.OnClickListener, AdapterView.OnItem
                 bundle.putString(Fields.Service, Fields.CASH_RECEIPT)
                 bundle.putString(Fields.trxId, trxId)
                 bundle.putString(Constants.ActivityName, Constants.MainAct)
-                addFragment(printReceiptFragment, bundle, "HistoryDetail")
+//                addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                findNavController().navigate(
+                    R.id.action_navigation_home_to_printReceiptFragment,
+                    bundle
+                )
 
             }
         })

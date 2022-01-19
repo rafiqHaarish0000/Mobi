@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -746,6 +745,7 @@ class HistoryDetailFragment :
                     bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
                     bundle.putString(Fields.trxId, it.responseData.trxId)
                     bundle.putString(Fields.Amount, amount)
+                    bundle.putBoolean(Constants.NavigationKey.ALL_FIELDS_MANDATORY,true)
                     bundle.putString(Constants.ActivityName, MainAct)
 
                     // TODO: 23-11-2021

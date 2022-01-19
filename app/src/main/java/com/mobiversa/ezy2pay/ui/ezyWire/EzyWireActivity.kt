@@ -10,7 +10,6 @@ import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.os.*
 import android.util.Base64
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -927,12 +926,19 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                     bundle.putString(Fields.Service, Fields.PRE_AUTH_RECEIPT)
                 else
                     bundle.putString(Fields.Service, Fields.TXN_REPRINT)
+
                 bundle.putString(Fields.trxId, Constants.TRANS_ID)
                 bundle.putString(Fields.Amount, amount)
                 bundle.putString(Fields.Signature, "")
+                bundle.putBoolean(Constants.NavigationKey.ALL_FIELDS_MANDATORY, false)
                 bundle.putBoolean(Constants.NavigationKey.IS_EZY_WIRE, true)
                 bundle.putString(Constants.ActivityName, Constants.EzywireAct)
-                addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
+//                addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
+
+                val intent = Intent()
+                intent.putExtras(bundle)
+                setResult(RESULT_OK, intent)
+                finish()
             }
             R.id.btn_sign_clear -> {
                 signature_view.clearSignature()
@@ -949,12 +955,17 @@ class EzyWireActivity : BaseActivity(), View.OnClickListener {
                     bundle.putString(Fields.Service, Fields.TXN_REPRINT)
                     bundle.putString(Fields.trxId, Constants.TRANS_ID)
                     bundle.putString(Constants.Redirect, Constants.Home)
+                    bundle.putBoolean(Constants.NavigationKey.ALL_FIELDS_MANDATORY, false)
                     bundle.putString(Constants.ActivityName, Constants.EzywireAct)
                     bundle.putString(
                         Fields.Signature,
                         Base64.encodeToString(byteArray, Base64.DEFAULT)
                     )
-                    addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
+//                    addFragment(printReceiptFragment, bundle, R.id.coordinatorLayout)
+                    val intent = Intent()
+                    intent.putExtras(bundle)
+                    setResult(RESULT_OK, intent)
+                    finish()
                 } else {
                     shortToast("Signature is mandatory.")
                 }

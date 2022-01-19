@@ -32,6 +32,7 @@ class Constants {
     }
 
     object NavigationKey {
+        const val ALL_FIELDS_MANDATORY: String = "ALL_FIELDS_MANDATORY"
         const val TRANSACTION_HISTORY_KEY: String = "TransactionHistoryData"
         const val TID = "tid"
         const val IS_EZY_WIRE = "is_EZY_WIRE"

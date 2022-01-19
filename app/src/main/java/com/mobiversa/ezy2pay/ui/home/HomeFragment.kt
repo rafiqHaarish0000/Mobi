@@ -1,10 +1,12 @@
 package com.mobiversa.ezy2pay.ui.home
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobiversa.ezy2pay.MainActivity
 import com.mobiversa.ezy2pay.R
@@ -53,6 +56,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.regex.Pattern
 
+internal val TAG = HomeFragment::class.java.canonicalName
 
 class HomeFragment : BaseFragment(), View.OnClickListener {
 
@@ -235,7 +239,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                     intent.putExtra(Fields.Service, Fields.START_PAY)
                     intent.putExtra(Fields.Amount, amount)
                     intent.putExtra(Fields.InvoiceId, invoiceEdt.text.toString())
-                    context?.startActivity(intent)
+//                    context?.startActivity(intent)
+
+                    startActivityForResult(intent, 8700)
+
                     amtEdt.setText("0.00")
                     invoiceEdt.setText("")
                 }
@@ -290,7 +297,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                     intent.putExtra(Fields.Service, Fields.PRE_AUTH)
                     intent.putExtra(Fields.Amount, amtEdt.text.toString())
                     intent.putExtra(Fields.InvoiceId, invoiceEdt.text.toString())
-                    context?.startActivity(intent)
+//                    context?.startActivity(intent)
+                    startActivityForResult(intent, 8700)
+
                     amtEdt.setText("0.00")
                     invoiceEdt.setText("")
                 }
@@ -350,6 +359,21 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+        Log.i(TAG, "onActivityResult: ")
+        if (requestCode == 8700 && resultCode == Activity.RESULT_OK) {
+            data?.extras?.let {
+                Log.i(TAG, "onActivityResult: $it")
+
+                findNavController().navigate(
+                    R.id.action_navigation_home_to_printReceiptFragment,
+                    it
+                )
+            }
+        }
+    }
 
     private fun navigateMoto(amount: String) {
         val fragment = EzyMotoFragment()
@@ -592,8 +616,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                 bundle.putString(Fields.Amount, amtEdt.text.toString())
                 bundle.putString(Constants.ActivityName, Constants.MainAct)
                 bundle.putString(Constants.Redirect, Constants.Home)
-                addFragment(printReceiptFragment, bundle, "HistoryDetail")
-
+//                addFragment(printReceiptFragment, bundle, "HistoryDetail")
+                findNavController().navigate(
+                    R.id.action_ezyCashFragment_to_printReceiptFragment,
+                    bundle
+                )
             }
         })
     }
